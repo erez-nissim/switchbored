@@ -73,6 +73,19 @@ export function searchCatalog(gameId, q, category) {       // for the Sell picke
     .filter(p => (!category || p.category === category) && hit(`${p.name} ${p.characteristics || ''}`, q));
 }
 
+// Categories of open listings (for buy tab counts)
+export function listListingCategories(gameId) {
+  requireGame(gameId);
+  const counts = {};
+  db.tradesByGame(gameId).filter(t => t.status === 'Open').forEach(t => {
+    const p = db.getProduct(t.product_id);
+    if (!p) return;
+    const k = categoryOf(p.name, p.characteristics);
+    counts[k] = (counts[k] || 0) + 1;
+  });
+  return CATEGORY_ORDER.filter(k => counts[k]).map(k => ({ name: k, count: counts[k] }));
+}
+
 // Categories present in a game's catalog, with item counts, in display order.
 export function listCategories(gameId) {
   requireGame(gameId);
@@ -174,7 +187,7 @@ export function markDelivered(user, tradeId) {
     if (!t) throw new AppError('Trade not found.', 404);
     if (t.seller_user_id !== user.id) throw new AppError('Only the seller can confirm delivery.', 403);
     if (t.status !== 'In Progress') throw new AppError('This trade is not awaiting delivery.');
-    db.updateTradeFields(tradeId, { status: 'Closed', completed_ts: new Date().toISOString() });  // seller was already paid on listing
+    db.updateTradeFields(tradeId, { status: 'Delivered', completed_ts: new Date().toISOString() });
     ctx = { t };
   });
   const { t } = ctx;
@@ -184,19 +197,30 @@ export function markDelivered(user, tradeId) {
   return { ok: true };
 }
 
+export function confirmArrival(user, tradeId) {
+  db.tx(() => {
+    const t = db.getTrade(tradeId);
+    if (!t) throw new AppError('Trade not found.', 404);
+    if (t.buyer_user_id !== user.id) throw new AppError('Only the buyer can confirm arrival.', 403);
+    if (t.status !== 'Delivered') throw new AppError('Seller has not marked this as delivered yet.');
+    db.updateTradeFields(tradeId, { status: 'Closed', completed_ts: new Date().toISOString() });
+  });
+  return { ok: true };
+}
+
 export function cancelTrade(user, tradeId) {
   db.tx(() => {
     const t = db.getTrade(tradeId);
     if (!t) throw new AppError('Trade not found.', 404);
     const isSeller = t.seller_user_id === user.id, isBuyer = t.buyer_user_id === user.id;
     if (!isSeller && !isBuyer) throw new AppError('You are not part of this trade.', 403);
-    if (t.status !== 'Open' && t.status !== 'In Progress') throw new AppError('This trade can no longer be cancelled.');
+    if (t.status !== 'Open' && t.status !== 'In Progress' && t.status !== 'Delivered') throw new AppError('This trade can no longer be cancelled.');
     if (t.status === 'Open' && !isSeller) throw new AppError('Only the seller can cancel an open listing.', 403);
     const seller = db.getUserById(t.seller_user_id);
     if (seller.market_gold < t.market_gold)
       throw new AppError("You've already spent the gold from this listing, so it can't be cancelled.");
     db.setBalance(seller.id, seller.market_gold - t.market_gold);     // reverse the listing payout
-    if (t.status === 'In Progress') {
+    if (t.status === 'In Progress' || t.status === 'Delivered') {
       const buyer = db.getUserById(t.buyer_user_id);
       db.setBalance(buyer.id, buyer.market_gold + t.market_gold);     // refund the buyer who had paid
     }

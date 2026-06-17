@@ -28,6 +28,7 @@ app.get('/api/me', requireAuth, h((req) => svc.me(req.user)));
 // --- games & catalog ---
 app.get('/api/games', h(() => svc.getGames()));
 app.get('/api/games/:gameId/categories', h((req) => svc.listCategories(req.params.gameId)));
+app.get('/api/games/:gameId/listing-categories', h((req) => svc.listListingCategories(req.params.gameId)));
 app.get('/api/games/:gameId/products', h((req) => svc.searchCatalog(req.params.gameId, req.query.q || '', req.query.category || '')));
 app.get('/api/games/:gameId/listings', h((req) => svc.listListings(req.params.gameId, req.query.q || '', req.query.category || '')));
 app.get('/api/games/:gameId/activity', h((req) => svc.activityFeed(req.params.gameId, req.query.category || '')));
@@ -37,6 +38,7 @@ app.post('/api/games/:gameId/listings', requireAuth, h((req) => svc.createListin
 // --- trades ---
 app.post('/api/trades/:tradeId/buy',     requireAuth, h((req) => svc.buy(req.user, req.params.tradeId, req.body.buyerInGameName)));
 app.post('/api/trades/:tradeId/deliver', requireAuth, h((req) => svc.markDelivered(req.user, req.params.tradeId)));
+app.post('/api/trades/:tradeId/confirm', requireAuth, h((req) => svc.confirmArrival(req.user, req.params.tradeId)));
 app.post('/api/trades/:tradeId/cancel',  requireAuth, h((req) => svc.cancelTrade(req.user, req.params.tradeId)));
 
 // --- account ---

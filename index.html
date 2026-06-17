@@ -23,6 +23,7 @@
   .brand .dot{width:14px;height:14px;border-radius:50%;background:radial-gradient(circle at 30% 30%, #ffe9a8, var(--gold) 55%, var(--gold-dim));box-shadow:0 0 0 3px var(--gold-soft)}
   .grow{flex:1}
   .nav-link{color:var(--muted);font-weight:500;font-size:14px;background:none;padding:6px 4px} .nav-link:hover{color:var(--text)}
+  .pending-badge{display:inline-flex;align-items:center;justify-content:center;background:var(--red);color:#fff;font-size:10px;font-weight:700;border-radius:99px;min-width:16px;height:16px;padding:0 4px;margin-left:4px;vertical-align:middle}
   .mg-chip{display:inline-flex;align-items:center;gap:8px;background:var(--gold-soft);border:1px solid rgba(245,194,75,.3);color:var(--gold);padding:6px 12px;border-radius:999px;font-weight:600;font-size:14px}
   .nav-greet{color:var(--muted);font-size:14px;font-weight:500} .nav-greet b{color:var(--text);font-weight:600}
   .mg-chip .coin{width:16px;height:16px;border-radius:50%;background:radial-gradient(circle at 32% 30%, #ffe9a8, var(--gold) 58%, var(--gold-dim));display:inline-flex;align-items:center;justify-content:center;color:#5c3d00;font-size:9px;font-weight:800}
@@ -81,7 +82,7 @@
   .feed-row .txt{flex:1;font-size:14px} .feed-row .txt .who{color:var(--muted)}
   .badge{font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;text-transform:uppercase;letter-spacing:.04em}
   .badge.Open{background:var(--gold-soft);color:var(--gold)} .badge.InProgress{background:rgba(79,197,140,.14);color:var(--green)}
-  .badge.Closed{background:rgba(139,147,167,.14);color:var(--muted)} .badge.Cancelled{background:rgba(229,115,107,.14);color:var(--red)}
+  .badge.Delivered{background:rgba(99,179,237,.14);color:#63b3ed} .badge.Closed{background:rgba(139,147,167,.14);color:var(--muted)} .badge.Cancelled{background:rgba(229,115,107,.14);color:var(--red)}
   .field{margin-bottom:15px} .field label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px;font-weight:500}
   .field input,.field textarea{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:11px 13px;border-radius:9px;font-size:15px;outline:none}
   .field input:focus,.field textarea:focus{border-color:var(--gold-dim)}
@@ -114,7 +115,7 @@
   <div class="brand" onclick="go('landing')"><span class="dot"></span>SwitchBored</div>
   <div class="grow"></div>
   <span id="greet" class="nav-greet hidden"></span>
-  <button class="nav-link hide-sm" id="navMyTrades" onclick="go('mytrades')">My Trades</button>
+  <button class="nav-link hide-sm" id="navMyTrades" onclick="go('mytrades')">My Trades<span id="pendingBadge" class="pending-badge hidden"></span></button>
   <span id="mgChip" class="mg-chip hidden"><span class="coin">MG</span><span class="mg-amt" id="mgAmount">0</span></span>
   <button class="nav-link" id="navAuth" onclick="openAuth()">Sign in</button>
   <button class="nav-link hidden" id="navLogout" onclick="logout()">Sign out</button>
@@ -185,7 +186,19 @@ function refreshAuthUI(){ const on=!!state.user;
   $('navAuth').classList.toggle('hidden',on); $('navLogout').classList.toggle('hidden',!on);
   $('navMyTrades').classList.toggle('hidden',!on); $('mgChip').classList.toggle('hidden',!on);
   const g=$('greet'); if(g){ g.classList.toggle('hidden',!on); if(on) g.innerHTML='Hi, <b>'+esc(state.user.name)+'</b>'; }
-  if(on) $('mgAmount').textContent=fmt(state.user.marketGold); }
+  if(on) $('mgAmount').textContent=fmt(state.user.marketGold);
+  updatePendingBadge(); }
+
+async function updatePendingBadge(){
+  if(!state.user){ $('pendingBadge').classList.add('hidden'); return; }
+  try{
+    const d = await apiGet('/me/trades');
+    const count = (d.selling||[]).filter(t=>t.status==='In Progress').length
+                + (d.buying||[]).filter(t=>t.status==='Delivered').length;
+    if(count>0){ $('pendingBadge').textContent=count; $('pendingBadge').classList.remove('hidden'); }
+    else { $('pendingBadge').classList.add('hidden'); }
+  }catch(e){}
+}
 function openAuth(){ state.authMode='login'; applyAuthMode(); $('authOverlay').classList.add('show'); }
 function toggleAuthMode(){ state.authMode=state.authMode==='login'?'signup':'login'; applyAuthMode(); }
 function applyAuthMode(){ const s=state.authMode==='signup';
@@ -201,7 +214,7 @@ async function submitAuth(){
       ? await apiPost('/auth/signup',{ name:$('auName').value.trim(), email, password:pass })
       : await apiPost('/auth/login',{ email, password:pass });
     state.token=data.token; state.user=data.user; store.set('sb_token',data.token);
-    refreshAuthUI(); closeModal('authOverlay'); toast('Welcome, '+data.user.name,'ok'); render();
+    refreshAuthUI(); closeModal('authOverlay'); toast('Welcome, '+data.user.name,'ok'); render(); updatePendingBadge();
   }catch(e){ toast(e.message,'err'); }
 }
 function logout(){ state.token=null; state.user=null; store.del('sb_token'); refreshAuthUI(); go('landing'); }
@@ -267,11 +280,12 @@ async function renderGame(){
   renderCatnav(); drawTab();
 }
 function renderCatnav(){
-  const total = state.categories.reduce((s,c)=>s+c.count,0);
+  const cats = state.gameTab==='buy' ? (state.listingCategories||state.categories) : state.categories;
+  const total = cats.reduce((s,c)=>s+c.count,0);
   const item = (name,label,count)=>`<button class="cat ${state.category===name?'active':''}" onclick="setCategory('${name.replace(/'/g,"\\'")}')">
     <span>${esc(label)}</span><span class="ct">${count}</span></button>`;
   $('catnav').innerHTML = `<h4>Categories</h4>` + item('','All Items',total)
-    + state.categories.map(c=>item(c.name,c.name,c.count)).join('');
+    + cats.map(c=>item(c.name,c.name,c.count)).join('');
 }
 function setCategory(cat){ state.category=cat; renderCatnav(); drawTab(); }
 function setGameTab(t){ state.gameTab=t; setActiveTab(); drawTab(); }
@@ -291,7 +305,12 @@ function drawBuy(){
 }
 async function fetchListings(){
   try{
-    const rows = await apiGet(`/games/${state.game.id}/listings?q=`+encodeURIComponent(buyQuery)+catQS());
+    const [rows, listingCats] = await Promise.all([
+      apiGet(`/games/${state.game.id}/listings?q=`+encodeURIComponent(buyQuery)+catQS()),
+      apiGet(`/games/${state.game.id}/listing-categories`)
+    ]);
+    state.listingCategories = Array.isArray(listingCats) ? listingCats : [];
+    renderCatnav();
     $('buyResults').innerHTML = rows.length ? rows.map(t=>`
       <div class="listing">
         <div class="img" style="background-image:url('${esc(t.image)}')"></div>
@@ -435,7 +454,9 @@ function tradeRow(t,isSeller){
   let action='';
   if(isSeller && t.status==='In Progress') action=`<button class="btn btn-green btn-sm" onclick="markDelivered('${t.id}')">Mark delivered</button>`;
   else if(isSeller && t.status==='Open') action=`<button class="btn btn-red btn-sm" onclick="cancelTrade('${t.id}')">Cancel</button>`;
-  else if(!isSeller && t.status==='In Progress') action=`<span class="muted" style="font-size:12px">Awaiting delivery</span>`;
+  else if(!isSeller && t.status==='In Progress') action=`<span class="muted" style="font-size:12px">Awaiting delivery…</span>`;
+  else if(!isSeller && t.status==='Delivered') action=`<button class="btn btn-green btn-sm" onclick="confirmArrival('${t.id}')">Item arrived ✓</button>`;
+  else if(isSeller && t.status==='Delivered') action=`<span class="muted" style="font-size:12px">Waiting for buyer to confirm arrival</span>`;
   const extra = isSeller && t.status==='In Progress' && t.buyerInGameName ? `· deliver to: ${esc(t.buyerInGameName)}` : '';
   return `<div class="feed-row">
     <div class="ico" style="background-image:url('${esc(t.image)}')"></div>
@@ -444,8 +465,9 @@ function tradeRow(t,isSeller){
     ${coin(t.marketGold)}<span class="badge ${badgeClass(t.status)}">${esc(t.status)}</span>${action}
   </div>`;
 }
-async function markDelivered(id){ try{ await apiPost(`/trades/${id}/deliver`); state.user=await apiGet('/me'); refreshAuthUI(); toast('Marked delivered — MG released to you','ok'); renderMyTrades(); }catch(e){ toast(e.message,'err'); } }
-async function cancelTrade(id){ try{ await apiPost(`/trades/${id}/cancel`); state.user=await apiGet('/me'); refreshAuthUI(); toast('Trade cancelled','ok'); renderMyTrades(); }catch(e){ toast(e.message,'err'); } }
+async function markDelivered(id){ try{ await apiPost(`/trades/${id}/deliver`); state.user=await apiGet('/me'); refreshAuthUI(); toast('Marked as delivered — waiting for buyer to confirm','ok'); renderMyTrades(); updatePendingBadge(); }catch(e){ toast(e.message,'err'); } }
+async function confirmArrival(id){ try{ await apiPost(`/trades/${id}/confirm`); state.user=await apiGet('/me'); refreshAuthUI(); toast('Item arrival confirmed — trade complete!','ok'); renderMyTrades(); updatePendingBadge(); }catch(e){ toast(e.message,'err'); } }
+async function cancelTrade(id){ try{ await apiPost(`/trades/${id}/cancel`); state.user=await apiGet('/me'); refreshAuthUI(); toast('Trade cancelled','ok'); renderMyTrades(); updatePendingBadge(); }catch(e){ toast(e.message,'err'); } }
 
 applyAuthMode(); render();
 </script>
