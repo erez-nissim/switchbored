@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SwitchBored — Your Gaming Value, Everywhere You Play</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{ --bg:#0E1320; --surface:#171D2B; --surface-2:#1F2738; --border:#2A3346;
+    --text:#EAEDF5; --muted:#8B93A7; --faint:#5C6477; --gold:#F5C24B; --gold-dim:#C9912E;
+    --gold-soft:rgba(245,194,75,.12); --green:#4FC58C; --red:#E5736B; --radius:14px; --shadow:0 10px 30px rgba(0,0,0,.35); }
+  *{box-sizing:border-box} html,body{margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;min-height:100vh;background-image:radial-gradient(1200px 600px at 80% -10%, rgba(245,194,75,.06), transparent 60%);}
+  h1,h2,h3,h4{font-family:'Space Grotesk',sans-serif;letter-spacing:-.01em;margin:0}
+  a{color:inherit} button{font-family:inherit;cursor:pointer;border:none}
+  input,textarea,select{font-family:inherit}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+  header.topbar{position:sticky;top:0;z-index:50;background:rgba(14,19,32,.82);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+  .topbar .wrap{display:flex;align-items:center;gap:16px;height:64px}
+  .brand{display:flex;align-items:center;gap:10px;font-family:'Space Grotesk';font-weight:700;font-size:20px;cursor:pointer}
+  .brand .dot{width:14px;height:14px;border-radius:50%;background:radial-gradient(circle at 30% 30%, #ffe9a8, var(--gold) 55%, var(--gold-dim));box-shadow:0 0 0 3px var(--gold-soft)}
+  .grow{flex:1}
+  .nav-link{color:var(--muted);font-weight:500;font-size:14px;background:none;padding:6px 4px} .nav-link:hover{color:var(--text)}
+  .mg-chip{display:inline-flex;align-items:center;gap:8px;background:var(--gold-soft);border:1px solid rgba(245,194,75,.3);color:var(--gold);padding:6px 12px;border-radius:999px;font-weight:600;font-size:14px}
+  .nav-greet{color:var(--muted);font-size:14px;font-weight:500} .nav-greet b{color:var(--text);font-weight:600}
+  .mg-chip .coin{width:16px;height:16px;border-radius:50%;background:radial-gradient(circle at 32% 30%, #ffe9a8, var(--gold) 58%, var(--gold-dim));display:inline-flex;align-items:center;justify-content:center;color:#5c3d00;font-size:9px;font-weight:800}
+  .mg-amt{font-family:'JetBrains Mono',monospace}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 18px;border-radius:10px;font-weight:600;font-size:14px;transition:.15s}
+  .btn-gold{background:linear-gradient(180deg,#ffd874,var(--gold));color:#3a2700} .btn-gold:hover{filter:brightness(1.06);transform:translateY(-1px)}
+  .btn-ghost{background:var(--surface-2);color:var(--text);border:1px solid var(--border)} .btn-ghost:hover{border-color:var(--gold-dim);color:var(--gold)}
+  .btn-green{background:var(--green);color:#05291c} .btn-red{background:transparent;border:1px solid var(--red);color:var(--red)} .btn-red:hover{background:rgba(229,115,107,.12)}
+  .btn:disabled{opacity:.45;cursor:not-allowed;transform:none;filter:none} .btn-sm{padding:7px 12px;font-size:13px}
+  .hero{padding:64px 0 36px;text-align:center}
+  .hero .eyebrow{color:var(--gold);font-weight:600;letter-spacing:.14em;text-transform:uppercase;font-size:12px}
+  .hero h1{font-size:clamp(34px,6vw,58px);line-height:1.04;margin:14px auto 0;max-width:14ch} .hero h1 .accent{color:var(--gold)}
+  .hero p.sub{color:var(--muted);max-width:54ch;margin:18px auto 28px;font-size:17px}
+  .section-head{display:flex;align-items:baseline;justify-content:space-between;margin:8px 0 18px;gap:12px;flex-wrap:wrap}
+  .section-head h2{font-size:22px} .section-head .hint{color:var(--muted);font-size:13px}
+  .game-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:18px;padding-bottom:64px}
+  .game-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;cursor:pointer;transition:.18s;display:flex;flex-direction:column}
+  .game-card:hover{transform:translateY(-3px);border-color:var(--gold-dim);box-shadow:var(--shadow)}
+  .game-card .thumb{aspect-ratio:3/2;background:var(--surface-2) center/cover no-repeat}
+  .game-card .body{padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .game-card .body h3{font-size:16px} .game-card .go{color:var(--gold);font-size:13px;font-weight:600}
+  .gameview-head{display:flex;align-items:center;gap:16px;padding:28px 0 6px}
+  .gameview-head .gthumb{width:84px;height:56px;border-radius:10px;background:var(--surface-2) center/cover;flex:none}
+  .gameview-head h2{font-size:26px}
+  .gameview-head .crumb{color:var(--muted);font-size:13px;cursor:pointer} .gameview-head .crumb:hover{color:var(--gold)}
+  .tabs{display:flex;gap:4px;border-bottom:1px solid var(--border);margin:22px 0 24px}
+  .tab{background:none;color:var(--muted);padding:12px 18px;font-weight:600;font-size:15px;border-bottom:2px solid transparent;margin-bottom:-1px}
+  .tab.active{color:var(--gold);border-bottom-color:var(--gold)} .tab:hover{color:var(--text)}
+  /* category nav + content layout */
+  .gamebody{display:flex;gap:24px;align-items:flex-start;margin-bottom:60px}
+  .catnav{width:212px;flex:none;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;position:sticky;top:84px}
+  .catnav h4{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin:0 0 10px 4px}
+  .cat{display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%;text-align:left;background:none;color:var(--muted);padding:9px 11px;border-radius:8px;font-size:14px;font-weight:500}
+  .cat:hover{background:var(--surface-2);color:var(--text)}
+  .cat.active{background:var(--gold-soft);color:var(--gold);font-weight:600}
+  .cat .ct{font-size:12px;opacity:.7;font-family:'JetBrains Mono',monospace}
+  .gamemain{flex:1;min-width:0}
+  .toolbar{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap}
+  .search{flex:1;min-width:200px;display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:0 14px}
+  .search input{flex:1;background:none;border:none;color:var(--text);padding:12px 0;outline:none;font-size:15px} .search svg{color:var(--faint)}
+  /* BIG image cards */
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px}
+  .listing{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;display:flex;flex-direction:column;transition:.15s} .listing:hover{border-color:var(--gold-dim);transform:translateY(-2px)}
+  .listing .img{aspect-ratio:1/1;background:var(--surface-2) center/cover no-repeat}
+  .listing .info{padding:15px;display:flex;flex-direction:column;gap:8px;flex:1} .listing .info h3{font-size:18px;line-height:1.2}
+  .listing .chars{color:var(--muted);font-size:13px;flex:1} .listing .notes{color:var(--faint);font-size:12px;font-style:italic}
+  .listing .foot{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:4px}
+  .price{display:inline-flex;align-items:center;gap:6px;color:var(--gold);font-weight:700;font-size:16px}
+  .price .coin{width:16px;height:16px;border-radius:50%;background:radial-gradient(circle at 32% 30%, #ffe9a8, var(--gold) 58%, var(--gold-dim))}
+  .seller{color:var(--faint);font-size:12px}
+  .addcard{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:200px;border:1px dashed var(--border);border-radius:var(--radius);color:var(--gold);cursor:pointer;background:var(--surface)} .addcard:hover{border-color:var(--gold-dim)}
+  .addcard .plus{font-size:34px;line-height:1}
+  .feed{display:flex;flex-direction:column;gap:2px}
+  .feed-row{display:flex;align-items:center;gap:14px;padding:13px 16px;background:var(--surface);border:1px solid var(--border);border-radius:10px}
+  .feed-row .ico{width:40px;height:40px;border-radius:8px;background:var(--surface-2) center/contain no-repeat;flex:none}
+  .feed-row .txt{flex:1;font-size:14px} .feed-row .txt .who{color:var(--muted)}
+  .badge{font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;text-transform:uppercase;letter-spacing:.04em}
+  .badge.Open{background:var(--gold-soft);color:var(--gold)} .badge.InProgress{background:rgba(79,197,140,.14);color:var(--green)}
+  .badge.Closed{background:rgba(139,147,167,.14);color:var(--muted)} .badge.Cancelled{background:rgba(229,115,107,.14);color:var(--red)}
+  .field{margin-bottom:15px} .field label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px;font-weight:500}
+  .field input,.field textarea{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:11px 13px;border-radius:9px;font-size:15px;outline:none}
+  .field input:focus,.field textarea:focus{border-color:var(--gold-dim)}
+  .field .help{font-size:12px;color:var(--faint);margin-top:5px} .field .help b{color:var(--gold)}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .overlay{position:fixed;inset:0;background:rgba(6,9,16,.72);display:none;align-items:center;justify-content:center;z-index:100;padding:20px} .overlay.show{display:flex}
+  .modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;width:100%;max-width:460px;max-height:90vh;overflow:auto;box-shadow:var(--shadow)}
+  .modal .mhead{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid var(--border)} .modal .mhead h3{font-size:18px} .modal .mbody{padding:20px}
+  .x{background:none;color:var(--muted);font-size:22px;line-height:1;padding:0 4px} .x:hover{color:var(--text)}
+  .empty{text-align:center;color:var(--muted);padding:48px 20px;border:1px dashed var(--border);border-radius:var(--radius)} .empty .big{font-size:17px;color:var(--text);margin-bottom:6px;font-weight:600}
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--surface-2);border:1px solid var(--border);color:var(--text);padding:13px 20px;border-radius:12px;box-shadow:var(--shadow);opacity:0;transition:.25s;z-index:200;max-width:90vw}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)} .toast.err{border-color:var(--red)} .toast.ok{border-color:var(--green)}
+  .setup-banner{background:rgba(229,115,107,.12);border:1px solid var(--red);color:#f4b5af;padding:12px 18px;font-size:14px;text-align:center}
+  .muted{color:var(--muted)} .hidden{display:none!important}
+  @media(max-width:760px){
+    .topbar .wrap{gap:10px} .nav-link.hide-sm{display:none} .gameview-head .gthumb{display:none}
+    .gamebody{flex-direction:column}
+    .catnav{width:auto;position:static;display:flex;gap:8px;overflow-x:auto;padding:10px}
+    .catnav h4{display:none}
+    .cat{width:auto;flex:none;white-space:nowrap;border:1px solid var(--border)} .cat .ct{display:none}
+    .row2{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+
+<div id="setupBanner" class="setup-banner hidden">⚠ Can't reach the API. Make sure the Node server is running and <b>API_BASE</b> below points to it.</div>
+
+<header class="topbar"><div class="wrap">
+  <div class="brand" onclick="go('landing')"><span class="dot"></span>SwitchBored</div>
+  <div class="grow"></div>
+  <span id="greet" class="nav-greet hidden"></span>
+  <button class="nav-link hide-sm" id="navMyTrades" onclick="go('mytrades')">My Trades</button>
+  <span id="mgChip" class="mg-chip hidden"><span class="coin">MG</span><span class="mg-amt" id="mgAmount">0</span></span>
+  <button class="nav-link" id="navAuth" onclick="openAuth()">Sign in</button>
+  <button class="nav-link hidden" id="navLogout" onclick="logout()">Sign out</button>
+</div></header>
+
+<main id="app"></main>
+
+<div class="overlay" id="authOverlay"><div class="modal">
+  <div class="mhead"><h3 id="authTitle">Sign in</h3><button class="x" onclick="closeModal('authOverlay')">×</button></div>
+  <div class="mbody">
+    <div class="field" id="nameField"><label>Display name</label><input id="auName" placeholder="e.g. RuneHunter"></div>
+    <div class="field"><label>Email</label><input id="auEmail" type="email" placeholder="you@example.com"></div>
+    <div class="field"><label>Password</label><input id="auPass" type="password" placeholder="••••••••"></div>
+    <button class="btn btn-gold" style="width:100%" id="authSubmit" onclick="submitAuth()">Sign in</button>
+    <p class="muted" style="text-align:center;margin:14px 0 0;font-size:13px">
+      <span id="authSwitchText">New to SwitchBored?</span>
+      <a href="#" style="color:var(--gold);text-decoration:none" onclick="toggleAuthMode();return false" id="authSwitchLink">Create an account</a></p>
+  </div>
+</div></div>
+
+<div class="overlay" id="modalOverlay"><div class="modal">
+  <div class="mhead"><h3 id="modalTitle"></h3><button class="x" onclick="closeModal('modalOverlay')">×</button></div>
+  <div class="mbody" id="modalBody"></div>
+</div></div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API_BASE = "/api";   // same domain (Railway will serve both frontend and API)
+
+const store = (() => { let mem={};
+  try{ const k='__t'; localStorage.setItem(k,'1'); localStorage.removeItem(k);
+    return { get:k=>localStorage.getItem(k), set:(k,v)=>localStorage.setItem(k,v), del:k=>localStorage.removeItem(k) };
+  }catch(e){ return { get:k=>mem[k]??null, set:(k,v)=>mem[k]=v, del:k=>delete mem[k] }; }
+})();
+
+const state = { token: store.get('sb_token'), user:null, view:'landing', game:null, gameTab:'buy', category:'', authMode:'login' };
+
+async function req(method, path, body){
+  const headers = {};
+  if(body) headers['Content-Type'] = 'application/json';
+  if(state.token) headers['Authorization'] = 'Bearer ' + state.token;
+  let res;
+  try{ res = await fetch(API_BASE + path, { method, headers, body: body ? JSON.stringify(body) : undefined }); }
+  catch(e){ document.getElementById('setupBanner').classList.remove('hidden'); throw new Error('Could not reach the server.'); }
+  let json=null; try{ json=await res.json(); }catch(e){}
+  if(!res.ok) throw new Error((json && json.error) || ('Request failed ('+res.status+')'));
+  return json;
+}
+const apiGet = p => req('GET', p);
+const apiPost = (p,b) => req('POST', p, b||{});
+
+const $ = id => document.getElementById(id);
+const fmt = n => Number(n||0).toLocaleString('en-US');
+const esc = s => String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function toast(m,k){ const t=$('toast'); t.textContent=m; t.className='toast show '+(k||''); clearTimeout(t._h); t._h=setTimeout(()=>t.className='toast',2800); }
+const badgeClass = s => s.replace(/\s/g,'');
+const coin = n => `<span class="price"><span class="coin"></span>${fmt(n)} MG</span>`;
+function timeAgo(iso){ if(!iso) return ''; const d=(Date.now()-new Date(iso))/1000;
+  if(d<60) return 'just now'; if(d<3600) return Math.floor(d/60)+'m ago'; if(d<86400) return Math.floor(d/3600)+'h ago'; return Math.floor(d/86400)+'d ago'; }
+function debounce(fn,ms){ let h; return (...a)=>{ clearTimeout(h); h=setTimeout(()=>fn(...a),ms); }; }
+function closeModal(id){ $(id).classList.remove('show'); }
+const j = o => JSON.stringify(o).replace(/'/g,"&#39;");
+const catQS = () => state.category ? '&category='+encodeURIComponent(state.category) : '';
+
+/* auth */
+function refreshAuthUI(){ const on=!!state.user;
+  $('navAuth').classList.toggle('hidden',on); $('navLogout').classList.toggle('hidden',!on);
+  $('navMyTrades').classList.toggle('hidden',!on); $('mgChip').classList.toggle('hidden',!on);
+  const g=$('greet'); if(g){ g.classList.toggle('hidden',!on); if(on) g.innerHTML='Hi, <b>'+esc(state.user.name)+'</b>'; }
+  if(on) $('mgAmount').textContent=fmt(state.user.marketGold); }
+function openAuth(){ state.authMode='login'; applyAuthMode(); $('authOverlay').classList.add('show'); }
+function toggleAuthMode(){ state.authMode=state.authMode==='login'?'signup':'login'; applyAuthMode(); }
+function applyAuthMode(){ const s=state.authMode==='signup';
+  $('authTitle').textContent=s?'Create account':'Sign in'; $('authSubmit').textContent=s?'Create account':'Sign in';
+  $('nameField').classList.toggle('hidden',!s);
+  $('authSwitchText').textContent=s?'Already have an account?':'New to SwitchBored?';
+  $('authSwitchLink').textContent=s?'Sign in':'Create an account'; }
+async function submitAuth(){
+  try{
+    const email=$('auEmail').value.trim(), pass=$('auPass').value;
+    if(!email||!pass) return toast('Email and password are required','err');
+    const data = state.authMode==='signup'
+      ? await apiPost('/auth/signup',{ name:$('auName').value.trim(), email, password:pass })
+      : await apiPost('/auth/login',{ email, password:pass });
+    state.token=data.token; state.user=data.user; store.set('sb_token',data.token);
+    refreshAuthUI(); closeModal('authOverlay'); toast('Welcome, '+data.user.name,'ok'); render();
+  }catch(e){ toast(e.message,'err'); }
+}
+function logout(){ state.token=null; state.user=null; store.del('sb_token'); refreshAuthUI(); go('landing'); }
+async function ensureUser(){ if(state.token && !state.user){ try{ state.user=await apiGet('/me'); }catch(e){ state.token=null; store.del('sb_token'); } } refreshAuthUI(); }
+function requireLogin(){ if(state.user) return true; openAuth(); return false; }
+
+/* nav */
+function go(view){ state.view=view; if(view==='landing') state.game=null; render(); scrollTo(0,0); }
+function openGame(g){ state.game=g; state.gameTab='buy'; state.category=''; state.view='game'; render(); scrollTo(0,0); }
+
+async function render(){ await ensureUser();
+  if(state.view==='game' && state.game) return renderGame();
+  if(state.view==='mytrades') return renderMyTrades();
+  return renderLanding();
+}
+
+async function renderLanding(){
+  const eyebrow = state.user
+    ? `Welcome back, <span class="accent">${esc(state.user.name)}</span>`
+    : 'Cross-game trading · Market Gold';
+  const sub = state.user
+    ? `Good to see you. Pick a game below to browse buys — or list something you've earned and get paid in Market Gold.`
+    : `Sell what you've earned in one game for Market Gold — then spend it in another. Pick a game below to start trading.`;
+  $('app').innerHTML = `
+    <section class="hero wrap">
+      <div class="eyebrow">${eyebrow}</div>
+      <h1>Your gaming value, <span class="accent">everywhere you play</span>.</h1>
+      <p class="sub">${sub}</p>
+    </section>
+    <section class="wrap" id="gamesSection">
+      <div class="section-head"><h2>Supported games</h2><span class="hint">More added as liquidity grows</span></div>
+      <div class="game-grid" id="gameGrid"><div class="empty"><div class="big">Loading games…</div></div></div>
+    </section>`;
+  try{
+    const games = await apiGet('/games');
+    $('gameGrid').innerHTML = games.length ? games.map(g=>`
+      <div class="game-card" onclick='openGame(${j(g)})'>
+        <div class="thumb" style="background-image:url('${esc(g.image)}')"></div>
+        <div class="body"><h3>${esc(g.name)}</h3><span class="go">Trade →</span></div>
+      </div>`).join('') : `<div class="empty"><div class="big">No games yet</div>The server seeds samples on first run.</div>`;
+  }catch(e){ $('gameGrid').innerHTML=`<div class="empty"><div class="big">Couldn't load games</div>${esc(e.message)}</div>`; }
+}
+
+/* ---- game view: category sidebar + tabbed content ---- */
+async function renderGame(){
+  const g=state.game;
+  $('app').innerHTML = `<div class="wrap">
+    <div class="gameview-head">
+      <div class="gthumb" style="background-image:url('${esc(g.image)}')"></div>
+      <div><div class="crumb" onclick="go('landing')">← All games</div><h2>${esc(g.name)}</h2></div>
+    </div>
+    <div class="tabs">
+      <button class="tab" data-t="buy" onclick="setGameTab('buy')">Buy</button>
+      <button class="tab" data-t="sell" onclick="setGameTab('sell')">Sell</button>
+      <button class="tab" data-t="activity" onclick="setGameTab('activity')">Latest activity</button>
+    </div>
+    <div class="gamebody">
+      <aside class="catnav" id="catnav"></aside>
+      <div class="gamemain" id="tabContent"><div class="empty">Loading…</div></div>
+    </div></div>`;
+  setActiveTab();
+  try{ state.categories = await apiGet(`/games/${g.id}/categories`); }catch(e){ state.categories=[]; }
+  renderCatnav(); drawTab();
+}
+function renderCatnav(){
+  const total = state.categories.reduce((s,c)=>s+c.count,0);
+  const item = (name,label,count)=>`<button class="cat ${state.category===name?'active':''}" onclick="setCategory('${name.replace(/'/g,"\\'")}')">
+    <span>${esc(label)}</span><span class="ct">${count}</span></button>`;
+  $('catnav').innerHTML = `<h4>Categories</h4>` + item('','All Items',total)
+    + state.categories.map(c=>item(c.name,c.name,c.count)).join('');
+}
+function setCategory(cat){ state.category=cat; renderCatnav(); drawTab(); }
+function setGameTab(t){ state.gameTab=t; setActiveTab(); drawTab(); }
+function setActiveTab(){ document.querySelectorAll('.tab').forEach(el=>el.classList.toggle('active', el.dataset.t===state.gameTab)); }
+function drawTab(){ if(state.gameTab==='buy') drawBuy(); else if(state.gameTab==='sell') drawSell(); else drawActivity(); }
+
+/* ---- BUY: big-image listing cards ---- */
+let buyQuery='';
+function drawBuy(){
+  $('tabContent').innerHTML = `
+    <div class="toolbar"><div class="search">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3-3"/></svg>
+      <input id="buySearch" placeholder="Search listings…" value="${esc(buyQuery)}"></div></div>
+    <div id="buyResults" class="cards"><div class="empty">Loading…</div></div>`;
+  $('buySearch').addEventListener('input', debounce(e=>{ buyQuery=e.target.value; fetchListings(); },220));
+  fetchListings();
+}
+async function fetchListings(){
+  try{
+    const rows = await apiGet(`/games/${state.game.id}/listings?q=`+encodeURIComponent(buyQuery)+catQS());
+    $('buyResults').innerHTML = rows.length ? rows.map(t=>`
+      <div class="listing">
+        <div class="img" style="background-image:url('${esc(t.image)}')"></div>
+        <div class="info">
+          <h3>${esc(t.productName)}</h3>
+          <div class="chars">${esc(t.characteristics||'')}</div>
+          ${t.itemNotes?`<div class="notes">"${esc(t.itemNotes)}"</div>`:''}
+          <div class="foot">${coin(t.marketGold)}<span class="seller">by ${esc(t.sellerName)}</span></div>
+          <button class="btn btn-gold btn-sm" style="width:100%;margin-top:4px" onclick='startBuy(${j({id:t.id,productName:t.productName,marketGold:t.marketGold,sellerUserId:t.sellerUserId})})'>Buy</button>
+        </div></div>`).join('')
+      : '<div class="empty"><div class="big">No listings here yet</div>Nothing in this category — try another, or list one under Sell.</div>';
+  }catch(e){ $('buyResults').innerHTML='<div class="empty">'+esc(e.message)+'</div>'; }
+}
+function startBuy(t){
+  if(!requireLogin()) return;
+  if(t.sellerUserId===state.user.id) return toast("That's your own listing",'err');
+  const enough = state.user.marketGold >= t.marketGold;
+  $('modalTitle').textContent = enough ? 'Confirm purchase' : 'Not enough Market Gold';
+  $('modalBody').innerHTML = enough ? `
+    <p class="muted" style="margin-top:0">You're buying <b style="color:var(--text)">${esc(t.productName)}</b> for ${coin(t.marketGold)}.</p>
+    <div class="field"><label>Your in-game name (so the seller can deliver)</label><input id="ign" placeholder="e.g. your character / account name"></div>
+    <p class="muted" style="font-size:13px">The seller delivers in-game, then marks it done. Your MG is held until then.</p>
+    <button class="btn btn-gold" style="width:100%" onclick='confirmBuy("${t.id}")'>Pay ${fmt(t.marketGold)} MG</button>`
+  : `
+    <p class="muted" style="margin-top:0">This item costs ${coin(t.marketGold)} but you have <b style="color:var(--text)">${fmt(state.user.marketGold)} MG</b>.</p>
+    <p class="muted">Top up to continue. (Demo top-up — no real payment yet.)</p>
+    <div class="field"><label>Add Market Gold</label><input id="topupAmt" type="number" value="${Math.max(1000, t.marketGold-state.user.marketGold)}"></div>
+    <button class="btn btn-gold" style="width:100%" onclick='doTopUp(${j(t)})'>Add gold</button>`;
+  $('modalOverlay').classList.add('show');
+}
+async function confirmBuy(tradeId){
+  const ign=$('ign').value.trim(); if(!ign) return toast('Enter your in-game name','err');
+  try{ const r=await apiPost(`/trades/${tradeId}/buy`,{ buyerInGameName:ign });
+    state.user.marketGold=r.marketGold; refreshAuthUI(); closeModal('modalOverlay');
+    toast('Purchased — your item will be delivered soon','ok');
+    if(state.gameTab==='buy') fetchListings();
+  }catch(e){ toast(e.message,'err'); }
+}
+async function doTopUp(t){
+  try{ const amt=Math.floor(Number($('topupAmt').value));
+    const r=await apiPost('/me/topup',{ amount:amt }); state.user.marketGold=r.marketGold; refreshAuthUI();
+    toast('Added '+fmt(amt)+' MG','ok'); startBuy(t);
+  }catch(e){ toast(e.message,'err'); }
+}
+
+/* ---- SELL: big-image catalog grid, click to list ---- */
+let sellQuery='';
+function drawSell(){
+  if(!requireLogin()){ $('tabContent').innerHTML='<div class="empty"><div class="big">Sign in to sell</div>Create an account to list items.</div>'; return; }
+  $('tabContent').innerHTML = `
+    <div class="toolbar"><div class="search">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3-3"/></svg>
+      <input id="sellSearch" placeholder="Search the catalog…" value="${esc(sellQuery)}"></div></div>
+    <p class="muted" style="margin:-6px 0 16px;font-size:13px">Pick the item you own to list it for sale.</p>
+    <div id="sellResults" class="cards"><div class="empty">Loading…</div></div>`;
+  $('sellSearch').addEventListener('input', debounce(e=>{ sellQuery=e.target.value; fetchCatalog(); },200));
+  fetchCatalog();
+}
+async function fetchCatalog(){
+  try{
+    const rows = await apiGet(`/games/${state.game.id}/products?q=`+encodeURIComponent(sellQuery)+catQS());
+    const addCard = `<div class="addcard" onclick="showAddProduct()"><div class="plus">＋</div><div>Add a new item</div></div>`;
+    $('sellResults').innerHTML = addCard + rows.map(p=>`
+      <div class="listing">
+        <div class="img" style="background-image:url('${esc(p.image)}')"></div>
+        <div class="info">
+          <h3>${esc(p.name)}</h3>
+          <div class="chars">${esc(p.characteristics||'')}</div>
+          <div class="foot"><span class="muted" style="font-size:13px">in-game ${fmt(p.costInGame)}</span><span class="seller">max ${fmt(p.maxMarketGold)} MG</span></div>
+          <button class="btn btn-ghost btn-sm" style="width:100%;margin-top:4px" onclick='showListForm(${j({id:p.id,name:p.name,costInGame:p.costInGame,maxMarketGold:p.maxMarketGold})})'>List for sale</button>
+        </div></div>`).join('');
+  }catch(e){ $('sellResults').innerHTML='<div class="empty">'+esc(e.message)+'</div>'; }
+}
+function showListForm(p){
+  $('modalTitle').textContent = 'List "'+p.name+'"';
+  $('modalBody').innerHTML = `
+    <div class="field"><label>Price in Market Gold</label>
+      <input id="mgPrice" type="number" placeholder="Max ${p.maxMarketGold}" oninput="checkPrice(${p.maxMarketGold})">
+      <div class="help" id="priceHelp">Max allowed: <b>${fmt(p.maxMarketGold)} MG</b> (50% of the ${fmt(p.costInGame)} in-game cost).</div></div>
+    <div class="field"><label>Item notes (optional)</label><textarea id="itemNotes" rows="2" placeholder="Specific stats / rolls on your copy"></textarea></div>
+    <button class="btn btn-gold" style="width:100%" id="listBtn" onclick='submitListing("${p.id}",${p.maxMarketGold})'>List for sale</button>`;
+  $('modalOverlay').classList.add('show');
+}
+function checkPrice(max){ const v=Number($('mgPrice').value), h=$('priceHelp'), b=$('listBtn');
+  if(v>max){ h.innerHTML='<b style="color:var(--red)">Too high.</b> Max is '+fmt(max)+' MG.'; b.disabled=true; }
+  else { h.innerHTML='Max allowed: <b>'+fmt(max)+' MG</b> (50% of in-game cost).'; b.disabled=false; } }
+async function submitListing(productId,max){
+  const mg=Math.floor(Number($('mgPrice').value));
+  if(!(mg>0)) return toast('Enter a price','err'); if(mg>max) return toast('Price exceeds the 50% cap','err');
+  try{ const r=await apiPost(`/games/${state.game.id}/listings`,{ productId, marketGold:mg, itemNotes:$('itemNotes').value.trim() });
+    if(r && typeof r.marketGold==='number'){ state.user.marketGold=r.marketGold; refreshAuthUI(); }
+    closeModal('modalOverlay'); toast('Listed — '+fmt(mg)+' MG added to your wallet','ok');
+    buyQuery=''; state.category=''; renderCatnav(); setGameTab('buy');   // unfiltered so the new listing is visible right away
+  }catch(e){ toast(e.message,'err'); }
+}
+function showAddProduct(){
+  $('modalTitle').textContent='Add a new item';
+  $('modalBody').innerHTML = `
+    <div class="field"><label>Item name</label><input id="npName" placeholder="e.g. Grief Phase Blade"></div>
+    <div class="field"><label>Characteristics</label><input id="npChars" placeholder="e.g. +35% IAS, +damage"></div>
+    <div class="row2"><div class="field"><label>In-game cost</label><input id="npCost" type="number" placeholder="e.g. 5000"></div>
+      <div class="field"><label>Image URL (optional)</label><input id="npImg" placeholder="https://…"></div></div>
+    <button class="btn btn-gold" style="width:100%" onclick="submitNewProduct()">Add item</button>`;
+  $('modalOverlay').classList.add('show');
+}
+async function submitNewProduct(){
+  const name=$('npName').value.trim(), cost=Number($('npCost').value);
+  if(!name) return toast('Item name is required','err'); if(!(cost>0)) return toast('Enter a valid in-game cost','err');
+  try{ await apiPost(`/games/${state.game.id}/products`,{ name, characteristics:$('npChars').value.trim(), costInGame:cost, imageUrl:$('npImg').value.trim() });
+    closeModal('modalOverlay'); toast('Added to catalog','ok'); state.categories = await apiGet(`/games/${state.game.id}/categories`); renderCatnav(); fetchCatalog();
+  }catch(e){ toast(e.message,'err'); }
+}
+
+/* ---- activity ---- */
+async function drawActivity(){
+  try{
+    const rows = await apiGet(`/games/${state.game.id}/activity?1=1`+catQS());
+    $('tabContent').innerHTML = rows.length ? `<div class="feed">`+rows.map(t=>`
+      <div class="feed-row">
+        <div class="ico" style="background-image:url('${esc(t.image)}')"></div>
+        <div class="txt"><b>${esc(t.productName)}</b> <span class="who">— ${esc(t.sellerName)} ${esc(t.verb)}</span>
+          <span class="muted"> · ${timeAgo(t.buyerTimestamp||t.sellerTimestamp)}</span></div>
+        ${coin(t.marketGold)}<span class="badge ${badgeClass(t.status)}">${esc(t.status)}</span>
+      </div>`).join('')+`</div>`
+      : '<div class="empty"><div class="big">No activity yet</div>List or buy something to get things moving.</div>';
+  }catch(e){ $('tabContent').innerHTML='<div class="empty">'+esc(e.message)+'</div>'; }
+}
+
+/* ---- my trades ---- */
+async function renderMyTrades(){
+  if(!requireLogin()){ $('app').innerHTML=''; return; }
+  $('app').innerHTML=`<div class="wrap"><div class="gameview-head"><div><div class="crumb" onclick="go('landing')">← Home</div><h2>My Trades</h2></div></div><div id="mtContent"><div class="empty">Loading…</div></div></div>`;
+  try{
+    const d = await apiGet('/me/trades');
+    const sec=(title,rows,isSeller)=>`<div class="section-head" style="margin-top:26px"><h2>${title}</h2></div>`+
+      (rows.length? '<div class="feed">'+rows.map(t=>tradeRow(t,isSeller)).join('')+'</div>' : '<div class="empty">Nothing here yet.</div>');
+    $('mtContent').innerHTML = sec('Selling', d.selling, true) + sec('Buying', d.buying, false);
+  }catch(e){ $('mtContent').innerHTML='<div class="empty">'+esc(e.message)+'</div>'; }
+}
+function tradeRow(t,isSeller){
+  let action='';
+  if(isSeller && t.status==='In Progress') action=`<button class="btn btn-green btn-sm" onclick="markDelivered('${t.id}')">Mark delivered</button>`;
+  else if(isSeller && t.status==='Open') action=`<button class="btn btn-red btn-sm" onclick="cancelTrade('${t.id}')">Cancel</button>`;
+  else if(!isSeller && t.status==='In Progress') action=`<span class="muted" style="font-size:12px">Awaiting delivery</span>`;
+  const extra = isSeller && t.status==='In Progress' && t.buyerInGameName ? `· deliver to: ${esc(t.buyerInGameName)}` : '';
+  return `<div class="feed-row">
+    <div class="ico" style="background-image:url('${esc(t.image)}')"></div>
+    <div class="txt"><b>${esc(t.productName)}</b> <span class="muted">· ${esc(t.gameName)}</span><br>
+      <span class="muted" style="font-size:12px">${timeAgo(t.buyerTimestamp||t.sellerTimestamp)} ${extra}</span></div>
+    ${coin(t.marketGold)}<span class="badge ${badgeClass(t.status)}">${esc(t.status)}</span>${action}
+  </div>`;
+}
+async function markDelivered(id){ try{ await apiPost(`/trades/${id}/deliver`); state.user=await apiGet('/me'); refreshAuthUI(); toast('Marked delivered — MG released to you','ok'); renderMyTrades(); }catch(e){ toast(e.message,'err'); } }
+async function cancelTrade(id){ try{ await apiPost(`/trades/${id}/cancel`); state.user=await apiGet('/me'); refreshAuthUI(); toast('Trade cancelled','ok'); renderMyTrades(); }catch(e){ toast(e.message,'err'); } }
+
+applyAuthMode(); render();
+</script>
+</body>
+</html>
