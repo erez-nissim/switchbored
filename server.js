@@ -1,18 +1,20 @@
-// server.js — HTTP layer only. Routes call services; services hold the logic.
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import * as db from './db.js';
 import { requireAuth } from './auth.js';
 import * as svc from './services.js';
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
 db.seedIfEmpty();
 
 const app = express();
-app.use(cors());                 // dev: allow any origin. Restrict in production.
+app.use(cors());
 app.use(express.json());
 
-// small wrapper so handlers can throw AppError and return clean JSON
 const h = (fn) => (req, res) => {
   try { res.json(fn(req, res)); }
   catch (e) { res.status(e.code || 500).json({ error: e.message || 'Server error' }); }
@@ -41,11 +43,13 @@ app.post('/api/trades/:tradeId/cancel',  requireAuth, h((req) => svc.cancelTrade
 app.get('/api/me/trades', requireAuth, h((req) => svc.myTrades(req.user)));
 app.post('/api/me/topup', requireAuth, h((req) => svc.topUp(req.user, req.body.amount)));
 
-app.get('/', (_req, res) => res.json({ ok: true, service: 'SwitchBored API' }));
-
-// ---- serve frontend (index.html) from root ----
-app.use(express.static('.'));
-app.get('/', (req, res) => res.sendFile('index.html', { root: '.' }));
+// ---- serve frontend ----
+app.use(express.static(__dirname));
+app.get('*', (req, res) => {
+  if (!req.path.startsWith('/api')) {
+    res.sendFile(path.join(__dirname, 'index.html'));
+  }
+});
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`SwitchBored API on http://localhost:${PORT}`));
+app.listen(PORT, () => console.log(`SwitchBored on port ${PORT}`));
