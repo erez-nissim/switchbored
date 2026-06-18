@@ -639,9 +639,24 @@ db.persist();
 
 let count = 0;
 
-function addProduct(name, chars, costInGame, image) {
+function makeProductId(name, suffix) {
+  // Deterministic ID based on item name so it survives restarts
+  const clean = (name + (suffix ? '_' + suffix : '')).toLowerCase().replace(/[^a-z0-9]/g, '_').replace(/_+/g, '_').slice(0, 50);
+  return 'p_d2r_' + clean;
+}
+
+// Track used IDs to handle collisions
+const usedIds = new Set();
+function addProduct(name, chars, costInGame, image, suffix) {
   if (!name || !costInGame) return;
-  const id = db.newId('p');
+  let id = makeProductId(name, suffix);
+  // Handle any remaining collisions with a counter
+  if (usedIds.has(id)) {
+    let i = 2;
+    while (usedIds.has(id + '_' + i)) i++;
+    id = id + '_' + i;
+  }
+  usedIds.add(id);
   db.insertProduct({
     id, game_id: gameId, name: name.trim(),
     characteristics: chars.trim(),
@@ -687,16 +702,22 @@ for (const [k, rw] of Object.entries(runeData)) {
   if (!rw['*Rune Name'] || !rw.complete) continue;
   const name = rw['*Rune Name'];
   const runes = rw['*RunesUsed'] || '';
-  // Build characteristics
   const itype = [rw.itype1,rw.itype2,rw.itype3].filter(Boolean).join('/');
   const props = humanProps(rw, 'T1Code', 'T1Min', 'T1Max');
   const chars = `Runeword: ${runes} / Socket: ${itype || 'various'}${props ? ' / ' + props : ''}`;
   const cost = runewordCost(runes);
-  addProduct(name, chars, cost, '');
+  addProduct(name, chars, cost, '', 'rw');  // 'rw' suffix avoids collision with same-named unique
 }
 
 // ── 3. UNIQUE ITEMS ───────────────────────────────────────────────────────────
 console.log('Importing unique items...');
+const uniqueNameCount = {};
+for (const [k, item] of Object.entries(uniqueItems)) {
+  if (!item.spawnable || !item.index) continue;
+  const name = item.index;
+  uniqueNameCount[name] = (uniqueNameCount[name] || 0) + 1;
+}
+const uniqueNameSeen = {};
 for (const [k, item] of Object.entries(uniqueItems)) {
   if (!item.spawnable || !item.index) continue;
   const name = item.index;
@@ -704,10 +725,12 @@ for (const [k, item] of Object.entries(uniqueItems)) {
   const lvlReq = item['lvl req'] || 1;
   const props = humanProps(item);
   const chars = `Unique ${baseName}${props ? ' / ' + props : ''}`;
-  // Cost based on level req
   const cost = Math.max(500, lvlReq * lvlReq * 10);
   const img = findImage(name, baseName, item.code || '');
-  addProduct(name, chars, cost, img);
+  // Handle duplicate names (e.g. Rainbow Facet has fire/cold/ltng/pois variants)
+  uniqueNameSeen[name] = (uniqueNameSeen[name] || 0) + 1;
+  const suffix = uniqueNameCount[name] > 1 ? String(uniqueNameSeen[name]) : undefined;
+  addProduct(name, chars, cost, img, suffix);
 }
 
 // ── 4. SET ITEMS ──────────────────────────────────────────────────────────────
@@ -733,11 +756,10 @@ for (const [k, item] of Object.entries(armorData)) {
   const defMin = item.minac || 0, defMax = item.maxac || 0;
   const reqStr = item.reqstr || 0;
   const sockets = item.gemsockets || 0;
-  const lvlReq = item.levelreq || 0;
   const chars = `Base armor / Defense: ${defMin}-${defMax} / Req Str: ${reqStr}${sockets ? ` / Max Sockets: ${sockets}` : ''}`;
   const cost = Math.max(200, (defMin + defMax) * 3);
   const aimg = findImage(name, '', item.code || '');
-  addProduct(name, chars, cost, aimg);
+  addProduct(name, chars, cost, aimg, 'armor');
 }
 
 // ── 6. BASE WEAPONS ───────────────────────────────────────────────────────────
@@ -752,7 +774,7 @@ for (const [k, item] of Object.entries(weaponData)) {
   const chars = `Base weapon / Damage: ${dmgMin}-${dmgMax} / Req Str: ${reqStr}${sockets ? ` / Max Sockets: ${sockets}` : ''}`;
   const cost = Math.max(200, (dmgMin + dmgMax) * 10);
   const wimg = findImage(name, '', item.code || '');
-  addProduct(name, chars, cost, wimg);
+  addProduct(name, chars, cost, wimg, 'wpn');
 }
 
   db.persist();
