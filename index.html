@@ -7224,7 +7224,7 @@ function requireLogin(){ if(state.user) return true; openAuth(); return false; }
 
 /* nav */
 function go(view){ state.view=view; if(view==='landing') state.game=null; render(); scrollTo(0,0); }
-function openGame(g){ state.game=g; state.gameTab='sell'; state.category=''; state.view='game'; render(); scrollTo(0,0); }
+function openGame(g){ state.game=g; state.gameTab='sell'; state.category=''; state.listingCategories=null; state._ownCountFetched=false; state._ownCountMap={}; state.view='game'; render(); scrollTo(0,0); }
 
 async function render(){ await ensureUser();
   if(state.view==='game' && state.game) return renderGame();
@@ -7316,20 +7316,41 @@ function drawBuy(){
 }
 async function fetchListings(){
   try{
-    const [rows, listingCats] = await Promise.all([
-      apiGet(`/games/${state.game.id}/listings?q=`+encodeURIComponent(buyQuery)+catQS()),
-      apiGet(`/games/${state.game.id}/listing-categories`)
-    ]);
-    // Split into own listings and others
+    // Fetch filtered listings for display + unfiltered all-listings for ownCount
+    // listing-categories gives server-side counts per category
     const myId = state.user?.id;
-    const ownListings = rows.filter(t => t.sellerUserId === myId);
-    const buyableListings = rows.filter(t => t.sellerUserId !== myId);
+    const needsAllListings = myId && !state._ownCountFetched;
 
-    // Build category counts — only buyable for the main number, ownCount stored separately
-    // ownCount is persistent — once fetched it stays until next fetch
+    const requests = [
+      apiGet(`/games/${state.game.id}/listings?q=`+encodeURIComponent(buyQuery)+catQS()),
+      apiGet(`/games/${state.game.id}/listing-categories`),
+    ];
+    // Only fetch all listings if we don't have ownCount yet
+    if (needsAllListings) {
+      requests.push(apiGet(`/games/${state.game.id}/listings`));
+    }
+    const [rows, listingCats, allRows] = await Promise.all(requests);
+
+    // Build ownCount per category from ALL listings (not just current category filter)
+    if (myId && allRows) {
+      const allOwn = allRows.filter(t => t.sellerUserId === myId);
+      state._ownCountMap = {};
+      allOwn.forEach(t => {
+        state._ownCountMap[t.category] = (state._ownCountMap[t.category]||0) + 1;
+      });
+      state._ownCountFetched = true;
+    }
+
+    // Split current (filtered) rows for display
+    const ownListings = myId ? rows.filter(t => t.sellerUserId === myId) : [];
+    const buyableListings = myId ? rows.filter(t => t.sellerUserId !== myId) : rows;
+
+    // Apply ownCount from the complete map (never gets stale from category filter)
+    const ownMap = state._ownCountMap || {};
     if (Array.isArray(listingCats)) {
+      const totalOwn = Object.values(ownMap).reduce((s,n)=>s+n,0);
       state.listingCategories = listingCats.map(c => {
-        const ownInCat = ownListings.filter(t => t.category === c.name).length;
+        const ownInCat = ownMap[c.name] || 0;
         return { ...c, count: c.count - ownInCat, ownCount: ownInCat };
       });
     }
