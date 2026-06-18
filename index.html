@@ -117,6 +117,7 @@
   <span id="greet" class="nav-greet hidden"></span>
   <button class="nav-link hide-sm" id="navMyTrades" onclick="go('mytrades')">My Trades<span id="pendingBadge" class="pending-badge hidden"></span></button>
   <span id="mgChip" class="mg-chip hidden"><span class="coin">MG</span><span class="mg-amt" id="mgAmount">0</span></span>
+  <button class="nav-link hidden" id="navImport" onclick="runAdminImport()" style="color:var(--gold);font-size:12px">⟳ Re-import</button>
   <button class="nav-link" id="navAuth" onclick="openAuth()">Sign in</button>
   <button class="nav-link hidden" id="navLogout" onclick="logout()">Sign out</button>
 </div></header>
@@ -6865,6 +6866,7 @@ const catQS = () => state.category ? '&category='+encodeURIComponent(state.categ
 /* auth */
 function refreshAuthUI(){ const on=!!state.user;
   $('navAuth').classList.toggle('hidden',on); $('navLogout').classList.toggle('hidden',!on);
+  $('navImport').classList.toggle('hidden', !(on && state.user && state.user.email === 'erezn1976@gmail.com'));
   $('navMyTrades').classList.toggle('hidden',!on); $('mgChip').classList.toggle('hidden',!on);
   const g=$('greet'); if(g){ g.classList.toggle('hidden',!on); if(on) g.innerHTML='Hi, <b>'+esc(state.user.name)+'</b>'; }
   if(on) $('mgAmount').textContent=fmt(state.user.marketGold);
@@ -7187,6 +7189,17 @@ function tradeRow(t,isSeller){
 }
 async function markDelivered(id){ try{ await apiPost(`/trades/${id}/deliver`); state.user=await apiGet('/me'); refreshAuthUI(); toast('Marked as delivered — waiting for buyer to confirm','ok'); renderMyTrades(); updatePendingBadge(); }catch(e){ toast(e.message,'err'); } }
 async function confirmArrival(id){ try{ await apiPost(`/trades/${id}/confirm`); state.user=await apiGet('/me'); refreshAuthUI(); toast('Item arrival confirmed — trade complete!','ok'); renderMyTrades(); updatePendingBadge(); }catch(e){ toast(e.message,'err'); } }
+async function runAdminImport(){
+  if(!confirm('This will delete ALL current listings and re-import 1,184 items from scratch. Continue?')) return;
+  try{
+    toast('Running import — this may take a few seconds...','ok');
+    const r = await apiPost('/api/admin/import', {});
+    toast(r.message || 'Import complete!', 'ok');
+    // Reload the page to show fresh data
+    setTimeout(() => location.reload(), 1500);
+  } catch(e){ toast('Import failed: '+e.message,'err'); }
+}
+
 async function cancelTrade(id){ try{ await apiPost(`/trades/${id}/cancel`); state.user=await apiGet('/me'); refreshAuthUI(); toast('Trade cancelled','ok'); renderMyTrades(); updatePendingBadge(); }catch(e){ toast(e.message,'err'); } }
 
 applyAuthMode(); render();
