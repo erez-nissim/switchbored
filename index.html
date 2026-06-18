@@ -54,7 +54,14 @@
   .tab.active{color:var(--gold);border-bottom-color:var(--gold)} .tab:hover{color:var(--text)}
   /* category nav + content layout */
   .gamebody{display:flex;gap:24px;align-items:flex-start;margin-bottom:60px}
-  .catnav{width:212px;flex:none;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;position:sticky;top:84px}
+  .catnav-wrap{width:212px;flex:none;display:flex;flex-direction:column;gap:12px;position:sticky;top:84px;align-self:flex-start}
+  .catnav{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px}
+  .side-activity{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px;font-size:12px}
+  .side-activity h5{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin:0 0 10px 0}
+  .side-activity .feed-row{display:flex;flex-direction:column;gap:2px;padding:7px 0;border-bottom:1px solid var(--border)}
+  .side-activity .feed-row:last-child{border-bottom:none;padding-bottom:0}
+  .side-activity .feed-row .fn{font-size:12px;color:var(--text);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .side-activity .feed-row .fd{font-size:11px;color:var(--muted)}
   .catnav h4{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin:0 0 10px 4px}
   .cat{display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%;text-align:left;background:none;color:var(--muted);padding:9px 11px;border-radius:8px;font-size:14px;font-weight:500}
   .cat:hover{background:var(--surface-2);color:var(--text)}
@@ -100,7 +107,7 @@
   @media(max-width:760px){
     .topbar .wrap{gap:10px} .nav-link.hide-sm{display:none} .gameview-head .gthumb{display:none}
     .gamebody{flex-direction:column}
-    .catnav{width:auto;position:static;display:flex;gap:8px;overflow-x:auto;padding:10px}
+    .catnav-wrap{width:auto;position:static;flex-direction:column} .catnav{display:flex;gap:8px;overflow-x:auto;padding:10px} .side-activity{display:none!important}
     .catnav h4{display:none}
     .cat{width:auto;flex:none;white-space:nowrap;border:1px solid var(--border)} .cat .ct{display:none}
     .row2{grid-template-columns:1fr}
@@ -7274,7 +7281,10 @@ async function renderGame(){
       <button class="tab" data-t="activity" onclick="setGameTab('activity')">Latest activity</button>
     </div>
     <div class="gamebody">
-      <aside class="catnav" id="catnav"></aside>
+      <div class="catnav-wrap">
+        <aside class="catnav" id="catnav"></aside>
+        <div id="sideActivity" class="side-activity hidden"></div>
+      </div>
       <div class="gamemain" id="tabContent"><div class="empty">Loading…</div></div>
     </div></div>`;
   setActiveTab();
@@ -7307,12 +7317,10 @@ function drawBuy(){
     <div class="toolbar"><div class="search">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3-3"/></svg>
       <input id="buySearch" placeholder="Search listings…" value="${esc(buyQuery)}"></div></div>
-    <div id="buyResults" class="cards"><div class="empty">Loading…</div></div>
-    <div class="section-head" style="margin-top:32px"><h2>Latest Activity</h2></div>
-    <div id="buyActivity" class="feed"><div class="empty" style="padding:12px">Loading…</div></div>`;
+    <div id="buyResults" class="cards"><div class="empty">Loading…</div></div>`;
   $('buySearch').addEventListener('input', debounce(e=>{ buyQuery=e.target.value; fetchListings(); },220));
   // Run listings and activity in parallel
-  Promise.all([fetchListings(), fetchActivityFeed('buyActivity')]);
+  fetchListings(); fetchSideActivity();
 }
 async function fetchListings(){
   try{
@@ -7421,12 +7429,10 @@ function drawSell(){
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3-3"/></svg>
       <input id="sellSearch" placeholder="Search the catalog…" value="${esc(sellQuery)}"></div></div>
     <p class="muted" style="margin:-6px 0 16px;font-size:13px">Pick the item you own to list it for sale.</p>
-    <div id="sellResults" class="cards"><div class="empty">Loading…</div></div>
-    <div class="section-head" style="margin-top:32px"><h2>Latest Activity</h2></div>
-    <div id="sellActivity" class="feed"><div class="empty" style="padding:12px">Loading…</div></div>`;
+    <div id="sellResults" class="cards"><div class="empty">Loading…</div></div>`;
   $('sellSearch').addEventListener('input', debounce(e=>{ sellQuery=e.target.value; fetchCatalog(); },200));
   // Run catalog and activity in parallel
-  Promise.all([fetchCatalog(), fetchActivityFeed('sellActivity')]);
+  fetchCatalog(); fetchSideActivity();
 }
 async function fetchCatalog(){
   try{
@@ -7518,6 +7524,22 @@ async function submitNewProduct(){
   try{ await apiPost(`/games/${state.game.id}/products`,{ name, characteristics:$('npChars').value.trim(), costInGame:cost, imageUrl:$('npImg').value.trim() });
     closeModal('modalOverlay'); toast('Added to catalog','ok'); state.categories = await apiGet(`/games/${state.game.id}/categories`); renderCatnav(); fetchCatalog();
   }catch(e){ toast(e.message,'err'); }
+}
+
+/* ---- side activity (in catnav) ---- */
+async function fetchSideActivity(){
+  const el = $('sideActivity');
+  if(!el) return;
+  try{
+    const rows = await apiGet(`/games/${state.game.id}/activity?1=1`);
+    if(!rows.length){ el.classList.add('hidden'); return; }
+    el.classList.remove('hidden');
+    el.innerHTML = `<h5>Recent Activity</h5>` + rows.slice(0,8).map(t=>`
+      <div class="feed-row">
+        <div class="fn">${esc(t.productName)}</div>
+        <div class="fd">${esc(t.sellerName)} ${esc(t.verb)} · ${timeAgo(t.buyerTimestamp||t.sellerTimestamp)}</div>
+      </div>`).join('');
+  }catch(e){ el.classList.add('hidden'); }
 }
 
 /* ---- activity ---- */
