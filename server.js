@@ -11,31 +11,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 db.seedIfEmpty();
 
-// Auto-import full D2R catalog if no products exist yet
-console.log('[startup] Checking products...');
-const _raw = db.getRawData();
-console.log('[startup] Games:', Object.keys(_raw.games).length, '/ Products:', Object.keys(_raw.products).length);
-
-async function autoImport() {
-  const raw = db.getRawData();
-  const productCount = Object.keys(raw.products).length;
-  console.log('[autoImport] product count =', productCount);
-  if (productCount === 0) {
-    console.log('[autoImport] No products — starting import...');
-    try {
-      const mod = await import('./import.js');
-      console.log('[autoImport] import.js loaded, exports:', Object.keys(mod));
-      await mod.runImport();
-      console.log('[autoImport] Done. Products now:', Object.keys(db.getRawData().products).length);
-    } catch(e) {
-      console.error('[autoImport] FAILED:', e.message);
-      console.error(e.stack);
-    }
-  } else {
-    console.log('[autoImport] Products already exist, skipping import.');
-  }
-}
-autoImport();
+// data.json is pre-built with all 1184 items — no runtime import needed
 
 const app = express();
 app.use(cors());
