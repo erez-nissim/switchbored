@@ -157,9 +157,6628 @@ const state = { token: store.get('sb_token'), user:null, view:'landing', game:nu
 // ---- Variable stats definitions (per item name) ----
 // Each stat: { label, min, max } — seller must fill in their actual rolled value
 const VARIABLE_STATS = {
-  "Bul-Kathos' Wedding Band": [
-    { key: 'life_per_level', label: '+ Life per Character Level', min: 0, max: 49, unit: 'HP' },
-    { key: 'life_leech',     label: '% Life Stolen per Hit',      min: 3, max: 5,  unit: '%' }
+  "The Gnasher": [
+    {
+      "key": "dmg%_4",
+      "label": "% Enhanced Damage",
+      "min": 60,
+      "max": 70,
+      "unit": ""
+    }
+  ],
+  "Deathspade": [
+    {
+      "key": "dmg%_5",
+      "label": "% Enhanced Damage",
+      "min": 60,
+      "max": 70,
+      "unit": ""
+    }
+  ],
+  "Bladebone": [
+    {
+      "key": "dmg%_7",
+      "label": "% Enhanced Damage",
+      "min": 30,
+      "max": 50,
+      "unit": ""
+    }
+  ],
+  "Mindrend": [
+    {
+      "key": "ltng-max_4",
+      "label": "Lightning Damage (max)",
+      "min": 12,
+      "max": 15,
+      "unit": ""
+    },
+    {
+      "key": "att_5",
+      "label": "to Attack Rating",
+      "min": 50,
+      "max": 100,
+      "unit": ""
+    },
+    {
+      "key": "dmg%_6",
+      "label": "% Enhanced Damage",
+      "min": 60,
+      "max": 100,
+      "unit": ""
+    }
+  ],
+  "Rakescar": [
+    {
+      "key": "dmg%_6",
+      "label": "% Enhanced Damage",
+      "min": 75,
+      "max": 150,
+      "unit": ""
+    }
+  ],
+  "Fechmars Axe": [
+    {
+      "key": "dmg%_1",
+      "label": "% Enhanced Damage",
+      "min": 70,
+      "max": 90,
+      "unit": ""
+    }
+  ],
+  "Goreshovel": [
+    {
+      "key": "dmg%_4",
+      "label": "% Enhanced Damage",
+      "min": 40,
+      "max": 50,
+      "unit": ""
+    }
+  ],
+  "The Chieftan": [
+    {
+      "key": "res-all_2",
+      "label": "to All Resistances",
+      "min": 10,
+      "max": 20,
+      "unit": ""
+    },
+    {
+      "key": "dmg-ltng_5",
+      "label": "Lightning Damage",
+      "min": 1,
+      "max": 40,
+      "unit": ""
+    }
+  ],
+  "Brainhew": [
+    {
+      "key": "manasteal_4",
+      "label": "% Mana Stolen Per Hit",
+      "min": 10,
+      "max": 13,
+      "unit": ""
+    },
+    {
+      "key": "dmg%_5",
+      "label": "% Enhanced Damage",
+      "min": 50,
+      "max": 80,
+      "unit": ""
+    },
+    {
+      "key": "dmg-fire_6",
+      "label": "Fire Damage",
+      "min": 15,
+      "max": 35,
+      "unit": ""
+    }
+  ],
+  "The Humongous": [
+    {
+      "key": "str_1",
+      "label": "to Strength",
+      "min": 20,
+      "max": 30,
+      "unit": ""
+    },
+    {
+      "key": "dmg-max_3",
+      "label": "to Maximum Damage",
+      "min": 15,
+      "max": 25,
+      "unit": ""
+    },
+    {
+      "key": "dmg%_6",
+      "label": "% Enhanced Damage",
+      "min": 80,
+      "max": 120,
+      "unit": ""
+    }
+  ],
+  "Iros Torch": [
+    {
+      "key": "dmg-fire_3",
+      "label": "Fire Damage",
+      "min": 5,
+      "max": 9,
+      "unit": ""
+    }
+  ],
+  "Gravenspine": [
+    {
+      "key": "mana_8",
+      "label": "to Mana",
+      "min": 25,
+      "max": 50,
+      "unit": ""
+    }
+  ],
+  "Felloak": [
+    {
+      "key": "dmg%_6",
+      "label": "% Enhanced Damage",
+      "min": 70,
+      "max": 80,
+      "unit": ""
+    }
+  ],
+  "Knell Striker": [
+    {
+      "key": "dmg%_6",
+      "label": "% Enhanced Damage",
+      "min": 70,
+      "max": 80,
+      "unit": ""
+    }
+  ],
+  "Rusthandle": [
+    {
+      "key": "dmg-norm_2",
+      "label": "dmg-norm",
+      "min": 3,
+      "max": 7,
+      "unit": ""
+    },
+    {
+      "key": "dmg%_5",
+      "label": "% Enhanced Damage",
+      "min": 50,
+      "max": 60,
+      "unit": ""
+    },
+    {
+      "key": "dmg-undead_6",
+      "label": "% Damage to Undead",
+      "min": 50,
+      "max": 60,
+      "unit": ""
+    }
+  ],
+  "Stormeye": [
+    {
+      "key": "dmg-ltng_1",
+      "label": "Lightning Damage",
+      "min": 1,
+      "max": 6,
+      "unit": ""
+    },
+    {
+      "key": "dmg-cold_2",
+      "label": "dmg-cold",
+      "min": 3,
+      "max": 5,
+      "unit": ""
+    },
+    {
+      "key": "dmg%_4",
+      "label": "% Enhanced Damage",
+      "min": 80,
+      "max": 120,
+      "unit": ""
+    }
+  ],
+  "Stoutnail": [
+    {
+      "key": "thorns_1",
+      "label": "thorns",
+      "min": 3,
+      "max": 10,
+      "unit": ""
+    }
+  ],
+  "Crushflange": [
+    {
+      "key": "dmg%_5",
+      "label": "% Enhanced Damage",
+      "min": 50,
+      "max": 60,
+      "unit": ""
+    }
+  ],
+  "The Generals Tan Do Li Ga": [
+    {
+      "key": "dmg%_6",
+      "label": "% Enhanced Damage",
+      "min": 50,
+      "max": 60,
+      "unit": ""
+    }
+  ],
+  "Ironstone": [
+    {
+      "key": "att_1",
+      "label": "to Attack Rating",
+      "min": 100,
+      "max": 150,
+      "unit": ""
+    },
+    {
+      "key": "dmg%_2",
+      "label": "% Enhanced Damage",
+      "min": 100,
+      "max": 150,
+      "unit": ""
+    }
+  ],
+  "Bonesob": [
+    {
+      "key": "dmg%_1",
+      "label": "% Enhanced Damage",
+      "min": 200,
+      "max": 300,
+      "unit": ""
+    }
+  ],
+  "Steeldriver": [
+    {
+      "key": "dmg%_4",
+      "label": "% Enhanced Damage",
+      "min": 150,
+      "max": 250,
+      "unit": ""
+    }
+  ],
+  "Blood Crescent": [
+    {
+      "key": "dmg%_2",
+      "label": "% Enhanced Damage",
+      "min": 60,
+      "max": 80,
+      "unit": ""
+    }
+  ],
+  "Krintizs Skewer": [
+    {
+      "key": "dmg-norm_6",
+      "label": "dmg-norm",
+      "min": 3,
+      "max": 7,
+      "unit": ""
+    }
+  ],
+  "Gleamscythe": [
+    {
+      "key": "dmg%_5",
+      "label": "% Enhanced Damage",
+      "min": 60,
+      "max": 100,
+      "unit": ""
+    },
+    {
+      "key": "dmg-cold_6",
+      "label": "dmg-cold",
+      "min": 3,
+      "max": 5,
+      "unit": ""
+    }
+  ],
+  "Griswolds Edge": [
+    {
+      "key": "fire-min_1",
+      "label": "Fire Damage (min)",
+      "min": 10,
+      "max": 12,
+      "unit": ""
+    },
+    {
+      "key": "fire-max_2",
+      "label": "Fire Damage (max)",
+      "min": 15,
+      "max": 25,
+      "unit": ""
+    },
+    {
+      "key": "dmg%_6",
+      "label": "% Enhanced Damage",
+      "min": 80,
+      "max": 120,
+      "unit": ""
+    }
+  ],
+  "Hellplague": [
+    {
+      "key": "dmg%_6",
+      "label": "% Enhanced Damage",
+      "min": 70,
+      "max": 80,
+      "unit": ""
+    },
+    {
+      "key": "dmg-fire_7",
+      "label": "Fire Damage",
+      "min": 25,
+      "max": 75,
+      "unit": ""
+    }
+  ],
+  "Culwens Point": [
+    {
+      "key": "dmg%_6",
+      "label": "% Enhanced Damage",
+      "min": 70,
+      "max": 80,
+      "unit": ""
+    }
+  ],
+  "Shadowfang": [
+    {
+      "key": "dmg-cold_4",
+      "label": "dmg-cold",
+      "min": 10,
+      "max": 30,
+      "unit": ""
+    }
+  ],
+  "Soulflay": [
+    {
+      "key": "manasteal_1",
+      "label": "% Mana Stolen Per Hit",
+      "min": 4,
+      "max": 10,
+      "unit": ""
+    },
+    {
+      "key": "dmg%_3",
+      "label": "% Enhanced Damage",
+      "min": 70,
+      "max": 100,
+      "unit": ""
+    }
+  ],
+  "Kinemils Awl": [
+    {
+      "key": "att_1",
+      "label": "to Attack Rating",
+      "min": 100,
+      "max": 150,
+      "unit": ""
+    },
+    {
+      "key": "fire-max_4",
+      "label": "Fire Damage (max)",
+      "min": 20,
+      "max": 40,
+      "unit": ""
+    },
+    {
+      "key": "dmg%_5",
+      "label": "% Enhanced Damage",
+      "min": 80,
+      "max": 100,
+      "unit": ""
+    }
+  ],
+  "Blacktongue": [
+    {
+      "key": "dmg%_5",
+      "label": "% Enhanced Damage",
+      "min": 50,
+      "max": 60,
+      "unit": ""
+    }
+  ],
+  "Ripsaw": [
+    {
+      "key": "dmg%_4",
+      "label": "% Enhanced Damage",
+      "min": 80,
+      "max": 100,
+      "unit": ""
+    }
+  ],
+  "The Patriarch": [
+    {
+      "key": "dmg%_5",
+      "label": "% Enhanced Damage",
+      "min": 100,
+      "max": 120,
+      "unit": ""
+    }
+  ],
+  "The Jade Tan Do": [
+    {
+      "key": "att_1",
+      "label": "to Attack Rating",
+      "min": 100,
+      "max": 150,
+      "unit": ""
+    }
+  ],
+  "The Dragon Chang": [
+    {
+      "key": "dmg-fire_5",
+      "label": "Fire Damage",
+      "min": 3,
+      "max": 6,
+      "unit": ""
+    }
+  ],
+  "Razortine": [
+    {
+      "key": "dmg%_6",
+      "label": "% Enhanced Damage",
+      "min": 30,
+      "max": 50,
+      "unit": ""
+    }
+  ],
+  "Bloodthief": [
+    {
+      "key": "lifesteal_3",
+      "label": "% Life Stolen Per Hit",
+      "min": 8,
+      "max": 12,
+      "unit": ""
+    },
+    {
+      "key": "dmg%_5",
+      "label": "% Enhanced Damage",
+      "min": 50,
+      "max": 70,
+      "unit": ""
+    }
+  ],
+  "The Tannr Gorerod": [
+    {
+      "key": "dmg%_8",
+      "label": "% Enhanced Damage",
+      "min": 80,
+      "max": 100,
+      "unit": ""
+    }
+  ],
+  "Steelgoad": [
+    {
+      "key": "dmg%_5",
+      "label": "% Enhanced Damage",
+      "min": 60,
+      "max": 80,
+      "unit": ""
+    },
+    {
+      "key": "dur_6",
+      "label": "dur",
+      "min": 20,
+      "max": 40,
+      "unit": ""
+    }
+  ],
+  "Soul Harvest": [
+    {
+      "key": "dmg%_4",
+      "label": "% Enhanced Damage",
+      "min": 50,
+      "max": 90,
+      "unit": ""
+    }
+  ],
+  "The Battlebranch": [
+    {
+      "key": "dmg%_3",
+      "label": "% Enhanced Damage",
+      "min": 50,
+      "max": 70,
+      "unit": ""
+    },
+    {
+      "key": "att_4",
+      "label": "to Attack Rating",
+      "min": 50,
+      "max": 100,
+      "unit": ""
+    }
+  ],
+  "Woestave": [
+    {
+      "key": "dmg%_8",
+      "label": "% Enhanced Damage",
+      "min": 20,
+      "max": 40,
+      "unit": ""
+    }
+  ],
+  "Bane Ash": [
+    {
+      "key": "dmg%_6",
+      "label": "% Enhanced Damage",
+      "min": 50,
+      "max": 60,
+      "unit": ""
+    }
+  ],
+  "Serpent Lord": [
+    {
+      "key": "dmg%_5",
+      "label": "% Enhanced Damage",
+      "min": 30,
+      "max": 40,
+      "unit": ""
+    }
+  ],
+  "Lazarus Spire": [
+    {
+      "key": "dmg-ltng_8",
+      "label": "Lightning Damage",
+      "min": 1,
+      "max": 28,
+      "unit": ""
+    }
+  ],
+  "The Salamander": [
+    {
+      "key": "dmg-fire_1",
+      "label": "Fire Damage",
+      "min": 15,
+      "max": 32,
+      "unit": ""
+    }
+  ],
+  "Witherstring": [
+    {
+      "key": "dmg%_6",
+      "label": "% Enhanced Damage",
+      "min": 40,
+      "max": 50,
+      "unit": ""
+    }
+  ],
+  "Rimeraven": [
+    {
+      "key": "dmg%_5",
+      "label": "% Enhanced Damage",
+      "min": 60,
+      "max": 70,
+      "unit": ""
+    }
+  ],
+  "Piercerib": [
+    {
+      "key": "dmg%_5",
+      "label": "% Enhanced Damage",
+      "min": 40,
+      "max": 60,
+      "unit": ""
+    }
+  ],
+  "Pullspite": [
+    {
+      "key": "dmg-ltng_1",
+      "label": "Lightning Damage",
+      "min": 1,
+      "max": 30,
+      "unit": ""
+    },
+    {
+      "key": "dmg%_6",
+      "label": "% Enhanced Damage",
+      "min": 70,
+      "max": 90,
+      "unit": ""
+    }
+  ],
+  "Wizendraw": [
+    {
+      "key": "att_5",
+      "label": "to Attack Rating",
+      "min": 50,
+      "max": 100,
+      "unit": ""
+    },
+    {
+      "key": "dmg%_6",
+      "label": "% Enhanced Damage",
+      "min": 70,
+      "max": 80,
+      "unit": ""
+    },
+    {
+      "key": "pierce-cold_8",
+      "label": "% to Enemy Cold Resistance",
+      "min": 20,
+      "max": 35,
+      "unit": ""
+    }
+  ],
+  "Hellclap": [
+    {
+      "key": "fire-max_3",
+      "label": "Fire Damage (max)",
+      "min": 30,
+      "max": 50,
+      "unit": ""
+    },
+    {
+      "key": "att_4",
+      "label": "to Attack Rating",
+      "min": 50,
+      "max": 75,
+      "unit": ""
+    },
+    {
+      "key": "dmg%_7",
+      "label": "% Enhanced Damage",
+      "min": 70,
+      "max": 90,
+      "unit": ""
+    }
+  ],
+  "Blastbark": [
+    {
+      "key": "dmg%_1",
+      "label": "% Enhanced Damage",
+      "min": 70,
+      "max": 130,
+      "unit": ""
+    }
+  ],
+  "Hellcast": [
+    {
+      "key": "dmg%_6",
+      "label": "% Enhanced Damage",
+      "min": 70,
+      "max": 80,
+      "unit": ""
+    },
+    {
+      "key": "dmg-fire_7",
+      "label": "Fire Damage",
+      "min": 15,
+      "max": 35,
+      "unit": ""
+    }
+  ],
+  "Doomspittle": [
+    {
+      "key": "dmg%_5",
+      "label": "% Enhanced Damage",
+      "min": 60,
+      "max": 100,
+      "unit": ""
+    }
+  ],
+  "Tarnhelm": [
+    {
+      "key": "mag%_2",
+      "label": "% Magic Find",
+      "min": 25,
+      "max": 50,
+      "unit": ""
+    }
+  ],
+  "Duskdeep": [
+    {
+      "key": "ac_5",
+      "label": "to Defense",
+      "min": 10,
+      "max": 20,
+      "unit": ""
+    },
+    {
+      "key": "ac%_6",
+      "label": "% Enhanced Defense",
+      "min": 30,
+      "max": 50,
+      "unit": ""
+    }
+  ],
+  "Undead Crown": [
+    {
+      "key": "ac%_5",
+      "label": "% Enhanced Defense",
+      "min": 30,
+      "max": 60,
+      "unit": ""
+    },
+    {
+      "key": "att-undead_7",
+      "label": "Attack Rating vs Undead",
+      "min": 50,
+      "max": 100,
+      "unit": ""
+    }
+  ],
+  "Darkglow": [
+    {
+      "key": "ac%_6",
+      "label": "% Enhanced Defense",
+      "min": 70,
+      "max": 100,
+      "unit": ""
+    }
+  ],
+  "Hawkmail": [
+    {
+      "key": "ac%_1",
+      "label": "% Enhanced Defense",
+      "min": 80,
+      "max": 100,
+      "unit": ""
+    }
+  ],
+  "Sparking Mail": [
+    {
+      "key": "ac%_1",
+      "label": "% Enhanced Defense",
+      "min": 75,
+      "max": 85,
+      "unit": ""
+    },
+    {
+      "key": "dmg-ltng_2",
+      "label": "Lightning Damage",
+      "min": 1,
+      "max": 20,
+      "unit": ""
+    },
+    {
+      "key": "light-thorns_3",
+      "label": "light-thorns",
+      "min": 10,
+      "max": 14,
+      "unit": ""
+    }
+  ],
+  "Venomsward": [
+    {
+      "key": "ac%_5",
+      "label": "% Enhanced Defense",
+      "min": 60,
+      "max": 100,
+      "unit": ""
+    }
+  ],
+  "Iceblink": [
+    {
+      "key": "ac%_5",
+      "label": "% Enhanced Defense",
+      "min": 70,
+      "max": 80,
+      "unit": ""
+    }
+  ],
+  "Boneflesh": [
+    {
+      "key": "ac%_2",
+      "label": "% Enhanced Defense",
+      "min": 100,
+      "max": 120,
+      "unit": ""
+    }
+  ],
+  "Rockfleece": [
+    {
+      "key": "ac%_2",
+      "label": "% Enhanced Defense",
+      "min": 100,
+      "max": 130,
+      "unit": ""
+    }
+  ],
+  "Goldskin": [
+    {
+      "key": "ac%_1",
+      "label": "% Enhanced Defense",
+      "min": 120,
+      "max": 150,
+      "unit": ""
+    }
+  ],
+  "Victors Silk": [
+    {
+      "key": "ac%_4",
+      "label": "% Enhanced Defense",
+      "min": 100,
+      "max": 120,
+      "unit": ""
+    }
+  ],
+  "Pelta Lunata": [
+    {
+      "key": "ac%_5",
+      "label": "% Enhanced Defense",
+      "min": 30,
+      "max": 40,
+      "unit": ""
+    },
+    {
+      "key": "dur_8",
+      "label": "dur",
+      "min": 8,
+      "max": 12,
+      "unit": ""
+    }
+  ],
+  "Umbral Disk": [
+    {
+      "key": "ac%_6",
+      "label": "% Enhanced Defense",
+      "min": 40,
+      "max": 50,
+      "unit": ""
+    },
+    {
+      "key": "dur_8",
+      "label": "dur",
+      "min": 10,
+      "max": 15,
+      "unit": ""
+    }
+  ],
+  "Stormguild": [
+    {
+      "key": "dmg-ltng_4",
+      "label": "Lightning Damage",
+      "min": 1,
+      "max": 6,
+      "unit": ""
+    },
+    {
+      "key": "ac%_5",
+      "label": "% Enhanced Defense",
+      "min": 50,
+      "max": 60,
+      "unit": ""
+    },
+    {
+      "key": "dur_8",
+      "label": "dur",
+      "min": 10,
+      "max": 15,
+      "unit": ""
+    }
+  ],
+  "Wall of the Eyeless": [
+    {
+      "key": "ac%_5",
+      "label": "% Enhanced Defense",
+      "min": 30,
+      "max": 40,
+      "unit": ""
+    }
+  ],
+  "Swordback Hold": [
+    {
+      "key": "bloody_4",
+      "label": "bloody",
+      "min": 3,
+      "max": 5,
+      "unit": ""
+    },
+    {
+      "key": "ac%_5",
+      "label": "% Enhanced Defense",
+      "min": 30,
+      "max": 60,
+      "unit": ""
+    }
+  ],
+  "Steelclash": [
+    {
+      "key": "ac%_5",
+      "label": "% Enhanced Defense",
+      "min": 60,
+      "max": 100,
+      "unit": ""
+    },
+    {
+      "key": "dur_9",
+      "label": "dur",
+      "min": 15,
+      "max": 20,
+      "unit": ""
+    }
+  ],
+  "Bverrit Keep": [
+    {
+      "key": "ac%_5",
+      "label": "% Enhanced Defense",
+      "min": 80,
+      "max": 120,
+      "unit": ""
+    },
+    {
+      "key": "dur_7",
+      "label": "dur",
+      "min": 80,
+      "max": 100,
+      "unit": ""
+    }
+  ],
+  "The Ward": [
+    {
+      "key": "res-all_6",
+      "label": "to All Resistances",
+      "min": 30,
+      "max": 50,
+      "unit": ""
+    }
+  ],
+  "The Hand of Broc": [
+    {
+      "key": "ac%_6",
+      "label": "% Enhanced Defense",
+      "min": 10,
+      "max": 20,
+      "unit": ""
+    }
+  ],
+  "Bloodfist": [
+    {
+      "key": "ac%_5",
+      "label": "% Enhanced Defense",
+      "min": 10,
+      "max": 20,
+      "unit": ""
+    }
+  ],
+  "Chance Guards": [
+    {
+      "key": "mag%_2",
+      "label": "% Magic Find",
+      "min": 25,
+      "max": 40,
+      "unit": ""
+    },
+    {
+      "key": "ac%_6",
+      "label": "% Enhanced Defense",
+      "min": 20,
+      "max": 30,
+      "unit": ""
+    }
+  ],
+  "Magefist": [
+    {
+      "key": "dmg-fire_4",
+      "label": "Fire Damage",
+      "min": 1,
+      "max": 6,
+      "unit": ""
+    },
+    {
+      "key": "ac%_6",
+      "label": "% Enhanced Defense",
+      "min": 20,
+      "max": 30,
+      "unit": ""
+    }
+  ],
+  "Frostburn": [
+    {
+      "key": "dmg-cold_4",
+      "label": "dmg-cold",
+      "min": 1,
+      "max": 6,
+      "unit": ""
+    },
+    {
+      "key": "ac%_5",
+      "label": "% Enhanced Defense",
+      "min": 10,
+      "max": 20,
+      "unit": ""
+    }
+  ],
+  "Hotspur": [
+    {
+      "key": "dmg-fire_3",
+      "label": "Fire Damage",
+      "min": 3,
+      "max": 6,
+      "unit": ""
+    },
+    {
+      "key": "ac%_6",
+      "label": "% Enhanced Defense",
+      "min": 10,
+      "max": 20,
+      "unit": ""
+    }
+  ],
+  "Gorefoot": [
+    {
+      "key": "bloody_1",
+      "label": "bloody",
+      "min": 3,
+      "max": 5,
+      "unit": ""
+    },
+    {
+      "key": "ac%_6",
+      "label": "% Enhanced Defense",
+      "min": 20,
+      "max": 30,
+      "unit": ""
+    }
+  ],
+  "Treads of Cthon": [
+    {
+      "key": "ac%_6",
+      "label": "% Enhanced Defense",
+      "min": 30,
+      "max": 40,
+      "unit": ""
+    }
+  ],
+  "Goblin Toe": [
+    {
+      "key": "ac%_6",
+      "label": "% Enhanced Defense",
+      "min": 50,
+      "max": 60,
+      "unit": ""
+    }
+  ],
+  "Tearhaunch": [
+    {
+      "key": "ac%_6",
+      "label": "% Enhanced Defense",
+      "min": 60,
+      "max": 80,
+      "unit": ""
+    }
+  ],
+  "Snakecord": [
+    {
+      "key": "ac%_4",
+      "label": "% Enhanced Defense",
+      "min": 20,
+      "max": 30,
+      "unit": ""
+    }
+  ],
+  "Nightsmoke": [
+    {
+      "key": "ac%_6",
+      "label": "% Enhanced Defense",
+      "min": 30,
+      "max": 50,
+      "unit": ""
+    }
+  ],
+  "Goldwrap": [
+    {
+      "key": "ac%_5",
+      "label": "% Enhanced Defense",
+      "min": 40,
+      "max": 60,
+      "unit": ""
+    },
+    {
+      "key": "gold%_6",
+      "label": "gold%",
+      "min": 50,
+      "max": 80,
+      "unit": ""
+    }
+  ],
+  "Bladebuckle": [
+    {
+      "key": "ac%_6",
+      "label": "% Enhanced Defense",
+      "min": 80,
+      "max": 100,
+      "unit": ""
+    }
+  ],
+  "Nokozan Relic": [
+    {
+      "key": "dmg-fire_1",
+      "label": "Fire Damage",
+      "min": 3,
+      "max": 6,
+      "unit": ""
+    }
+  ],
+  "The Eye of Etlich": [
+    {
+      "key": "ac-miss_1",
+      "label": "ac-miss",
+      "min": 10,
+      "max": 40,
+      "unit": ""
+    },
+    {
+      "key": "light_2",
+      "label": "to Light Radius",
+      "min": 1,
+      "max": 5,
+      "unit": ""
+    },
+    {
+      "key": "lifesteal_4",
+      "label": "% Life Stolen Per Hit",
+      "min": 3,
+      "max": 7,
+      "unit": ""
+    },
+    {
+      "key": "cold-min_5",
+      "label": "Cold Damage (min)",
+      "min": 1,
+      "max": 2,
+      "unit": ""
+    },
+    {
+      "key": "cold-max_6",
+      "label": "Cold Damage (max)",
+      "min": 3,
+      "max": 5,
+      "unit": ""
+    },
+    {
+      "key": "cold-len_7",
+      "label": "cold-len",
+      "min": 50,
+      "max": 250,
+      "unit": ""
+    }
+  ],
+  "Nagelring": [
+    {
+      "key": "att_3",
+      "label": "to Attack Rating",
+      "min": 50,
+      "max": 75,
+      "unit": ""
+    },
+    {
+      "key": "mag%_4",
+      "label": "% Magic Find",
+      "min": 15,
+      "max": 30,
+      "unit": ""
+    }
+  ],
+  "Manald Heal": [
+    {
+      "key": "manasteal_1",
+      "label": "% Mana Stolen Per Hit",
+      "min": 4,
+      "max": 7,
+      "unit": ""
+    },
+    {
+      "key": "regen_2",
+      "label": "Regenerate Life",
+      "min": 5,
+      "max": 8,
+      "unit": ""
+    }
+  ],
+  "Coldkill": [
+    {
+      "key": "dmg%_7",
+      "label": "% Enhanced Damage",
+      "min": 150,
+      "max": 190,
+      "unit": ""
+    }
+  ],
+  "Butcher's Pupil": [
+    {
+      "key": "dmg%_3",
+      "label": "% Enhanced Damage",
+      "min": 150,
+      "max": 200,
+      "unit": ""
+    },
+    {
+      "key": "dmg-norm_6",
+      "label": "dmg-norm",
+      "min": 30,
+      "max": 50,
+      "unit": ""
+    }
+  ],
+  "Islestrike": [
+    {
+      "key": "dmg%_8",
+      "label": "% Enhanced Damage",
+      "min": 170,
+      "max": 190,
+      "unit": ""
+    }
+  ],
+  "Pompe's Wrath": [
+    {
+      "key": "dmg-fire_3",
+      "label": "Fire Damage",
+      "min": 35,
+      "max": 150,
+      "unit": ""
+    },
+    {
+      "key": "dmg%_5",
+      "label": "% Enhanced Damage",
+      "min": 140,
+      "max": 170,
+      "unit": ""
+    }
+  ],
+  "Guardian Naga": [
+    {
+      "key": "dmg%_4",
+      "label": "% Enhanced Damage",
+      "min": 150,
+      "max": 180,
+      "unit": ""
+    }
+  ],
+  "Spellsteel": [
+    {
+      "key": "red-mag_3",
+      "label": "Magic Damage Reduced By",
+      "min": 12,
+      "max": 15,
+      "unit": ""
+    }
+  ],
+  "Stormrider": [
+    {
+      "key": "dmg-ltng_3",
+      "label": "Lightning Damage",
+      "min": 1,
+      "max": 200,
+      "unit": ""
+    },
+    {
+      "key": "dmg-norm_4",
+      "label": "dmg-norm",
+      "min": 35,
+      "max": 75,
+      "unit": ""
+    }
+  ],
+  "Boneslayer Blade": [
+    {
+      "key": "dmg%_6",
+      "label": "% Enhanced Damage",
+      "min": 180,
+      "max": 220,
+      "unit": ""
+    }
+  ],
+  "The Minataur": [
+    {
+      "key": "str_3",
+      "label": "to Strength",
+      "min": 15,
+      "max": 20,
+      "unit": ""
+    },
+    {
+      "key": "dmg-norm_6",
+      "label": "dmg-norm",
+      "min": 20,
+      "max": 30,
+      "unit": ""
+    },
+    {
+      "key": "dmg%_7",
+      "label": "% Enhanced Damage",
+      "min": 140,
+      "max": 200,
+      "unit": ""
+    }
+  ],
+  "Dark Clan Crusher": [
+    {
+      "key": "att%_5",
+      "label": "% Bonus to Attack Rating",
+      "min": 20,
+      "max": 25,
+      "unit": ""
+    }
+  ],
+  "Zakarum's Hand": [
+    {
+      "key": "dmg%_6",
+      "label": "% Enhanced Damage",
+      "min": 180,
+      "max": 220,
+      "unit": ""
+    }
+  ],
+  "The Fetid Sprinkler": [
+    {
+      "key": "dmg%_5",
+      "label": "% Enhanced Damage",
+      "min": 160,
+      "max": 190,
+      "unit": ""
+    },
+    {
+      "key": "att_6",
+      "label": "to Attack Rating",
+      "min": 150,
+      "max": 200,
+      "unit": ""
+    },
+    {
+      "key": "dmg-norm_7",
+      "label": "dmg-norm",
+      "min": 15,
+      "max": 25,
+      "unit": ""
+    }
+  ],
+  "Hand of Blessed Light": [
+    {
+      "key": "dmg%_2",
+      "label": "% Enhanced Damage",
+      "min": 130,
+      "max": 160,
+      "unit": ""
+    },
+    {
+      "key": "dmg-norm_7",
+      "label": "dmg-norm",
+      "min": 20,
+      "max": 45,
+      "unit": ""
+    }
+  ],
+  "Fleshrender": [
+    {
+      "key": "dmg-norm_5",
+      "label": "dmg-norm",
+      "min": 35,
+      "max": 50,
+      "unit": ""
+    },
+    {
+      "key": "dmg%_6",
+      "label": "% Enhanced Damage",
+      "min": 130,
+      "max": 200,
+      "unit": ""
+    }
+  ],
+  "Sureshrill Frost": [
+    {
+      "key": "dmg-cold_1",
+      "label": "dmg-cold",
+      "min": 63,
+      "max": 112,
+      "unit": ""
+    },
+    {
+      "key": "dmg%_3",
+      "label": "% Enhanced Damage",
+      "min": 150,
+      "max": 180,
+      "unit": ""
+    },
+    {
+      "key": "dmg-norm_4",
+      "label": "dmg-norm",
+      "min": 5,
+      "max": 10,
+      "unit": ""
+    }
+  ],
+  "Moonfall": [
+    {
+      "key": "dmg-fire_2",
+      "label": "Fire Damage",
+      "min": 55,
+      "max": 115,
+      "unit": ""
+    },
+    {
+      "key": "red-mag_3",
+      "label": "Magic Damage Reduced By",
+      "min": 9,
+      "max": 12,
+      "unit": ""
+    },
+    {
+      "key": "dmg%_4",
+      "label": "% Enhanced Damage",
+      "min": 120,
+      "max": 150,
+      "unit": ""
+    },
+    {
+      "key": "dmg-norm_7",
+      "label": "dmg-norm",
+      "min": 10,
+      "max": 15,
+      "unit": ""
+    }
+  ],
+  "Baezil's Vortex": [
+    {
+      "key": "dmg-ltng_2",
+      "label": "Lightning Damage",
+      "min": 1,
+      "max": 150,
+      "unit": ""
+    },
+    {
+      "key": "dmg%_5",
+      "label": "% Enhanced Damage",
+      "min": 160,
+      "max": 200,
+      "unit": ""
+    }
+  ],
+  "Bloodtree Stump": [
+    {
+      "key": "dmg%_2",
+      "label": "% Enhanced Damage",
+      "min": 180,
+      "max": 220,
+      "unit": ""
+    }
+  ],
+  "The Gavel of Pain": [
+    {
+      "key": "dmg-norm_5",
+      "label": "dmg-norm",
+      "min": 12,
+      "max": 30,
+      "unit": ""
+    },
+    {
+      "key": "dmg%_6",
+      "label": "% Enhanced Damage",
+      "min": 130,
+      "max": 160,
+      "unit": ""
+    }
+  ],
+  "Bloodletter": [
+    {
+      "key": "dmg-norm_1",
+      "label": "dmg-norm",
+      "min": 12,
+      "max": 45,
+      "unit": ""
+    }
+  ],
+  "Coldsteel Eye": [
+    {
+      "key": "dmg%_5",
+      "label": "% Enhanced Damage",
+      "min": 200,
+      "max": 250,
+      "unit": ""
+    }
+  ],
+  "Hexfire": [
+    {
+      "key": "dmg-norm_5",
+      "label": "dmg-norm",
+      "min": 35,
+      "max": 40,
+      "unit": ""
+    },
+    {
+      "key": "dmg%_6",
+      "label": "% Enhanced Damage",
+      "min": 140,
+      "max": 160,
+      "unit": ""
+    }
+  ],
+  "Blade of Ali Baba": [
+    {
+      "key": "dmg%_5",
+      "label": "% Enhanced Damage",
+      "min": 60,
+      "max": 120,
+      "unit": ""
+    },
+    {
+      "key": "dex_6",
+      "label": "to Dexterity",
+      "min": 5,
+      "max": 15,
+      "unit": ""
+    }
+  ],
+  "Ginther's Rift": [
+    {
+      "key": "red-mag_1",
+      "label": "Magic Damage Reduced By",
+      "min": 7,
+      "max": 12,
+      "unit": ""
+    },
+    {
+      "key": "dmg-mag_5",
+      "label": "dmg-mag",
+      "min": 50,
+      "max": 120,
+      "unit": ""
+    },
+    {
+      "key": "dmg%_6",
+      "label": "% Enhanced Damage",
+      "min": 100,
+      "max": 150,
+      "unit": ""
+    }
+  ],
+  "Plague Bearer": [
+    {
+      "key": "dmg-norm_3",
+      "label": "dmg-norm",
+      "min": 10,
+      "max": 45,
+      "unit": ""
+    }
+  ],
+  "The Atlantian": [
+    {
+      "key": "dmg%_6",
+      "label": "% Enhanced Damage",
+      "min": 200,
+      "max": 250,
+      "unit": ""
+    }
+  ],
+  "Crainte Vomir": [
+    {
+      "key": "dmg%_5",
+      "label": "% Enhanced Damage",
+      "min": 160,
+      "max": 200,
+      "unit": ""
+    }
+  ],
+  "Bing Sz Wang": [
+    {
+      "key": "dmg-cold_2",
+      "label": "dmg-cold",
+      "min": 50,
+      "max": 140,
+      "unit": ""
+    },
+    {
+      "key": "dmg%_6",
+      "label": "% Enhanced Damage",
+      "min": 130,
+      "max": 160,
+      "unit": ""
+    }
+  ],
+  "The Vile Husk": [
+    {
+      "key": "dmg%_5",
+      "label": "% Enhanced Damage",
+      "min": 150,
+      "max": 200,
+      "unit": ""
+    }
+  ],
+  "Cloudcrack": [
+    {
+      "key": "dmg-ltng_2",
+      "label": "Lightning Damage",
+      "min": 1,
+      "max": 240,
+      "unit": ""
+    },
+    {
+      "key": "dmg%_6",
+      "label": "% Enhanced Damage",
+      "min": 150,
+      "max": 200,
+      "unit": ""
+    }
+  ],
+  "Todesfaelle Flamme": [
+    {
+      "key": "dmg-fire_1",
+      "label": "Fire Damage",
+      "min": 50,
+      "max": 200,
+      "unit": ""
+    },
+    {
+      "key": "att-skill_4",
+      "label": "att-skill",
+      "min": 10,
+      "max": 6,
+      "unit": ""
+    },
+    {
+      "key": "dmg%_5",
+      "label": "% Enhanced Damage",
+      "min": 120,
+      "max": 160,
+      "unit": ""
+    }
+  ],
+  "Swordguard": [
+    {
+      "key": "res-all_3",
+      "label": "to All Resistances",
+      "min": 10,
+      "max": 20,
+      "unit": ""
+    },
+    {
+      "key": "dmg%_6",
+      "label": "% Enhanced Damage",
+      "min": 170,
+      "max": 180,
+      "unit": ""
+    }
+  ],
+  "Spineripper": [
+    {
+      "key": "dmg%_6",
+      "label": "% Enhanced Damage",
+      "min": 200,
+      "max": 240,
+      "unit": ""
+    },
+    {
+      "key": "dmg-norm_7",
+      "label": "dmg-norm",
+      "min": 15,
+      "max": 27,
+      "unit": ""
+    }
+  ],
+  "Heart Carver": [
+    {
+      "key": "dmg-norm_3",
+      "label": "dmg-norm",
+      "min": 15,
+      "max": 35,
+      "unit": ""
+    },
+    {
+      "key": "dmg%_4",
+      "label": "% Enhanced Damage",
+      "min": 190,
+      "max": 240,
+      "unit": ""
+    }
+  ],
+  "Blackbog's Sharp": [
+    {
+      "key": "dmg-norm_3",
+      "label": "dmg-norm",
+      "min": 15,
+      "max": 45,
+      "unit": ""
+    }
+  ],
+  "Stormspike": [
+    {
+      "key": "dmg-ltng_1",
+      "label": "Lightning Damage",
+      "min": 1,
+      "max": 120,
+      "unit": ""
+    }
+  ],
+  "The Impaler": [
+    {
+      "key": "dmg%_6",
+      "label": "% Enhanced Damage",
+      "min": 140,
+      "max": 170,
+      "unit": ""
+    }
+  ],
+  "Kelpie Snare": [
+    {
+      "key": "dmg-norm_4",
+      "label": "dmg-norm",
+      "min": 30,
+      "max": 50,
+      "unit": ""
+    },
+    {
+      "key": "dmg%_6",
+      "label": "% Enhanced Damage",
+      "min": 140,
+      "max": 180,
+      "unit": ""
+    }
+  ],
+  "Soulfeast Tine": [
+    {
+      "key": "dmg%_5",
+      "label": "% Enhanced Damage",
+      "min": 150,
+      "max": 190,
+      "unit": ""
+    },
+    {
+      "key": "att_6",
+      "label": "to Attack Rating",
+      "min": 150,
+      "max": 250,
+      "unit": ""
+    }
+  ],
+  "Hone Sundan": [
+    {
+      "key": "dmg-norm_2",
+      "label": "dmg-norm",
+      "min": 20,
+      "max": 40,
+      "unit": ""
+    },
+    {
+      "key": "dmg%_5",
+      "label": "% Enhanced Damage",
+      "min": 160,
+      "max": 200,
+      "unit": ""
+    }
+  ],
+  "Spire of Honor": [
+    {
+      "key": "dmg-norm_5",
+      "label": "dmg-norm",
+      "min": 20,
+      "max": 40,
+      "unit": ""
+    },
+    {
+      "key": "dmg%_7",
+      "label": "% Enhanced Damage",
+      "min": 150,
+      "max": 200,
+      "unit": ""
+    }
+  ],
+  "The Meat Scraper": [
+    {
+      "key": "dmg%_1",
+      "label": "% Enhanced Damage",
+      "min": 150,
+      "max": 200,
+      "unit": ""
+    }
+  ],
+  "Blackleach Blade": [
+    {
+      "key": "dmg%_6",
+      "label": "% Enhanced Damage",
+      "min": 100,
+      "max": 140,
+      "unit": ""
+    }
+  ],
+  "Athena's Wrath": [
+    {
+      "key": "dru_1",
+      "label": "dru",
+      "min": 1,
+      "max": 3,
+      "unit": ""
+    },
+    {
+      "key": "dmg%_6",
+      "label": "% Enhanced Damage",
+      "min": 150,
+      "max": 180,
+      "unit": ""
+    }
+  ],
+  "Pierre Tombale Couant": [
+    {
+      "key": "dmg-norm_5",
+      "label": "dmg-norm",
+      "min": 12,
+      "max": 20,
+      "unit": ""
+    },
+    {
+      "key": "dmg%_6",
+      "label": "% Enhanced Damage",
+      "min": 160,
+      "max": 220,
+      "unit": ""
+    },
+    {
+      "key": "att_7",
+      "label": "to Attack Rating",
+      "min": 100,
+      "max": 200,
+      "unit": ""
+    }
+  ],
+  "Husoldal Evo": [
+    {
+      "key": "att_2",
+      "label": "to Attack Rating",
+      "min": 200,
+      "max": 250,
+      "unit": ""
+    },
+    {
+      "key": "dmg-norm_4",
+      "label": "dmg-norm",
+      "min": 20,
+      "max": 32,
+      "unit": ""
+    },
+    {
+      "key": "dmg%_5",
+      "label": "% Enhanced Damage",
+      "min": 160,
+      "max": 200,
+      "unit": ""
+    }
+  ],
+  "Grim's Burning Dead": [
+    {
+      "key": "dmg-fire_1",
+      "label": "Fire Damage",
+      "min": 131,
+      "max": 232,
+      "unit": ""
+    },
+    {
+      "key": "dmg%_3",
+      "label": "% Enhanced Damage",
+      "min": 140,
+      "max": 180,
+      "unit": ""
+    },
+    {
+      "key": "att_9",
+      "label": "to Attack Rating",
+      "min": 200,
+      "max": 250,
+      "unit": ""
+    }
+  ],
+  "Ribcracker": [
+    {
+      "key": "dmg-norm_1",
+      "label": "dmg-norm",
+      "min": 30,
+      "max": 65,
+      "unit": ""
+    },
+    {
+      "key": "dmg%_2",
+      "label": "% Enhanced Damage",
+      "min": 200,
+      "max": 300,
+      "unit": ""
+    }
+  ],
+  "Chromatic Ire": [
+    {
+      "key": "res-all_2",
+      "label": "to All Resistances",
+      "min": 20,
+      "max": 40,
+      "unit": ""
+    },
+    {
+      "key": "hp%_5",
+      "label": "hp%",
+      "min": 20,
+      "max": 25,
+      "unit": ""
+    }
+  ],
+  "Skystrike": [
+    {
+      "key": "dmg-ltng_1",
+      "label": "Lightning Damage",
+      "min": 1,
+      "max": 250,
+      "unit": ""
+    },
+    {
+      "key": "dmg%_5",
+      "label": "% Enhanced Damage",
+      "min": 150,
+      "max": 200,
+      "unit": ""
+    }
+  ],
+  "Riphook": [
+    {
+      "key": "dmg%_2",
+      "label": "% Enhanced Damage",
+      "min": 180,
+      "max": 220,
+      "unit": ""
+    },
+    {
+      "key": "lifesteal_6",
+      "label": "% Life Stolen Per Hit",
+      "min": 7,
+      "max": 10,
+      "unit": ""
+    }
+  ],
+  "Kuko Shakaku": [
+    {
+      "key": "dmg%_3",
+      "label": "% Enhanced Damage",
+      "min": 150,
+      "max": 180,
+      "unit": ""
+    },
+    {
+      "key": "dmg-fire_5",
+      "label": "Fire Damage",
+      "min": 40,
+      "max": 180,
+      "unit": ""
+    }
+  ],
+  "Endlesshail": [
+    {
+      "key": "dmg%_5",
+      "label": "% Enhanced Damage",
+      "min": 180,
+      "max": 220,
+      "unit": ""
+    },
+    {
+      "key": "dmg-cold_6",
+      "label": "dmg-cold",
+      "min": 15,
+      "max": 30,
+      "unit": ""
+    }
+  ],
+  "Whichwild String": [
+    {
+      "key": "dmg%_4",
+      "label": "% Enhanced Damage",
+      "min": 150,
+      "max": 170,
+      "unit": ""
+    }
+  ],
+  "Cliffkiller": [
+    {
+      "key": "dmg%_2",
+      "label": "% Enhanced Damage",
+      "min": 190,
+      "max": 230,
+      "unit": ""
+    },
+    {
+      "key": "dmg-min_6",
+      "label": "to Minimum Damage",
+      "min": 5,
+      "max": 10,
+      "unit": ""
+    },
+    {
+      "key": "dmg-max_7",
+      "label": "to Maximum Damage",
+      "min": 20,
+      "max": 30,
+      "unit": ""
+    }
+  ],
+  "Magewrath": [
+    {
+      "key": "red-mag_2",
+      "label": "Magic Damage Reduced By",
+      "min": 9,
+      "max": 13,
+      "unit": ""
+    },
+    {
+      "key": "att_4",
+      "label": "to Attack Rating",
+      "min": 200,
+      "max": 250,
+      "unit": ""
+    },
+    {
+      "key": "dmg-norm_7",
+      "label": "dmg-norm",
+      "min": 25,
+      "max": 50,
+      "unit": ""
+    },
+    {
+      "key": "dmg%_8",
+      "label": "% Enhanced Damage",
+      "min": 120,
+      "max": 150,
+      "unit": ""
+    }
+  ],
+  "Godstrike Arch": [
+    {
+      "key": "dmg%_1",
+      "label": "% Enhanced Damage",
+      "min": 200,
+      "max": 250,
+      "unit": ""
+    },
+    {
+      "key": "att%_2",
+      "label": "% Bonus to Attack Rating",
+      "min": 100,
+      "max": 150,
+      "unit": ""
+    },
+    {
+      "key": "dmg-undead_3",
+      "label": "% Damage to Undead",
+      "min": 100,
+      "max": 200,
+      "unit": ""
+    },
+    {
+      "key": "dmg-demon_4",
+      "label": "dmg-demon",
+      "min": 100,
+      "max": 200,
+      "unit": ""
+    }
+  ],
+  "Langer Briser": [
+    {
+      "key": "dmg%_2",
+      "label": "% Enhanced Damage",
+      "min": 170,
+      "max": 200,
+      "unit": ""
+    },
+    {
+      "key": "mag%_3",
+      "label": "% Magic Find",
+      "min": 30,
+      "max": 60,
+      "unit": ""
+    },
+    {
+      "key": "dmg-max_5",
+      "label": "to Maximum Damage",
+      "min": 10,
+      "max": 30,
+      "unit": ""
+    },
+    {
+      "key": "dmg-ltng_7",
+      "label": "Lightning Damage",
+      "min": 1,
+      "max": 212,
+      "unit": ""
+    }
+  ],
+  "Pus Spiter": [
+    {
+      "key": "dmg%_7",
+      "label": "% Enhanced Damage",
+      "min": 150,
+      "max": 220,
+      "unit": ""
+    }
+  ],
+  "Buriza-Do Kyanon": [
+    {
+      "key": "ac_3",
+      "label": "to Defense",
+      "min": 75,
+      "max": 150,
+      "unit": ""
+    },
+    {
+      "key": "dmg%_6",
+      "label": "% Enhanced Damage",
+      "min": 150,
+      "max": 200,
+      "unit": ""
+    },
+    {
+      "key": "dmg-cold_8",
+      "label": "dmg-cold",
+      "min": 32,
+      "max": 196,
+      "unit": ""
+    }
+  ],
+  "Peasent Crown": [
+    {
+      "key": "regen_5",
+      "label": "Regenerate Life",
+      "min": 6,
+      "max": 12,
+      "unit": ""
+    }
+  ],
+  "Rockstopper": [
+    {
+      "key": "res-ltng_1",
+      "label": "% Lightning Resist",
+      "min": 20,
+      "max": 40,
+      "unit": ""
+    },
+    {
+      "key": "ac%_4",
+      "label": "% Enhanced Defense",
+      "min": 160,
+      "max": 220,
+      "unit": ""
+    },
+    {
+      "key": "res-fire_5",
+      "label": "% Fire Resist",
+      "min": 20,
+      "max": 50,
+      "unit": ""
+    },
+    {
+      "key": "res-cold_6",
+      "label": "% Cold Resist",
+      "min": 20,
+      "max": 40,
+      "unit": ""
+    }
+  ],
+  "Stealskull": [
+    {
+      "key": "ac%_5",
+      "label": "% Enhanced Defense",
+      "min": 200,
+      "max": 240,
+      "unit": ""
+    },
+    {
+      "key": "mag%_6",
+      "label": "% Magic Find",
+      "min": 30,
+      "max": 50,
+      "unit": ""
+    }
+  ],
+  "Darksight Helm": [
+    {
+      "key": "res-fire_7",
+      "label": "% Fire Resist",
+      "min": 20,
+      "max": 40,
+      "unit": ""
+    }
+  ],
+  "Valkiry Wing": [
+    {
+      "key": "ac%_1",
+      "label": "% Enhanced Defense",
+      "min": 150,
+      "max": 200,
+      "unit": ""
+    },
+    {
+      "key": "ama_4",
+      "label": "ama",
+      "min": 1,
+      "max": 2,
+      "unit": ""
+    },
+    {
+      "key": "mana-kill_5",
+      "label": "mana-kill",
+      "min": 2,
+      "max": 4,
+      "unit": ""
+    }
+  ],
+  "Crown of Thieves": [
+    {
+      "key": "lifesteal_2",
+      "label": "% Life Stolen Per Hit",
+      "min": 9,
+      "max": 12,
+      "unit": ""
+    },
+    {
+      "key": "ac%_6",
+      "label": "% Enhanced Defense",
+      "min": 160,
+      "max": 200,
+      "unit": ""
+    },
+    {
+      "key": "gold%_7",
+      "label": "gold%",
+      "min": 80,
+      "max": 100,
+      "unit": ""
+    }
+  ],
+  "Blackhorn's Face": [
+    {
+      "key": "ac%_6",
+      "label": "% Enhanced Defense",
+      "min": 180,
+      "max": 220,
+      "unit": ""
+    }
+  ],
+  "Vampiregaze": [
+    {
+      "key": "manasteal_1",
+      "label": "% Mana Stolen Per Hit",
+      "min": 6,
+      "max": 8,
+      "unit": ""
+    },
+    {
+      "key": "lifesteal_2",
+      "label": "% Life Stolen Per Hit",
+      "min": 6,
+      "max": 8,
+      "unit": ""
+    },
+    {
+      "key": "red-dmg%_4",
+      "label": "red-dmg%",
+      "min": 15,
+      "max": 20,
+      "unit": ""
+    },
+    {
+      "key": "red-mag_5",
+      "label": "Magic Damage Reduced By",
+      "min": 10,
+      "max": 15,
+      "unit": ""
+    },
+    {
+      "key": "dmg-cold_7",
+      "label": "dmg-cold",
+      "min": 6,
+      "max": 22,
+      "unit": ""
+    }
+  ],
+  "The Spirit Shroud": [
+    {
+      "key": "red-mag_3",
+      "label": "Magic Damage Reduced By",
+      "min": 7,
+      "max": 11,
+      "unit": ""
+    }
+  ],
+  "Skin of the Vipermagi": [
+    {
+      "key": "res-all_2",
+      "label": "to All Resistances",
+      "min": 20,
+      "max": 35,
+      "unit": ""
+    },
+    {
+      "key": "red-mag_4",
+      "label": "Magic Damage Reduced By",
+      "min": 9,
+      "max": 13,
+      "unit": ""
+    }
+  ],
+  "Skin of the Flayerd One": [
+    {
+      "key": "regen_2",
+      "label": "Regenerate Life",
+      "min": 15,
+      "max": 25,
+      "unit": ""
+    },
+    {
+      "key": "lifesteal_4",
+      "label": "% Life Stolen Per Hit",
+      "min": 5,
+      "max": 7,
+      "unit": ""
+    },
+    {
+      "key": "ac%_5",
+      "label": "% Enhanced Defense",
+      "min": 150,
+      "max": 190,
+      "unit": ""
+    }
+  ],
+  "Ironpelt": [
+    {
+      "key": "red-mag_3",
+      "label": "Magic Damage Reduced By",
+      "min": 10,
+      "max": 16,
+      "unit": ""
+    },
+    {
+      "key": "red-dmg_4",
+      "label": "Physical Damage Reduced By",
+      "min": 15,
+      "max": 20,
+      "unit": ""
+    },
+    {
+      "key": "ac%_6",
+      "label": "% Enhanced Defense",
+      "min": 50,
+      "max": 100,
+      "unit": ""
+    }
+  ],
+  "Spiritforge": [
+    {
+      "key": "dmg-fire_3",
+      "label": "Fire Damage",
+      "min": 20,
+      "max": 65,
+      "unit": ""
+    },
+    {
+      "key": "ac%_5",
+      "label": "% Enhanced Defense",
+      "min": 120,
+      "max": 160,
+      "unit": ""
+    }
+  ],
+  "Crow Caw": [
+    {
+      "key": "ac%_2",
+      "label": "% Enhanced Defense",
+      "min": 150,
+      "max": 180,
+      "unit": ""
+    },
+    {
+      "key": "*charged_6",
+      "label": "*charged",
+      "min": 3,
+      "max": 5,
+      "unit": ""
+    }
+  ],
+  "Shaftstop": [
+    {
+      "key": "ac%_4",
+      "label": "% Enhanced Defense",
+      "min": 180,
+      "max": 220,
+      "unit": ""
+    }
+  ],
+  "Duriel's Shell": [
+    {
+      "key": "ac%_4",
+      "label": "% Enhanced Defense",
+      "min": 160,
+      "max": 200,
+      "unit": ""
+    }
+  ],
+  "Skullder's Ire": [
+    {
+      "key": "ac%_3",
+      "label": "% Enhanced Defense",
+      "min": 160,
+      "max": 200,
+      "unit": ""
+    }
+  ],
+  "Guardian Angel": [
+    {
+      "key": "ac%_3",
+      "label": "% Enhanced Defense",
+      "min": 180,
+      "max": 200,
+      "unit": ""
+    }
+  ],
+  "Toothrow": [
+    {
+      "key": "thorns_1",
+      "label": "thorns",
+      "min": 20,
+      "max": 40,
+      "unit": ""
+    },
+    {
+      "key": "ac_2",
+      "label": "to Defense",
+      "min": 40,
+      "max": 60,
+      "unit": ""
+    },
+    {
+      "key": "ac%_6",
+      "label": "% Enhanced Defense",
+      "min": 160,
+      "max": 220,
+      "unit": ""
+    }
+  ],
+  "Atma's Wail": [
+    {
+      "key": "ac%_7",
+      "label": "% Enhanced Defense",
+      "min": 120,
+      "max": 160,
+      "unit": ""
+    }
+  ],
+  "Black Hades": [
+    {
+      "key": "att-demon_2",
+      "label": "att-demon",
+      "min": 200,
+      "max": 250,
+      "unit": ""
+    },
+    {
+      "key": "ac%_5",
+      "label": "% Enhanced Defense",
+      "min": 140,
+      "max": 200,
+      "unit": ""
+    },
+    {
+      "key": "dmg-demon_6",
+      "label": "dmg-demon",
+      "min": 30,
+      "max": 60,
+      "unit": ""
+    }
+  ],
+  "Corpsemourn": [
+    {
+      "key": "ac%_5",
+      "label": "% Enhanced Defense",
+      "min": 150,
+      "max": 180,
+      "unit": ""
+    },
+    {
+      "key": "dmg-fire_6",
+      "label": "Fire Damage",
+      "min": 12,
+      "max": 36,
+      "unit": ""
+    }
+  ],
+  "Que-Hegan's Wisdon": [
+    {
+      "key": "red-mag_3",
+      "label": "Magic Damage Reduced By",
+      "min": 6,
+      "max": 10,
+      "unit": ""
+    },
+    {
+      "key": "ac%_6",
+      "label": "% Enhanced Defense",
+      "min": 140,
+      "max": 160,
+      "unit": ""
+    }
+  ],
+  "Visceratuant": [
+    {
+      "key": "ac%_4",
+      "label": "% Enhanced Defense",
+      "min": 100,
+      "max": 150,
+      "unit": ""
+    }
+  ],
+  "Mosers Blessed Circle": [
+    {
+      "key": "ac%_4",
+      "label": "% Enhanced Defense",
+      "min": 180,
+      "max": 220,
+      "unit": ""
+    }
+  ],
+  "Stormchaser": [
+    {
+      "key": "dmg-ltng_1",
+      "label": "Lightning Damage",
+      "min": 1,
+      "max": 60,
+      "unit": ""
+    },
+    {
+      "key": "ac%_6",
+      "label": "% Enhanced Defense",
+      "min": 160,
+      "max": 220,
+      "unit": ""
+    }
+  ],
+  "Tiamat's Rebuke": [
+    {
+      "key": "dmg-cold_1",
+      "label": "dmg-cold",
+      "min": 27,
+      "max": 53,
+      "unit": ""
+    },
+    {
+      "key": "dmg-fire_2",
+      "label": "Fire Damage",
+      "min": 35,
+      "max": 95,
+      "unit": ""
+    },
+    {
+      "key": "dmg-ltng_3",
+      "label": "Lightning Damage",
+      "min": 1,
+      "max": 120,
+      "unit": ""
+    },
+    {
+      "key": "res-all_4",
+      "label": "to All Resistances",
+      "min": 25,
+      "max": 35,
+      "unit": ""
+    },
+    {
+      "key": "ac%_5",
+      "label": "% Enhanced Defense",
+      "min": 140,
+      "max": 200,
+      "unit": ""
+    }
+  ],
+  "Kerke's Sanctuary": [
+    {
+      "key": "red-dmg_1",
+      "label": "Physical Damage Reduced By",
+      "min": 11,
+      "max": 16,
+      "unit": ""
+    },
+    {
+      "key": "red-mag_2",
+      "label": "Magic Damage Reduced By",
+      "min": 14,
+      "max": 18,
+      "unit": ""
+    },
+    {
+      "key": "ac%_4",
+      "label": "% Enhanced Defense",
+      "min": 180,
+      "max": 240,
+      "unit": ""
+    },
+    {
+      "key": "res-all_7",
+      "label": "to All Resistances",
+      "min": 20,
+      "max": 30,
+      "unit": ""
+    }
+  ],
+  "Radimant's Sphere": [
+    {
+      "key": "ac%_4",
+      "label": "% Enhanced Defense",
+      "min": 160,
+      "max": 200,
+      "unit": ""
+    }
+  ],
+  "Lidless Wall": [
+    {
+      "key": "mana-kill_4",
+      "label": "mana-kill",
+      "min": 3,
+      "max": 5,
+      "unit": ""
+    },
+    {
+      "key": "ac%_5",
+      "label": "% Enhanced Defense",
+      "min": 80,
+      "max": 130,
+      "unit": ""
+    }
+  ],
+  "Lance Guard": [
+    {
+      "key": "ac%_5",
+      "label": "% Enhanced Defense",
+      "min": 70,
+      "max": 120,
+      "unit": ""
+    }
+  ],
+  "Venom Grip": [
+    {
+      "key": "ac_6",
+      "label": "to Defense",
+      "min": 15,
+      "max": 25,
+      "unit": ""
+    },
+    {
+      "key": "ac%_7",
+      "label": "% Enhanced Defense",
+      "min": 130,
+      "max": 160,
+      "unit": ""
+    }
+  ],
+  "Gravepalm": [
+    {
+      "key": "dmg-undead_3",
+      "label": "% Damage to Undead",
+      "min": 100,
+      "max": 200,
+      "unit": ""
+    },
+    {
+      "key": "att-undead_4",
+      "label": "Attack Rating vs Undead",
+      "min": 100,
+      "max": 200,
+      "unit": ""
+    },
+    {
+      "key": "ac%_5",
+      "label": "% Enhanced Defense",
+      "min": 140,
+      "max": 180,
+      "unit": ""
+    }
+  ],
+  "Ghoulhide": [
+    {
+      "key": "manasteal_3",
+      "label": "% Mana Stolen Per Hit",
+      "min": 4,
+      "max": 5,
+      "unit": ""
+    },
+    {
+      "key": "ac%_5",
+      "label": "% Enhanced Defense",
+      "min": 150,
+      "max": 190,
+      "unit": ""
+    }
+  ],
+  "Lavagout": [
+    {
+      "key": "ac%_5",
+      "label": "% Enhanced Defense",
+      "min": 150,
+      "max": 200,
+      "unit": ""
+    },
+    {
+      "key": "dmg-fire_6",
+      "label": "Fire Damage",
+      "min": 13,
+      "max": 46,
+      "unit": ""
+    }
+  ],
+  "Hellmouth": [
+    {
+      "key": "dmg-fire_1",
+      "label": "Fire Damage",
+      "min": 15,
+      "max": 72,
+      "unit": ""
+    },
+    {
+      "key": "ac%_3",
+      "label": "% Enhanced Defense",
+      "min": 150,
+      "max": 200,
+      "unit": ""
+    }
+  ],
+  "Infernostride": [
+    {
+      "key": "dmg-fire_1",
+      "label": "Fire Damage",
+      "min": 12,
+      "max": 33,
+      "unit": ""
+    },
+    {
+      "key": "ac%_6",
+      "label": "% Enhanced Defense",
+      "min": 120,
+      "max": 150,
+      "unit": ""
+    },
+    {
+      "key": "gold%_7",
+      "label": "gold%",
+      "min": 40,
+      "max": 70,
+      "unit": ""
+    }
+  ],
+  "Waterwalk": [
+    {
+      "key": "ac%_4",
+      "label": "% Enhanced Defense",
+      "min": 180,
+      "max": 210,
+      "unit": ""
+    },
+    {
+      "key": "hp_5",
+      "label": "to Life",
+      "min": 45,
+      "max": 65,
+      "unit": ""
+    }
+  ],
+  "Silkweave": [
+    {
+      "key": "ac%_1",
+      "label": "% Enhanced Defense",
+      "min": 150,
+      "max": 190,
+      "unit": ""
+    }
+  ],
+  "Wartraveler": [
+    {
+      "key": "mag%_3",
+      "label": "% Magic Find",
+      "min": 30,
+      "max": 50,
+      "unit": ""
+    },
+    {
+      "key": "ac%_6",
+      "label": "% Enhanced Defense",
+      "min": 150,
+      "max": 190,
+      "unit": ""
+    },
+    {
+      "key": "dmg-norm_7",
+      "label": "dmg-norm",
+      "min": 15,
+      "max": 25,
+      "unit": ""
+    },
+    {
+      "key": "thorns_8",
+      "label": "thorns",
+      "min": 5,
+      "max": 10,
+      "unit": ""
+    }
+  ],
+  "Gorerider": [
+    {
+      "key": "ac%_6",
+      "label": "% Enhanced Defense",
+      "min": 160,
+      "max": 200,
+      "unit": ""
+    }
+  ],
+  "String of Ears": [
+    {
+      "key": "red-mag_1",
+      "label": "Magic Damage Reduced By",
+      "min": 10,
+      "max": 15,
+      "unit": ""
+    },
+    {
+      "key": "red-dmg%_2",
+      "label": "red-dmg%",
+      "min": 10,
+      "max": 15,
+      "unit": ""
+    },
+    {
+      "key": "lifesteal_3",
+      "label": "% Life Stolen Per Hit",
+      "min": 6,
+      "max": 8,
+      "unit": ""
+    },
+    {
+      "key": "ac%_4",
+      "label": "% Enhanced Defense",
+      "min": 150,
+      "max": 180,
+      "unit": ""
+    }
+  ],
+  "Razortail": [
+    {
+      "key": "ac%_5",
+      "label": "% Enhanced Defense",
+      "min": 120,
+      "max": 150,
+      "unit": ""
+    }
+  ],
+  "Gloomstrap": [
+    {
+      "key": "ac%_4",
+      "label": "% Enhanced Defense",
+      "min": 120,
+      "max": 150,
+      "unit": ""
+    }
+  ],
+  "Snowclash": [
+    {
+      "key": "dmg-cold_4",
+      "label": "dmg-cold",
+      "min": 13,
+      "max": 21,
+      "unit": ""
+    },
+    {
+      "key": "ac%_5",
+      "label": "% Enhanced Defense",
+      "min": 130,
+      "max": 170,
+      "unit": ""
+    }
+  ],
+  "Thudergod's Vigor": [
+    {
+      "key": "dmg-ltng_2",
+      "label": "Lightning Damage",
+      "min": 1,
+      "max": 50,
+      "unit": ""
+    },
+    {
+      "key": "ac%_5",
+      "label": "% Enhanced Defense",
+      "min": 160,
+      "max": 200,
+      "unit": ""
+    }
+  ],
+  "The Gladiator's Bane": [
+    {
+      "key": "ac%_1",
+      "label": "% Enhanced Defense",
+      "min": 150,
+      "max": 200,
+      "unit": ""
+    },
+    {
+      "key": "red-mag_2",
+      "label": "Magic Damage Reduced By",
+      "min": 15,
+      "max": 20,
+      "unit": ""
+    },
+    {
+      "key": "red-dmg_3",
+      "label": "Physical Damage Reduced By",
+      "min": 15,
+      "max": 20,
+      "unit": ""
+    }
+  ],
+  "Arkaine's Valor": [
+    {
+      "key": "ac%_1",
+      "label": "% Enhanced Defense",
+      "min": 150,
+      "max": 180,
+      "unit": ""
+    },
+    {
+      "key": "allskills_3",
+      "label": "to All Skills",
+      "min": 1,
+      "max": 2,
+      "unit": ""
+    },
+    {
+      "key": "red-dmg_4",
+      "label": "Physical Damage Reduced By",
+      "min": 10,
+      "max": 15,
+      "unit": ""
+    }
+  ],
+  "Blackoak Shield": [
+    {
+      "key": "ac%_2",
+      "label": "% Enhanced Defense",
+      "min": 160,
+      "max": 200,
+      "unit": ""
+    }
+  ],
+  "Hellslayer": [
+    {
+      "key": "dmg-fire_4",
+      "label": "Fire Damage",
+      "min": 150,
+      "max": 250,
+      "unit": ""
+    },
+    {
+      "key": "att-skill_7",
+      "label": "att-skill",
+      "min": 10,
+      "max": 0,
+      "unit": ""
+    }
+  ],
+  "Messerschmidt's Reaver": [
+    {
+      "key": "dmg-fire_7",
+      "label": "Fire Damage",
+      "min": 20,
+      "max": 240,
+      "unit": ""
+    }
+  ],
+  "Baranar's Star": [
+    {
+      "key": "dmg-ltng_7",
+      "label": "Lightning Damage",
+      "min": 1,
+      "max": 200,
+      "unit": ""
+    },
+    {
+      "key": "dmg-fire_8",
+      "label": "Fire Damage",
+      "min": 1,
+      "max": 200,
+      "unit": ""
+    },
+    {
+      "key": "dmg-cold_9",
+      "label": "dmg-cold",
+      "min": 1,
+      "max": 200,
+      "unit": ""
+    }
+  ],
+  "Schaefer's Hammer": [
+    {
+      "key": "dmg%_8",
+      "label": "% Enhanced Damage",
+      "min": 100,
+      "max": 130,
+      "unit": ""
+    },
+    {
+      "key": "dmg-ltng_10",
+      "label": "Lightning Damage",
+      "min": 50,
+      "max": 200,
+      "unit": ""
+    }
+  ],
+  "The Cranium Basher": [
+    {
+      "key": "dmg%_7",
+      "label": "% Enhanced Damage",
+      "min": 200,
+      "max": 240,
+      "unit": ""
+    }
+  ],
+  "Lightsabre": [
+    {
+      "key": "att-skill_2",
+      "label": "att-skill",
+      "min": 5,
+      "max": 0,
+      "unit": ""
+    },
+    {
+      "key": "dmg-mag_6",
+      "label": "dmg-mag",
+      "min": 60,
+      "max": 120,
+      "unit": ""
+    },
+    {
+      "key": "dmg-ltng_7",
+      "label": "Lightning Damage",
+      "min": 1,
+      "max": 200,
+      "unit": ""
+    },
+    {
+      "key": "manasteal_8",
+      "label": "% Mana Stolen Per Hit",
+      "min": 5,
+      "max": 7,
+      "unit": ""
+    },
+    {
+      "key": "dmg%_9",
+      "label": "% Enhanced Damage",
+      "min": 150,
+      "max": 200,
+      "unit": ""
+    },
+    {
+      "key": "dmg-norm_10",
+      "label": "dmg-norm",
+      "min": 10,
+      "max": 30,
+      "unit": ""
+    }
+  ],
+  "Doombringer": [
+    {
+      "key": "dmg%_2",
+      "label": "% Enhanced Damage",
+      "min": 180,
+      "max": 250,
+      "unit": ""
+    },
+    {
+      "key": "dmg-norm_5",
+      "label": "dmg-norm",
+      "min": 30,
+      "max": 100,
+      "unit": ""
+    },
+    {
+      "key": "lifesteal_7",
+      "label": "% Life Stolen Per Hit",
+      "min": 5,
+      "max": 7,
+      "unit": ""
+    }
+  ],
+  "The Grandfather": [
+    {
+      "key": "dmg%_9",
+      "label": "% Enhanced Damage",
+      "min": 150,
+      "max": 250,
+      "unit": ""
+    }
+  ],
+  "Stormspire": [
+    {
+      "key": "dmg%_3",
+      "label": "% Enhanced Damage",
+      "min": 150,
+      "max": 250,
+      "unit": ""
+    },
+    {
+      "key": "dmg-ltng_8",
+      "label": "Lightning Damage",
+      "min": 1,
+      "max": 237,
+      "unit": ""
+    }
+  ],
+  "Windforce": [
+    {
+      "key": "manasteal_4",
+      "label": "% Mana Stolen Per Hit",
+      "min": 6,
+      "max": 8,
+      "unit": ""
+    }
+  ],
+  "Bul Katho's Wedding Band": [
+    {
+      "key": "lifesteal_3",
+      "label": "% Life Stolen Per Hit",
+      "min": 3,
+      "max": 5,
+      "unit": ""
+    }
+  ],
+  "The Rising Sun": [
+    {
+      "key": "dmg-fire_4",
+      "label": "Fire Damage",
+      "min": 24,
+      "max": 48,
+      "unit": ""
+    }
+  ],
+  "Crescent Moon": [
+    {
+      "key": "manasteal_1",
+      "label": "% Mana Stolen Per Hit",
+      "min": 11,
+      "max": 15,
+      "unit": ""
+    },
+    {
+      "key": "lifesteal_6",
+      "label": "% Life Stolen Per Hit",
+      "min": 3,
+      "max": 6,
+      "unit": ""
+    }
+  ],
+  "Mara's Kaleidoscope": [
+    {
+      "key": "res-all_2",
+      "label": "to All Resistances",
+      "min": 20,
+      "max": 30,
+      "unit": ""
+    }
+  ],
+  "Dwarf Star": [
+    {
+      "key": "red-mag_5",
+      "label": "Magic Damage Reduced By",
+      "min": 12,
+      "max": 15,
+      "unit": ""
+    }
+  ],
+  "Raven Frost": [
+    {
+      "key": "dmg-cold_2",
+      "label": "dmg-cold",
+      "min": 15,
+      "max": 45,
+      "unit": ""
+    },
+    {
+      "key": "dex_5",
+      "label": "to Dexterity",
+      "min": 15,
+      "max": 20,
+      "unit": ""
+    },
+    {
+      "key": "att_6",
+      "label": "to Attack Rating",
+      "min": 150,
+      "max": 250,
+      "unit": ""
+    }
+  ],
+  "Highlord's Wrath": [
+    {
+      "key": "dmg-ltng_2",
+      "label": "Lightning Damage",
+      "min": 1,
+      "max": 30,
+      "unit": ""
+    }
+  ],
+  "Saracen's Chance": [
+    {
+      "key": "res-all_1",
+      "label": "to All Resistances",
+      "min": 15,
+      "max": 25,
+      "unit": ""
+    }
+  ],
+  "Arreat's Face": [
+    {
+      "key": "ac%_3",
+      "label": "% Enhanced Defense",
+      "min": 150,
+      "max": 200,
+      "unit": ""
+    },
+    {
+      "key": "lifesteal_8",
+      "label": "% Life Stolen Per Hit",
+      "min": 3,
+      "max": 6,
+      "unit": ""
+    }
+  ],
+  "Homunculus": [
+    {
+      "key": "ac%_3",
+      "label": "% Enhanced Defense",
+      "min": 150,
+      "max": 200,
+      "unit": ""
+    }
+  ],
+  "Titan's Revenge": [
+    {
+      "key": "dmg%_3",
+      "label": "% Enhanced Damage",
+      "min": 150,
+      "max": 200,
+      "unit": ""
+    },
+    {
+      "key": "lifesteal_8",
+      "label": "% Life Stolen Per Hit",
+      "min": 5,
+      "max": 9,
+      "unit": ""
+    },
+    {
+      "key": "dmg-norm_9",
+      "label": "dmg-norm",
+      "min": 25,
+      "max": 50,
+      "unit": ""
+    }
+  ],
+  "Lycander's Aim": [
+    {
+      "key": "dmg%_3",
+      "label": "% Enhanced Damage",
+      "min": 150,
+      "max": 200,
+      "unit": ""
+    },
+    {
+      "key": "manasteal_8",
+      "label": "% Mana Stolen Per Hit",
+      "min": 5,
+      "max": 8,
+      "unit": ""
+    },
+    {
+      "key": "dmg-norm_9",
+      "label": "dmg-norm",
+      "min": 25,
+      "max": 50,
+      "unit": ""
+    }
+  ],
+  "Lycander's Flank": [
+    {
+      "key": "dmg%_3",
+      "label": "% Enhanced Damage",
+      "min": 150,
+      "max": 200,
+      "unit": ""
+    },
+    {
+      "key": "lifesteal_8",
+      "label": "% Life Stolen Per Hit",
+      "min": 5,
+      "max": 9,
+      "unit": ""
+    },
+    {
+      "key": "dmg-norm_9",
+      "label": "dmg-norm",
+      "min": 25,
+      "max": 50,
+      "unit": ""
+    }
+  ],
+  "Herald of Zakarum": [
+    {
+      "key": "ac%_3",
+      "label": "% Enhanced Defense",
+      "min": 150,
+      "max": 200,
+      "unit": ""
+    }
+  ],
+  "Cutthroat1": [
+    {
+      "key": "dmg%_3",
+      "label": "% Enhanced Damage",
+      "min": 150,
+      "max": 200,
+      "unit": ""
+    },
+    {
+      "key": "lifesteal_8",
+      "label": "% Life Stolen Per Hit",
+      "min": 5,
+      "max": 9,
+      "unit": ""
+    },
+    {
+      "key": "dmg-norm_9",
+      "label": "dmg-norm",
+      "min": 25,
+      "max": 50,
+      "unit": ""
+    }
+  ],
+  "Jalal's Mane": [
+    {
+      "key": "ac%_3",
+      "label": "% Enhanced Defense",
+      "min": 150,
+      "max": 200,
+      "unit": ""
+    }
+  ],
+  "The Scalper": [
+    {
+      "key": "dmg%_2",
+      "label": "% Enhanced Damage",
+      "min": 150,
+      "max": 200,
+      "unit": ""
+    },
+    {
+      "key": "lifesteal_6",
+      "label": "% Life Stolen Per Hit",
+      "min": 4,
+      "max": 6,
+      "unit": ""
+    }
+  ],
+  "Bloodmoon": [
+    {
+      "key": "dmg%_1",
+      "label": "% Enhanced Damage",
+      "min": 210,
+      "max": 260,
+      "unit": ""
+    },
+    {
+      "key": "lifesteal_2",
+      "label": "% Life Stolen Per Hit",
+      "min": 10,
+      "max": 15,
+      "unit": ""
+    },
+    {
+      "key": "heal-kill_4",
+      "label": "heal-kill",
+      "min": 7,
+      "max": 13,
+      "unit": ""
+    }
+  ],
+  "Djinnslayer": [
+    {
+      "key": "dmg%_1",
+      "label": "% Enhanced Damage",
+      "min": 190,
+      "max": 240,
+      "unit": ""
+    },
+    {
+      "key": "dmg-fire_2",
+      "label": "Fire Damage",
+      "min": 250,
+      "max": 500,
+      "unit": ""
+    },
+    {
+      "key": "dmg-demon_3",
+      "label": "dmg-demon",
+      "min": 100,
+      "max": 150,
+      "unit": ""
+    },
+    {
+      "key": "att-demon_4",
+      "label": "att-demon",
+      "min": 200,
+      "max": 300,
+      "unit": ""
+    },
+    {
+      "key": "abs-ltng_5",
+      "label": "% Lightning Absorb",
+      "min": 3,
+      "max": 7,
+      "unit": ""
+    },
+    {
+      "key": "manasteal_6",
+      "label": "% Mana Stolen Per Hit",
+      "min": 3,
+      "max": 6,
+      "unit": ""
+    }
+  ],
+  "Deathbit": [
+    {
+      "key": "dmg%_2",
+      "label": "% Enhanced Damage",
+      "min": 130,
+      "max": 180,
+      "unit": ""
+    },
+    {
+      "key": "att_3",
+      "label": "to Attack Rating",
+      "min": 200,
+      "max": 450,
+      "unit": ""
+    },
+    {
+      "key": "lifesteal_4",
+      "label": "% Life Stolen Per Hit",
+      "min": 7,
+      "max": 9,
+      "unit": ""
+    },
+    {
+      "key": "manasteal_5",
+      "label": "% Mana Stolen Per Hit",
+      "min": 4,
+      "max": 6,
+      "unit": ""
+    }
+  ],
+  "Warshrike": [
+    {
+      "key": "dmg%_1",
+      "label": "% Enhanced Damage",
+      "min": 200,
+      "max": 250,
+      "unit": ""
+    }
+  ],
+  "Gutsiphon": [
+    {
+      "key": "dmg%_1",
+      "label": "% Enhanced Damage",
+      "min": 160,
+      "max": 220,
+      "unit": ""
+    },
+    {
+      "key": "lifesteal_3",
+      "label": "% Life Stolen Per Hit",
+      "min": 12,
+      "max": 18,
+      "unit": ""
+    }
+  ],
+  "Razoredge": [
+    {
+      "key": "dmg%_1",
+      "label": "% Enhanced Damage",
+      "min": 175,
+      "max": 225,
+      "unit": ""
+    }
+  ],
+  "Demonlimb": [
+    {
+      "key": "dmg%_1",
+      "label": "% Enhanced Damage",
+      "min": 180,
+      "max": 230,
+      "unit": ""
+    },
+    {
+      "key": "dmg-fire_2",
+      "label": "Fire Damage",
+      "min": 222,
+      "max": 333,
+      "unit": ""
+    },
+    {
+      "key": "lifesteal_3",
+      "label": "% Life Stolen Per Hit",
+      "min": 7,
+      "max": 13,
+      "unit": ""
+    },
+    {
+      "key": "res-fire_7",
+      "label": "% Fire Resist",
+      "min": 15,
+      "max": 20,
+      "unit": ""
+    }
+  ],
+  "Steelshade": [
+    {
+      "key": "ac%_1",
+      "label": "% Enhanced Defense",
+      "min": 100,
+      "max": 130,
+      "unit": ""
+    },
+    {
+      "key": "abs-fire_2",
+      "label": "% Fire Absorb",
+      "min": 5,
+      "max": 11,
+      "unit": ""
+    },
+    {
+      "key": "manasteal_3",
+      "label": "% Mana Stolen Per Hit",
+      "min": 4,
+      "max": 8,
+      "unit": ""
+    },
+    {
+      "key": "regen_4",
+      "label": "Regenerate Life",
+      "min": 10,
+      "max": 18,
+      "unit": ""
+    }
+  ],
+  "Tomb Reaver": [
+    {
+      "key": "dmg%_3",
+      "label": "% Enhanced Damage",
+      "min": 200,
+      "max": 280,
+      "unit": ""
+    },
+    {
+      "key": "dmg-undead_4",
+      "label": "% Damage to Undead",
+      "min": 150,
+      "max": 230,
+      "unit": ""
+    },
+    {
+      "key": "mag%_5",
+      "label": "% Magic Find",
+      "min": 50,
+      "max": 80,
+      "unit": ""
+    },
+    {
+      "key": "res-all_6",
+      "label": "to All Resistances",
+      "min": 30,
+      "max": 50,
+      "unit": ""
+    },
+    {
+      "key": "att-undead_7",
+      "label": "Attack Rating vs Undead",
+      "min": 250,
+      "max": 350,
+      "unit": ""
+    },
+    {
+      "key": "heal-kill_9",
+      "label": "heal-kill",
+      "min": 10,
+      "max": 14,
+      "unit": ""
+    }
+  ],
+  "Deaths's Web": [
+    {
+      "key": "pierce-pois_2",
+      "label": "pierce-pois",
+      "min": 40,
+      "max": 50,
+      "unit": ""
+    },
+    {
+      "key": "heal-kill_3",
+      "label": "heal-kill",
+      "min": 7,
+      "max": 12,
+      "unit": ""
+    },
+    {
+      "key": "mana-kill_4",
+      "label": "mana-kill",
+      "min": 7,
+      "max": 12,
+      "unit": ""
+    },
+    {
+      "key": "skilltab_5",
+      "label": "skilltab",
+      "min": 1,
+      "max": 2,
+      "unit": ""
+    }
+  ],
+  "Nature's Peace": [
+    {
+      "key": "red-dmg_3",
+      "label": "Physical Damage Reduced By",
+      "min": 7,
+      "max": 11,
+      "unit": ""
+    },
+    {
+      "key": "res-pois_4",
+      "label": "% Poison Resist",
+      "min": 20,
+      "max": 30,
+      "unit": ""
+    }
+  ],
+  "Azurewrath": [
+    {
+      "key": "dmg-mag_1",
+      "label": "dmg-mag",
+      "min": 250,
+      "max": 500,
+      "unit": ""
+    },
+    {
+      "key": "dmg%_2",
+      "label": "% Enhanced Damage",
+      "min": 230,
+      "max": 270,
+      "unit": ""
+    },
+    {
+      "key": "dmg-cold_4",
+      "label": "dmg-cold",
+      "min": 250,
+      "max": 500,
+      "unit": ""
+    },
+    {
+      "key": "all-stats_6",
+      "label": "all-stats",
+      "min": 5,
+      "max": 10,
+      "unit": ""
+    }
+  ],
+  "Seraph's Hymn": [
+    {
+      "key": "skilltab_2",
+      "label": "skilltab",
+      "min": 1,
+      "max": 2,
+      "unit": ""
+    },
+    {
+      "key": "dmg-demon_3",
+      "label": "dmg-demon",
+      "min": 25,
+      "max": 50,
+      "unit": ""
+    },
+    {
+      "key": "dmg-undead_4",
+      "label": "% Damage to Undead",
+      "min": 25,
+      "max": 50,
+      "unit": ""
+    },
+    {
+      "key": "att-demon_5",
+      "label": "att-demon",
+      "min": 150,
+      "max": 250,
+      "unit": ""
+    },
+    {
+      "key": "att-undead_6",
+      "label": "Attack Rating vs Undead",
+      "min": 150,
+      "max": 250,
+      "unit": ""
+    }
+  ],
+  "Fleshripper": [
+    {
+      "key": "dmg%_1",
+      "label": "% Enhanced Damage",
+      "min": 200,
+      "max": 300,
+      "unit": ""
+    }
+  ],
+  "Horizon's Tornado": [
+    {
+      "key": "dmg%_1",
+      "label": "% Enhanced Damage",
+      "min": 230,
+      "max": 280,
+      "unit": ""
+    }
+  ],
+  "Stone Crusher": [
+    {
+      "key": "dmg%_1",
+      "label": "% Enhanced Damage",
+      "min": 280,
+      "max": 320,
+      "unit": ""
+    },
+    {
+      "key": "str_2",
+      "label": "to Strength",
+      "min": 20,
+      "max": 30,
+      "unit": ""
+    },
+    {
+      "key": "dmg_6",
+      "label": "dmg",
+      "min": 10,
+      "max": 30,
+      "unit": ""
+    }
+  ],
+  "Jadetalon": [
+    {
+      "key": "dmg%_1",
+      "label": "% Enhanced Damage",
+      "min": 190,
+      "max": 240,
+      "unit": ""
+    },
+    {
+      "key": "manasteal_2",
+      "label": "% Mana Stolen Per Hit",
+      "min": 10,
+      "max": 15,
+      "unit": ""
+    },
+    {
+      "key": "res-all_3",
+      "label": "to All Resistances",
+      "min": 40,
+      "max": 50,
+      "unit": ""
+    },
+    {
+      "key": "skilltab_5",
+      "label": "skilltab",
+      "min": 1,
+      "max": 2,
+      "unit": ""
+    },
+    {
+      "key": "skilltab_6",
+      "label": "skilltab",
+      "min": 1,
+      "max": 2,
+      "unit": ""
+    }
+  ],
+  "Shadowdancer": [
+    {
+      "key": "ac%_1",
+      "label": "% Enhanced Defense",
+      "min": 70,
+      "max": 100,
+      "unit": ""
+    },
+    {
+      "key": "dex_4",
+      "label": "to Dexterity",
+      "min": 15,
+      "max": 25,
+      "unit": ""
+    },
+    {
+      "key": "skilltab_5",
+      "label": "skilltab",
+      "min": 1,
+      "max": 2,
+      "unit": ""
+    }
+  ],
+  "Cerebus": [
+    {
+      "key": "ac%_1",
+      "label": "% Enhanced Defense",
+      "min": 130,
+      "max": 140,
+      "unit": ""
+    },
+    {
+      "key": "skilltab_2",
+      "label": "skilltab",
+      "min": 2,
+      "max": 4,
+      "unit": ""
+    },
+    {
+      "key": "lifesteal_3",
+      "label": "% Life Stolen Per Hit",
+      "min": 7,
+      "max": 10,
+      "unit": ""
+    },
+    {
+      "key": "att%_4",
+      "label": "% Bonus to Attack Rating",
+      "min": 60,
+      "max": 120,
+      "unit": ""
+    }
+  ],
+  "Tyrael's Might": [
+    {
+      "key": "ac%_3",
+      "label": "% Enhanced Defense",
+      "min": 120,
+      "max": 150,
+      "unit": ""
+    },
+    {
+      "key": "dmg-demon_5",
+      "label": "dmg-demon",
+      "min": 50,
+      "max": 100,
+      "unit": ""
+    },
+    {
+      "key": "res-all_8",
+      "label": "to All Resistances",
+      "min": 20,
+      "max": 30,
+      "unit": ""
+    },
+    {
+      "key": "str_9",
+      "label": "to Strength",
+      "min": 20,
+      "max": 30,
+      "unit": ""
+    }
+  ],
+  "Souldrain": [
+    {
+      "key": "ac%_1",
+      "label": "% Enhanced Defense",
+      "min": 90,
+      "max": 120,
+      "unit": ""
+    },
+    {
+      "key": "manasteal_2",
+      "label": "% Mana Stolen Per Hit",
+      "min": 4,
+      "max": 7,
+      "unit": ""
+    },
+    {
+      "key": "lifesteal_3",
+      "label": "% Life Stolen Per Hit",
+      "min": 4,
+      "max": 7,
+      "unit": ""
+    }
+  ],
+  "Runemaster": [
+    {
+      "key": "dmg%_1",
+      "label": "% Enhanced Damage",
+      "min": 220,
+      "max": 270,
+      "unit": ""
+    }
+  ],
+  "Deathcleaver": [
+    {
+      "key": "dmg%_1",
+      "label": "% Enhanced Damage",
+      "min": 230,
+      "max": 280,
+      "unit": ""
+    },
+    {
+      "key": "heal-kill_5",
+      "label": "heal-kill",
+      "min": 6,
+      "max": 9,
+      "unit": ""
+    }
+  ],
+  "Executioner's Justice": [
+    {
+      "key": "dmg%_1",
+      "label": "% Enhanced Damage",
+      "min": 240,
+      "max": 290,
+      "unit": ""
+    },
+    {
+      "key": "kill-skill_4",
+      "label": "kill-skill",
+      "min": 50,
+      "max": 6,
+      "unit": ""
+    }
+  ],
+  "Stoneraven": [
+    {
+      "key": "dmg%_1",
+      "label": "% Enhanced Damage",
+      "min": 230,
+      "max": 280,
+      "unit": ""
+    },
+    {
+      "key": "dmg-mag_2",
+      "label": "dmg-mag",
+      "min": 101,
+      "max": 187,
+      "unit": ""
+    },
+    {
+      "key": "res-all_3",
+      "label": "to All Resistances",
+      "min": 30,
+      "max": 50,
+      "unit": ""
+    },
+    {
+      "key": "ac_4",
+      "label": "to Defense",
+      "min": 400,
+      "max": 600,
+      "unit": ""
+    },
+    {
+      "key": "skilltab_5",
+      "label": "skilltab",
+      "min": 1,
+      "max": 3,
+      "unit": ""
+    }
+  ],
+  "Leviathan": [
+    {
+      "key": "ac%_1",
+      "label": "% Enhanced Defense",
+      "min": 170,
+      "max": 200,
+      "unit": ""
+    },
+    {
+      "key": "ac_2",
+      "label": "to Defense",
+      "min": 100,
+      "max": 150,
+      "unit": ""
+    },
+    {
+      "key": "red-dmg%_3",
+      "label": "red-dmg%",
+      "min": 15,
+      "max": 25,
+      "unit": ""
+    },
+    {
+      "key": "str_4",
+      "label": "to Strength",
+      "min": 40,
+      "max": 50,
+      "unit": ""
+    }
+  ],
+  "Wisp": [
+    {
+      "key": "abs-ltng%_1",
+      "label": "abs-ltng%",
+      "min": 10,
+      "max": 20,
+      "unit": ""
+    },
+    {
+      "key": "mag%_3",
+      "label": "% Magic Find",
+      "min": 10,
+      "max": 20,
+      "unit": ""
+    }
+  ],
+  "Gargoyle's Bite": [
+    {
+      "key": "dmg%_1",
+      "label": "% Enhanced Damage",
+      "min": 180,
+      "max": 230,
+      "unit": ""
+    },
+    {
+      "key": "lifesteal_4",
+      "label": "% Life Stolen Per Hit",
+      "min": 9,
+      "max": 15,
+      "unit": ""
+    }
+  ],
+  "Lacerator": [
+    {
+      "key": "dmg%_1",
+      "label": "% Enhanced Damage",
+      "min": 150,
+      "max": 210,
+      "unit": ""
+    }
+  ],
+  "Mang Song's Lesson": [
+    {
+      "key": "pierce-fire_2",
+      "label": "% to Enemy Fire Resistance",
+      "min": 7,
+      "max": 15,
+      "unit": ""
+    },
+    {
+      "key": "pierce-ltng_3",
+      "label": "% to Enemy Lightning Resistance",
+      "min": 7,
+      "max": 15,
+      "unit": ""
+    },
+    {
+      "key": "pierce-cold_4",
+      "label": "% to Enemy Cold Resistance",
+      "min": 7,
+      "max": 15,
+      "unit": ""
+    }
+  ],
+  "Viperfork": [
+    {
+      "key": "dmg%_1",
+      "label": "% Enhanced Damage",
+      "min": 190,
+      "max": 240,
+      "unit": ""
+    },
+    {
+      "key": "att_4",
+      "label": "to Attack Rating",
+      "min": 200,
+      "max": 250,
+      "unit": ""
+    },
+    {
+      "key": "res-pois_6",
+      "label": "% Poison Resist",
+      "min": 30,
+      "max": 50,
+      "unit": ""
+    }
+  ],
+  "Ethereal Edge": [
+    {
+      "key": "dmg%_1",
+      "label": "% Enhanced Damage",
+      "min": 150,
+      "max": 180,
+      "unit": ""
+    },
+    {
+      "key": "abs-fire_3",
+      "label": "% Fire Absorb",
+      "min": 10,
+      "max": 12,
+      "unit": ""
+    },
+    {
+      "key": "dmg-demon_4",
+      "label": "dmg-demon",
+      "min": 150,
+      "max": 200,
+      "unit": ""
+    },
+    {
+      "key": "demon-heal_5",
+      "label": "demon-heal",
+      "min": 5,
+      "max": 10,
+      "unit": ""
+    },
+    {
+      "key": "att_6",
+      "label": "to Attack Rating",
+      "min": 270,
+      "max": 350,
+      "unit": ""
+    }
+  ],
+  "Demonhorn's Edge": [
+    {
+      "key": "ac%_1",
+      "label": "% Enhanced Defense",
+      "min": 120,
+      "max": 160,
+      "unit": ""
+    },
+    {
+      "key": "lifesteal_3",
+      "label": "% Life Stolen Per Hit",
+      "min": 3,
+      "max": 6,
+      "unit": ""
+    },
+    {
+      "key": "thorns_4",
+      "label": "thorns",
+      "min": 55,
+      "max": 77,
+      "unit": ""
+    },
+    {
+      "key": "skilltab_5",
+      "label": "skilltab",
+      "min": 1,
+      "max": 3,
+      "unit": ""
+    },
+    {
+      "key": "skilltab_6",
+      "label": "skilltab",
+      "min": 1,
+      "max": 3,
+      "unit": ""
+    },
+    {
+      "key": "skilltab_7",
+      "label": "skilltab",
+      "min": 1,
+      "max": 3,
+      "unit": ""
+    }
+  ],
+  "The Reaper's Toll": [
+    {
+      "key": "dmg%_1",
+      "label": "% Enhanced Damage",
+      "min": 190,
+      "max": 240,
+      "unit": ""
+    },
+    {
+      "key": "lifesteal_4",
+      "label": "% Life Stolen Per Hit",
+      "min": 11,
+      "max": 15,
+      "unit": ""
+    },
+    {
+      "key": "dmg-cold_7",
+      "label": "dmg-cold",
+      "min": 4,
+      "max": 44,
+      "unit": ""
+    }
+  ],
+  "Spiritkeeper": [
+    {
+      "key": "ac%_1",
+      "label": "% Enhanced Defense",
+      "min": 170,
+      "max": 190,
+      "unit": ""
+    },
+    {
+      "key": "abs-ltng_3",
+      "label": "% Lightning Absorb",
+      "min": 9,
+      "max": 14,
+      "unit": ""
+    },
+    {
+      "key": "res-fire_4",
+      "label": "% Fire Resist",
+      "min": 30,
+      "max": 40,
+      "unit": ""
+    },
+    {
+      "key": "abs-cold%_5",
+      "label": "abs-cold%",
+      "min": 15,
+      "max": 25,
+      "unit": ""
+    },
+    {
+      "key": "dru_7",
+      "label": "dru",
+      "min": 1,
+      "max": 2,
+      "unit": ""
+    }
+  ],
+  "Hellrack": [
+    {
+      "key": "dmg%_1",
+      "label": "% Enhanced Damage",
+      "min": 180,
+      "max": 230,
+      "unit": ""
+    },
+    {
+      "key": "dmg-elem_2",
+      "label": "dmg-elem",
+      "min": 63,
+      "max": 324,
+      "unit": ""
+    },
+    {
+      "key": "att%_4",
+      "label": "% Bonus to Attack Rating",
+      "min": 100,
+      "max": 150,
+      "unit": ""
+    }
+  ],
+  "Alma Negra": [
+    {
+      "key": "ac%_1",
+      "label": "% Enhanced Defense",
+      "min": 180,
+      "max": 210,
+      "unit": ""
+    },
+    {
+      "key": "pal_3",
+      "label": "pal",
+      "min": 1,
+      "max": 2,
+      "unit": ""
+    },
+    {
+      "key": "red-mag_5",
+      "label": "Magic Damage Reduced By",
+      "min": 5,
+      "max": 9,
+      "unit": ""
+    },
+    {
+      "key": "att%_6",
+      "label": "% Bonus to Attack Rating",
+      "min": 40,
+      "max": 75,
+      "unit": ""
+    },
+    {
+      "key": "dmg%_7",
+      "label": "% Enhanced Damage",
+      "min": 40,
+      "max": 75,
+      "unit": ""
+    }
+  ],
+  "Darkforge Spawn": [
+    {
+      "key": "ac%_1",
+      "label": "% Enhanced Defense",
+      "min": 140,
+      "max": 180,
+      "unit": ""
+    },
+    {
+      "key": "skilltab_4",
+      "label": "skilltab",
+      "min": 1,
+      "max": 3,
+      "unit": ""
+    },
+    {
+      "key": "skilltab_5",
+      "label": "skilltab",
+      "min": 1,
+      "max": 3,
+      "unit": ""
+    },
+    {
+      "key": "skilltab_6",
+      "label": "skilltab",
+      "min": 1,
+      "max": 3,
+      "unit": ""
+    }
+  ],
+  "Widowmaker": [
+    {
+      "key": "dmg%_1",
+      "label": "% Enhanced Damage",
+      "min": 150,
+      "max": 200,
+      "unit": ""
+    }
+  ],
+  "Bloodraven's Charge": [
+    {
+      "key": "dmg%_1",
+      "label": "% Enhanced Damage",
+      "min": 180,
+      "max": 230,
+      "unit": ""
+    },
+    {
+      "key": "att%_2",
+      "label": "% Bonus to Attack Rating",
+      "min": 200,
+      "max": 300,
+      "unit": ""
+    },
+    {
+      "key": "skilltab_4",
+      "label": "skilltab",
+      "min": 2,
+      "max": 4,
+      "unit": ""
+    }
+  ],
+  "Ghostflame": [
+    {
+      "key": "dmg%_1",
+      "label": "% Enhanced Damage",
+      "min": 190,
+      "max": 240,
+      "unit": ""
+    },
+    {
+      "key": "manasteal_4",
+      "label": "% Mana Stolen Per Hit",
+      "min": 10,
+      "max": 15,
+      "unit": ""
+    }
+  ],
+  "Shadowkiller": [
+    {
+      "key": "dmg%_1",
+      "label": "% Enhanced Damage",
+      "min": 170,
+      "max": 220,
+      "unit": ""
+    },
+    {
+      "key": "mana-kill_4",
+      "label": "mana-kill",
+      "min": 10,
+      "max": 15,
+      "unit": ""
+    }
+  ],
+  "Gimmershred": [
+    {
+      "key": "dmg%_1",
+      "label": "% Enhanced Damage",
+      "min": 160,
+      "max": 210,
+      "unit": ""
+    },
+    {
+      "key": "dmg-fire_2",
+      "label": "Fire Damage",
+      "min": 218,
+      "max": 483,
+      "unit": ""
+    },
+    {
+      "key": "dmg-cold_3",
+      "label": "dmg-cold",
+      "min": 176,
+      "max": 397,
+      "unit": ""
+    },
+    {
+      "key": "dmg-ltng_4",
+      "label": "Lightning Damage",
+      "min": 29,
+      "max": 501,
+      "unit": ""
+    }
+  ],
+  "Griffon's Eye": [
+    {
+      "key": "ac_1",
+      "label": "to Defense",
+      "min": 100,
+      "max": 200,
+      "unit": ""
+    },
+    {
+      "key": "extra-ltng_4",
+      "label": "extra-ltng",
+      "min": 10,
+      "max": 15,
+      "unit": ""
+    },
+    {
+      "key": "pierce-ltng_5",
+      "label": "% to Enemy Lightning Resistance",
+      "min": 15,
+      "max": 20,
+      "unit": ""
+    }
+  ],
+  "Windhammer": [
+    {
+      "key": "dmg%_1",
+      "label": "% Enhanced Damage",
+      "min": 180,
+      "max": 230,
+      "unit": ""
+    }
+  ],
+  "Thunderstroke": [
+    {
+      "key": "dmg%_1",
+      "label": "% Enhanced Damage",
+      "min": 150,
+      "max": 200,
+      "unit": ""
+    },
+    {
+      "key": "dmg-ltng_2",
+      "label": "Lightning Damage",
+      "min": 1,
+      "max": 511,
+      "unit": ""
+    },
+    {
+      "key": "skilltab_7",
+      "label": "skilltab",
+      "min": 2,
+      "max": 4,
+      "unit": ""
+    }
+  ],
+  "Demon's Arch": [
+    {
+      "key": "dmg%_1",
+      "label": "% Enhanced Damage",
+      "min": 160,
+      "max": 210,
+      "unit": ""
+    },
+    {
+      "key": "dmg-fire_2",
+      "label": "Fire Damage",
+      "min": 232,
+      "max": 323,
+      "unit": ""
+    },
+    {
+      "key": "lifesteal_3",
+      "label": "% Life Stolen Per Hit",
+      "min": 6,
+      "max": 12,
+      "unit": ""
+    },
+    {
+      "key": "dmg-ltng_6",
+      "label": "Lightning Damage",
+      "min": 23,
+      "max": 333,
+      "unit": ""
+    }
+  ],
+  "Boneflame": [
+    {
+      "key": "ac%_1",
+      "label": "% Enhanced Defense",
+      "min": 120,
+      "max": 150,
+      "unit": ""
+    },
+    {
+      "key": "nec_4",
+      "label": "nec",
+      "min": 2,
+      "max": 3,
+      "unit": ""
+    },
+    {
+      "key": "res-all_5",
+      "label": "to All Resistances",
+      "min": 20,
+      "max": 30,
+      "unit": ""
+    }
+  ],
+  "Steelpillar": [
+    {
+      "key": "dmg%_1",
+      "label": "% Enhanced Damage",
+      "min": 210,
+      "max": 260,
+      "unit": ""
+    },
+    {
+      "key": "ac%_4",
+      "label": "% Enhanced Defense",
+      "min": 50,
+      "max": 80,
+      "unit": ""
+    }
+  ],
+  "Nightwing's Veil": [
+    {
+      "key": "ac%_1",
+      "label": "% Enhanced Defense",
+      "min": 90,
+      "max": 120,
+      "unit": ""
+    },
+    {
+      "key": "dex_3",
+      "label": "to Dexterity",
+      "min": 10,
+      "max": 20,
+      "unit": ""
+    },
+    {
+      "key": "abs-cold_4",
+      "label": "% Cold Absorb",
+      "min": 5,
+      "max": 9,
+      "unit": ""
+    },
+    {
+      "key": "extra-cold_6",
+      "label": "extra-cold",
+      "min": 8,
+      "max": 15,
+      "unit": ""
+    }
+  ],
+  "Crown of Ages": [
+    {
+      "key": "res-all_2",
+      "label": "to All Resistances",
+      "min": 20,
+      "max": 30,
+      "unit": ""
+    },
+    {
+      "key": "ac_4",
+      "label": "to Defense",
+      "min": 100,
+      "max": 150,
+      "unit": ""
+    },
+    {
+      "key": "red-dmg%_6",
+      "label": "red-dmg%",
+      "min": 10,
+      "max": 15,
+      "unit": ""
+    }
+  ],
+  "Andariel's Visage": [
+    {
+      "key": "ac%_1",
+      "label": "% Enhanced Defense",
+      "min": 100,
+      "max": 150,
+      "unit": ""
+    },
+    {
+      "key": "str_6",
+      "label": "to Strength",
+      "min": 25,
+      "max": 30,
+      "unit": ""
+    },
+    {
+      "key": "lifesteal_9",
+      "label": "% Life Stolen Per Hit",
+      "min": 8,
+      "max": 10,
+      "unit": ""
+    }
+  ],
+  "Dragonscale": [
+    {
+      "key": "ac%_1",
+      "label": "% Enhanced Defense",
+      "min": 170,
+      "max": 200,
+      "unit": ""
+    },
+    {
+      "key": "abs-fire%_2",
+      "label": "abs-fire%",
+      "min": 10,
+      "max": 20,
+      "unit": ""
+    },
+    {
+      "key": "str_4",
+      "label": "to Strength",
+      "min": 15,
+      "max": 25,
+      "unit": ""
+    },
+    {
+      "key": "dmg-fire_5",
+      "label": "Fire Damage",
+      "min": 211,
+      "max": 371,
+      "unit": ""
+    }
+  ],
+  "Steel Carapice": [
+    {
+      "key": "ac%_1",
+      "label": "% Enhanced Defense",
+      "min": 190,
+      "max": 220,
+      "unit": ""
+    },
+    {
+      "key": "red-dmg_3",
+      "label": "Physical Damage Reduced By",
+      "min": 9,
+      "max": 14,
+      "unit": ""
+    },
+    {
+      "key": "res-cold_4",
+      "label": "% Cold Resist",
+      "min": 40,
+      "max": 60,
+      "unit": ""
+    },
+    {
+      "key": "regen-mana_5",
+      "label": "% Regenerate Mana",
+      "min": 10,
+      "max": 15,
+      "unit": ""
+    }
+  ],
+  "Medusa's Gaze": [
+    {
+      "key": "ac%_1",
+      "label": "% Enhanced Defense",
+      "min": 150,
+      "max": 180,
+      "unit": ""
+    },
+    {
+      "key": "lifesteal_4",
+      "label": "% Life Stolen Per Hit",
+      "min": 5,
+      "max": 9,
+      "unit": ""
+    },
+    {
+      "key": "res-cold_6",
+      "label": "% Cold Resist",
+      "min": 40,
+      "max": 80,
+      "unit": ""
+    }
+  ],
+  "Ravenlore": [
+    {
+      "key": "ac%_1",
+      "label": "% Enhanced Defense",
+      "min": 120,
+      "max": 150,
+      "unit": ""
+    },
+    {
+      "key": "res-all_2",
+      "label": "to All Resistances",
+      "min": 15,
+      "max": 25,
+      "unit": ""
+    },
+    {
+      "key": "enr_4",
+      "label": "to Energy",
+      "min": 20,
+      "max": 30,
+      "unit": ""
+    },
+    {
+      "key": "pierce-fire_5",
+      "label": "% to Enemy Fire Resistance",
+      "min": 10,
+      "max": 20,
+      "unit": ""
+    }
+  ],
+  "Flamebellow": [
+    {
+      "key": "dmg%_1",
+      "label": "% Enhanced Damage",
+      "min": 170,
+      "max": 240,
+      "unit": ""
+    },
+    {
+      "key": "dmg-fire_2",
+      "label": "Fire Damage",
+      "min": 233,
+      "max": 482,
+      "unit": ""
+    },
+    {
+      "key": "abs-fire%_4",
+      "label": "abs-fire%",
+      "min": 20,
+      "max": 30,
+      "unit": ""
+    },
+    {
+      "key": "str_6",
+      "label": "to Strength",
+      "min": 10,
+      "max": 20,
+      "unit": ""
+    },
+    {
+      "key": "vit_7",
+      "label": "to Vitality",
+      "min": 5,
+      "max": 10,
+      "unit": ""
+    }
+  ],
+  "Fathom": [
+    {
+      "key": "extra-cold_2",
+      "label": "extra-cold",
+      "min": 15,
+      "max": 30,
+      "unit": ""
+    },
+    {
+      "key": "res-fire_4",
+      "label": "% Fire Resist",
+      "min": 25,
+      "max": 40,
+      "unit": ""
+    },
+    {
+      "key": "res-ltng_5",
+      "label": "% Lightning Resist",
+      "min": 25,
+      "max": 40,
+      "unit": ""
+    }
+  ],
+  "Wolfhowl": [
+    {
+      "key": "ac%_1",
+      "label": "% Enhanced Defense",
+      "min": 120,
+      "max": 150,
+      "unit": ""
+    },
+    {
+      "key": "skilltab_2",
+      "label": "skilltab",
+      "min": 2,
+      "max": 3,
+      "unit": ""
+    },
+    {
+      "key": "str_3",
+      "label": "to Strength",
+      "min": 8,
+      "max": 15,
+      "unit": ""
+    },
+    {
+      "key": "dex_4",
+      "label": "to Dexterity",
+      "min": 8,
+      "max": 15,
+      "unit": ""
+    },
+    {
+      "key": "vit_5",
+      "label": "to Vitality",
+      "min": 8,
+      "max": 15,
+      "unit": ""
+    }
+  ],
+  "Spirit Ward": [
+    {
+      "key": "ac%_1",
+      "label": "% Enhanced Defense",
+      "min": 130,
+      "max": 180,
+      "unit": ""
+    },
+    {
+      "key": "abs-cold_2",
+      "label": "% Cold Absorb",
+      "min": 6,
+      "max": 11,
+      "unit": ""
+    },
+    {
+      "key": "res-all_3",
+      "label": "to All Resistances",
+      "min": 30,
+      "max": 40,
+      "unit": ""
+    },
+    {
+      "key": "block_4",
+      "label": "% Faster Block Rate",
+      "min": 20,
+      "max": 30,
+      "unit": ""
+    }
+  ],
+  "Kira's Guardian": [
+    {
+      "key": "ac_1",
+      "label": "to Defense",
+      "min": 50,
+      "max": 120,
+      "unit": ""
+    },
+    {
+      "key": "res-all_2",
+      "label": "to All Resistances",
+      "min": 50,
+      "max": 70,
+      "unit": ""
+    }
+  ],
+  "Ormus' Robes": [
+    {
+      "key": "ac_1",
+      "label": "to Defense",
+      "min": 10,
+      "max": 20,
+      "unit": ""
+    },
+    {
+      "key": "extra-fire_3",
+      "label": "extra-fire",
+      "min": 10,
+      "max": 15,
+      "unit": ""
+    },
+    {
+      "key": "extra-cold_4",
+      "label": "extra-cold",
+      "min": 10,
+      "max": 15,
+      "unit": ""
+    },
+    {
+      "key": "extra-ltng_5",
+      "label": "extra-ltng",
+      "min": 10,
+      "max": 15,
+      "unit": ""
+    },
+    {
+      "key": "regen-mana_6",
+      "label": "% Regenerate Mana",
+      "min": 10,
+      "max": 15,
+      "unit": ""
+    },
+    {
+      "key": "skill-rand_7",
+      "label": "skill-rand",
+      "min": 36,
+      "max": 60,
+      "unit": ""
+    }
+  ],
+  "Gheed's Fortune": [
+    {
+      "key": "mag%_1",
+      "label": "% Magic Find",
+      "min": 20,
+      "max": 40,
+      "unit": ""
+    },
+    {
+      "key": "gold%_2",
+      "label": "gold%",
+      "min": 80,
+      "max": 160,
+      "unit": ""
+    },
+    {
+      "key": "cheap_3",
+      "label": "cheap",
+      "min": 10,
+      "max": 15,
+      "unit": ""
+    }
+  ],
+  "Stormlash": [
+    {
+      "key": "dmg%_1",
+      "label": "% Enhanced Damage",
+      "min": 240,
+      "max": 300,
+      "unit": ""
+    },
+    {
+      "key": "dmg-ltng_5",
+      "label": "Lightning Damage",
+      "min": 1,
+      "max": 473,
+      "unit": ""
+    },
+    {
+      "key": "abs-ltng_8",
+      "label": "% Lightning Absorb",
+      "min": 3,
+      "max": 9,
+      "unit": ""
+    }
+  ],
+  "Halaberd's Reign": [
+    {
+      "key": "ac%_1",
+      "label": "% Enhanced Defense",
+      "min": 140,
+      "max": 170,
+      "unit": ""
+    },
+    {
+      "key": "regen_5",
+      "label": "Regenerate Life",
+      "min": 15,
+      "max": 23,
+      "unit": ""
+    }
+  ],
+  "Spike Thorn": [
+    {
+      "key": "ac%_1",
+      "label": "% Enhanced Defense",
+      "min": 120,
+      "max": 150,
+      "unit": ""
+    },
+    {
+      "key": "red-dmg%_5",
+      "label": "red-dmg%",
+      "min": 15,
+      "max": 20,
+      "unit": ""
+    }
+  ],
+  "Dracul's Grasp": [
+    {
+      "key": "ac%_1",
+      "label": "% Enhanced Defense",
+      "min": 90,
+      "max": 120,
+      "unit": ""
+    },
+    {
+      "key": "lifesteal_2",
+      "label": "% Life Stolen Per Hit",
+      "min": 7,
+      "max": 10,
+      "unit": ""
+    },
+    {
+      "key": "heal-kill_5",
+      "label": "heal-kill",
+      "min": 5,
+      "max": 10,
+      "unit": ""
+    },
+    {
+      "key": "str_6",
+      "label": "to Strength",
+      "min": 10,
+      "max": 15,
+      "unit": ""
+    }
+  ],
+  "Frostwind": [
+    {
+      "key": "dmg%_1",
+      "label": "% Enhanced Damage",
+      "min": 180,
+      "max": 230,
+      "unit": ""
+    },
+    {
+      "key": "dmg-cold_4",
+      "label": "dmg-cold",
+      "min": 237,
+      "max": 486,
+      "unit": ""
+    },
+    {
+      "key": "abs-cold%_6",
+      "label": "abs-cold%",
+      "min": 7,
+      "max": 15,
+      "unit": ""
+    }
+  ],
+  "Templar's Might": [
+    {
+      "key": "ac%_1",
+      "label": "% Enhanced Defense",
+      "min": 170,
+      "max": 220,
+      "unit": ""
+    },
+    {
+      "key": "ac-miss_3",
+      "label": "ac-miss",
+      "min": 250,
+      "max": 300,
+      "unit": ""
+    },
+    {
+      "key": "stam_4",
+      "label": "to Maximum Stamina",
+      "min": 40,
+      "max": 50,
+      "unit": ""
+    },
+    {
+      "key": "str_5",
+      "label": "to Strength",
+      "min": 10,
+      "max": 15,
+      "unit": ""
+    },
+    {
+      "key": "vit_6",
+      "label": "to Vitality",
+      "min": 10,
+      "max": 15,
+      "unit": ""
+    },
+    {
+      "key": "skilltab_7",
+      "label": "skilltab",
+      "min": 1,
+      "max": 2,
+      "unit": ""
+    }
+  ],
+  "Eschuta's temper": [
+    {
+      "key": "sor_1",
+      "label": "sor",
+      "min": 1,
+      "max": 3,
+      "unit": ""
+    },
+    {
+      "key": "extra-fire_3",
+      "label": "extra-fire",
+      "min": 10,
+      "max": 20,
+      "unit": ""
+    },
+    {
+      "key": "extra-ltng_4",
+      "label": "extra-ltng",
+      "min": 10,
+      "max": 20,
+      "unit": ""
+    },
+    {
+      "key": "enr_5",
+      "label": "to Energy",
+      "min": 20,
+      "max": 30,
+      "unit": ""
+    }
+  ],
+  "Firelizard's Talons": [
+    {
+      "key": "dmg%_1",
+      "label": "% Enhanced Damage",
+      "min": 200,
+      "max": 270,
+      "unit": ""
+    },
+    {
+      "key": "skilltab_3",
+      "label": "skilltab",
+      "min": 1,
+      "max": 3,
+      "unit": ""
+    },
+    {
+      "key": "dmg-fire_4",
+      "label": "Fire Damage",
+      "min": 236,
+      "max": 480,
+      "unit": ""
+    },
+    {
+      "key": "res-fire_5",
+      "label": "% Fire Resist",
+      "min": 40,
+      "max": 70,
+      "unit": ""
+    }
+  ],
+  "Sandstorm Trek": [
+    {
+      "key": "ac%_1",
+      "label": "% Enhanced Defense",
+      "min": 140,
+      "max": 170,
+      "unit": ""
+    },
+    {
+      "key": "res-pois_6",
+      "label": "% Poison Resist",
+      "min": 40,
+      "max": 70,
+      "unit": ""
+    },
+    {
+      "key": "str_8",
+      "label": "to Strength",
+      "min": 10,
+      "max": 15,
+      "unit": ""
+    },
+    {
+      "key": "vit_9",
+      "label": "to Vitality",
+      "min": 10,
+      "max": 15,
+      "unit": ""
+    }
+  ],
+  "Marrowwalk": [
+    {
+      "key": "ac%_1",
+      "label": "% Enhanced Defense",
+      "min": 170,
+      "max": 200,
+      "unit": ""
+    },
+    {
+      "key": "str_8",
+      "label": "to Strength",
+      "min": 10,
+      "max": 20,
+      "unit": ""
+    }
+  ],
+  "Heaven's Light": [
+    {
+      "key": "dmg%_1",
+      "label": "% Enhanced Damage",
+      "min": 250,
+      "max": 300,
+      "unit": ""
+    },
+    {
+      "key": "demon-heal_5",
+      "label": "demon-heal",
+      "min": 15,
+      "max": 20,
+      "unit": ""
+    },
+    {
+      "key": "pal_8",
+      "label": "pal",
+      "min": 2,
+      "max": 3,
+      "unit": ""
+    }
+  ],
+  "Arachnid Mesh": [
+    {
+      "key": "ac%_1",
+      "label": "% Enhanced Defense",
+      "min": 90,
+      "max": 120,
+      "unit": ""
+    }
+  ],
+  "Nosferatu's Coil": [
+    {
+      "key": "lifesteal_4",
+      "label": "% Life Stolen Per Hit",
+      "min": 5,
+      "max": 7,
+      "unit": ""
+    }
+  ],
+  "Metalgrid": [
+    {
+      "key": "ac_1",
+      "label": "to Defense",
+      "min": 300,
+      "max": 350,
+      "unit": ""
+    },
+    {
+      "key": "res-all_2",
+      "label": "to All Resistances",
+      "min": 25,
+      "max": 35,
+      "unit": ""
+    },
+    {
+      "key": "att_3",
+      "label": "to Attack Rating",
+      "min": 400,
+      "max": 450,
+      "unit": ""
+    }
+  ],
+  "Verdugo's Hearty Cord": [
+    {
+      "key": "ac%_1",
+      "label": "% Enhanced Defense",
+      "min": 90,
+      "max": 140,
+      "unit": ""
+    },
+    {
+      "key": "vit_2",
+      "label": "to Vitality",
+      "min": 30,
+      "max": 40,
+      "unit": ""
+    },
+    {
+      "key": "stam_3",
+      "label": "to Maximum Stamina",
+      "min": 100,
+      "max": 120,
+      "unit": ""
+    },
+    {
+      "key": "red-dmg%_5",
+      "label": "red-dmg%",
+      "min": 10,
+      "max": 15,
+      "unit": ""
+    },
+    {
+      "key": "regen_6",
+      "label": "Regenerate Life",
+      "min": 10,
+      "max": 13,
+      "unit": ""
+    }
+  ],
+  "Carrion Wind": [
+    {
+      "key": "ac-miss_1",
+      "label": "ac-miss",
+      "min": 100,
+      "max": 160,
+      "unit": ""
+    },
+    {
+      "key": "lifesteal_2",
+      "label": "% Life Stolen Per Hit",
+      "min": 6,
+      "max": 9,
+      "unit": ""
+    }
+  ],
+  "Giantskull": [
+    {
+      "key": "ac_1",
+      "label": "to Defense",
+      "min": 250,
+      "max": 320,
+      "unit": ""
+    },
+    {
+      "key": "str_2",
+      "label": "to Strength",
+      "min": 25,
+      "max": 35,
+      "unit": ""
+    }
+  ],
+  "Ironward": [
+    {
+      "key": "dmg%_1",
+      "label": "% Enhanced Damage",
+      "min": 240,
+      "max": 290,
+      "unit": ""
+    },
+    {
+      "key": "att%_3",
+      "label": "% Bonus to Attack Rating",
+      "min": 150,
+      "max": 200,
+      "unit": ""
+    },
+    {
+      "key": "dmg-mag_5",
+      "label": "dmg-mag",
+      "min": 80,
+      "max": 240,
+      "unit": ""
+    },
+    {
+      "key": "red-dmg_6",
+      "label": "Physical Damage Reduced By",
+      "min": 4,
+      "max": 7,
+      "unit": ""
+    },
+    {
+      "key": "dmg_7",
+      "label": "dmg",
+      "min": 40,
+      "max": 85,
+      "unit": ""
+    },
+    {
+      "key": "skilltab_8",
+      "label": "skilltab",
+      "min": 2,
+      "max": 4,
+      "unit": ""
+    }
+  ],
+  "Annihilus": [
+    {
+      "key": "all-stats_2",
+      "label": "all-stats",
+      "min": 10,
+      "max": 20,
+      "unit": ""
+    },
+    {
+      "key": "res-all_3",
+      "label": "to All Resistances",
+      "min": 10,
+      "max": 20,
+      "unit": ""
+    },
+    {
+      "key": "addxp_4",
+      "label": "addxp",
+      "min": 5,
+      "max": 10,
+      "unit": ""
+    }
+  ],
+  "Arioc's Needle": [
+    {
+      "key": "dmg%_1",
+      "label": "% Enhanced Damage",
+      "min": 180,
+      "max": 230,
+      "unit": ""
+    },
+    {
+      "key": "allskills_5",
+      "label": "to All Skills",
+      "min": 2,
+      "max": 4,
+      "unit": ""
+    }
+  ],
+  "Cranebeak": [
+    {
+      "key": "dmg%_1",
+      "label": "% Enhanced Damage",
+      "min": 240,
+      "max": 300,
+      "unit": ""
+    },
+    {
+      "key": "dmg-ltng_2",
+      "label": "Lightning Damage",
+      "min": 1,
+      "max": 305,
+      "unit": ""
+    },
+    {
+      "key": "mag%_5",
+      "label": "% Magic Find",
+      "min": 20,
+      "max": 50,
+      "unit": ""
+    }
+  ],
+  "Nord's Tenderizer": [
+    {
+      "key": "dmg%_1",
+      "label": "% Enhanced Damage",
+      "min": 270,
+      "max": 330,
+      "unit": ""
+    },
+    {
+      "key": "att%_5",
+      "label": "% Bonus to Attack Rating",
+      "min": 150,
+      "max": 180,
+      "unit": ""
+    },
+    {
+      "key": "abs-cold%_6",
+      "label": "abs-cold%",
+      "min": 5,
+      "max": 15,
+      "unit": ""
+    },
+    {
+      "key": "dmg-cold_7",
+      "label": "dmg-cold",
+      "min": 205,
+      "max": 455,
+      "unit": ""
+    }
+  ],
+  "Earthshifter": [
+    {
+      "key": "dmg%_1",
+      "label": "% Enhanced Damage",
+      "min": 250,
+      "max": 300,
+      "unit": ""
+    }
+  ],
+  "Wraithflight": [
+    {
+      "key": "dmg%_1",
+      "label": "% Enhanced Damage",
+      "min": 150,
+      "max": 190,
+      "unit": ""
+    },
+    {
+      "key": "lifesteal_3",
+      "label": "% Life Stolen Per Hit",
+      "min": 9,
+      "max": 13,
+      "unit": ""
+    }
+  ],
+  "Bonehew": [
+    {
+      "key": "dmg%_1",
+      "label": "% Enhanced Damage",
+      "min": 270,
+      "max": 320,
+      "unit": ""
+    }
+  ],
+  "Ondal's Wisdom": [
+    {
+      "key": "enr_2",
+      "label": "to Energy",
+      "min": 40,
+      "max": 50,
+      "unit": ""
+    },
+    {
+      "key": "allskills_3",
+      "label": "to All Skills",
+      "min": 2,
+      "max": 4,
+      "unit": ""
+    },
+    {
+      "key": "ac_4",
+      "label": "to Defense",
+      "min": 450,
+      "max": 550,
+      "unit": ""
+    },
+    {
+      "key": "red-mag_6",
+      "label": "Magic Damage Reduced By",
+      "min": 5,
+      "max": 8,
+      "unit": ""
+    }
+  ],
+  "The Reedeemer": [
+    {
+      "key": "dmg%_1",
+      "label": "% Enhanced Damage",
+      "min": 250,
+      "max": 300,
+      "unit": ""
+    },
+    {
+      "key": "dmg-demon_2",
+      "label": "dmg-demon",
+      "min": 200,
+      "max": 250,
+      "unit": ""
+    },
+    {
+      "key": "dmg_9",
+      "label": "dmg",
+      "min": 60,
+      "max": 120,
+      "unit": ""
+    }
+  ],
+  "Headhunter's Glory": [
+    {
+      "key": "ac_1",
+      "label": "to Defense",
+      "min": 320,
+      "max": 420,
+      "unit": ""
+    },
+    {
+      "key": "ac-miss_2",
+      "label": "ac-miss",
+      "min": 300,
+      "max": 350,
+      "unit": ""
+    },
+    {
+      "key": "res-pois_3",
+      "label": "% Poison Resist",
+      "min": 30,
+      "max": 40,
+      "unit": ""
+    },
+    {
+      "key": "res-fire_5",
+      "label": "% Fire Resist",
+      "min": 20,
+      "max": 30,
+      "unit": ""
+    },
+    {
+      "key": "heal-kill_6",
+      "label": "heal-kill",
+      "min": 5,
+      "max": 7,
+      "unit": ""
+    }
+  ],
+  "Steelrend": [
+    {
+      "key": "ac_1",
+      "label": "to Defense",
+      "min": 170,
+      "max": 210,
+      "unit": ""
+    },
+    {
+      "key": "str_2",
+      "label": "to Strength",
+      "min": 15,
+      "max": 20,
+      "unit": ""
+    },
+    {
+      "key": "dmg%_3",
+      "label": "% Enhanced Damage",
+      "min": 30,
+      "max": 60,
+      "unit": ""
+    }
+  ],
+  "Rainbow Facet": [
+    {
+      "key": "pierce-pois_2",
+      "label": "pierce-pois",
+      "min": 3,
+      "max": 5,
+      "unit": ""
+    },
+    {
+      "key": "extra-pois_3",
+      "label": "extra-pois",
+      "min": 3,
+      "max": 5,
+      "unit": ""
+    }
+  ],
+  "Hellfire Torch": [
+    {
+      "key": "randclassskill_1",
+      "label": "randclassskill",
+      "min": 0,
+      "max": 7,
+      "unit": ""
+    },
+    {
+      "key": "all-stats_2",
+      "label": "all-stats",
+      "min": 10,
+      "max": 20,
+      "unit": ""
+    },
+    {
+      "key": "res-all_3",
+      "label": "to All Resistances",
+      "min": 10,
+      "max": 20,
+      "unit": ""
+    }
+  ],
+  "Ars Al'Diablolos": [
+    {
+      "key": "ac%_4",
+      "label": "% Enhanced Defense",
+      "min": 170,
+      "max": 200,
+      "unit": ""
+    },
+    {
+      "key": "extra-fire_5",
+      "label": "extra-fire",
+      "min": 15,
+      "max": 25,
+      "unit": ""
+    },
+    {
+      "key": "light_6",
+      "label": "to Light Radius",
+      "min": 5,
+      "max": 10,
+      "unit": ""
+    },
+    {
+      "key": "mana-kill_7",
+      "label": "mana-kill",
+      "min": 5,
+      "max": 10,
+      "unit": ""
+    },
+    {
+      "key": "res-fire_8",
+      "label": "% Fire Resist",
+      "min": 20,
+      "max": 30,
+      "unit": ""
+    }
+  ],
+  "Ars Tor'Baalos": [
+    {
+      "key": "ac%_7",
+      "label": "% Enhanced Defense",
+      "min": 120,
+      "max": 150,
+      "unit": ""
+    },
+    {
+      "key": "red-dmg%_9",
+      "label": "red-dmg%",
+      "min": 5,
+      "max": 10,
+      "unit": ""
+    }
+  ],
+  "Ars Dul'Mephistos": [
+    {
+      "key": "cast1_3",
+      "label": "cast1",
+      "min": 20,
+      "max": 30,
+      "unit": ""
+    },
+    {
+      "key": "dmg%_5",
+      "label": "% Enhanced Damage",
+      "min": 70,
+      "max": 115,
+      "unit": ""
+    },
+    {
+      "key": "att%_6",
+      "label": "% Bonus to Attack Rating",
+      "min": 50,
+      "max": 70,
+      "unit": ""
+    },
+    {
+      "key": "ac%_7",
+      "label": "% Enhanced Defense",
+      "min": 140,
+      "max": 170,
+      "unit": ""
+    },
+    {
+      "key": "pierce-mag_8",
+      "label": "pierce-mag",
+      "min": 10,
+      "max": 20,
+      "unit": ""
+    },
+    {
+      "key": "mag%_9",
+      "label": "% Magic Find",
+      "min": 10,
+      "max": 25,
+      "unit": ""
+    }
+  ],
+  "Measured Wrath": [
+    {
+      "key": "ac%_4",
+      "label": "% Enhanced Defense",
+      "min": 130,
+      "max": 180,
+      "unit": ""
+    },
+    {
+      "key": "vit_8",
+      "label": "to Vitality",
+      "min": 10,
+      "max": 20,
+      "unit": ""
+    },
+    {
+      "key": "heal-kill_9",
+      "label": "heal-kill",
+      "min": 3,
+      "max": 5,
+      "unit": ""
+    },
+    {
+      "key": "res-all_10",
+      "label": "to All Resistances",
+      "min": 20,
+      "max": 30,
+      "unit": ""
+    }
+  ],
+  "Dreadfang": [
+    {
+      "key": "dmg%_3",
+      "label": "% Enhanced Damage",
+      "min": 133,
+      "max": 166,
+      "unit": ""
+    },
+    {
+      "key": "manasteal_4",
+      "label": "% Mana Stolen Per Hit",
+      "min": 3,
+      "max": 6,
+      "unit": ""
+    }
+  ],
+  "Wraithstep": [
+    {
+      "key": "ac_4",
+      "label": "to Defense",
+      "min": 40,
+      "max": 60,
+      "unit": ""
+    },
+    {
+      "key": "dex_5",
+      "label": "to Dexterity",
+      "min": 10,
+      "max": 15,
+      "unit": ""
+    },
+    {
+      "key": "enr_6",
+      "label": "to Energy",
+      "min": 10,
+      "max": 15,
+      "unit": ""
+    }
+  ],
+  "Bloodpact Shard": [
+    {
+      "key": "hp%_3",
+      "label": "hp%",
+      "min": 10,
+      "max": 15,
+      "unit": ""
+    },
+    {
+      "key": "mag%_7",
+      "label": "% Magic Find",
+      "min": 20,
+      "max": 35,
+      "unit": ""
+    }
+  ],
+  "Sling": [
+    {
+      "key": "pierce-mag_3",
+      "label": "pierce-mag",
+      "min": 3,
+      "max": 5,
+      "unit": ""
+    },
+    {
+      "key": "enr_4",
+      "label": "to Energy",
+      "min": 10,
+      "max": 15,
+      "unit": ""
+    },
+    {
+      "key": "mag%_6",
+      "label": "% Magic Find",
+      "min": 10,
+      "max": 20,
+      "unit": ""
+    }
+  ],
+  "Opalvein": [
+    {
+      "key": "att-skill_1",
+      "label": "att-skill",
+      "min": 2,
+      "max": 15,
+      "unit": ""
+    },
+    {
+      "key": "res-all_4",
+      "label": "to All Resistances",
+      "min": 6,
+      "max": 8,
+      "unit": ""
+    },
+    {
+      "key": "heal-kill_5",
+      "label": "heal-kill",
+      "min": 1,
+      "max": 3,
+      "unit": ""
+    },
+    {
+      "key": "mana-kill_6",
+      "label": "mana-kill",
+      "min": 1,
+      "max": 3,
+      "unit": ""
+    }
+  ],
+  "Entropy Locket": [
+    {
+      "key": "extra-mag_2",
+      "label": "extra-mag",
+      "min": 5,
+      "max": 10,
+      "unit": ""
+    },
+    {
+      "key": "cast1_3",
+      "label": "cast1",
+      "min": 5,
+      "max": 10,
+      "unit": ""
+    },
+    {
+      "key": "res-ltng_4",
+      "label": "% Lightning Resist",
+      "min": 25,
+      "max": 40,
+      "unit": ""
+    },
+    {
+      "key": "mana%_5",
+      "label": "mana%",
+      "min": 10,
+      "max": 15,
+      "unit": ""
+    },
+    {
+      "key": "red-mag_6",
+      "label": "Magic Damage Reduced By",
+      "min": 8,
+      "max": 12,
+      "unit": ""
+    }
+  ],
+  "Gheed's Wager": [
+    {
+      "key": "cast1_1",
+      "label": "cast1",
+      "min": 10,
+      "max": 20,
+      "unit": ""
+    },
+    {
+      "key": "balance1_2",
+      "label": "balance1",
+      "min": 10,
+      "max": 20,
+      "unit": ""
+    },
+    {
+      "key": "move1_3",
+      "label": "move1",
+      "min": 10,
+      "max": 20,
+      "unit": ""
+    },
+    {
+      "key": "ac%_4",
+      "label": "% Enhanced Defense",
+      "min": 90,
+      "max": 150,
+      "unit": ""
+    },
+    {
+      "key": "pierce-mag_5",
+      "label": "pierce-mag",
+      "min": 3,
+      "max": 7,
+      "unit": ""
+    },
+    {
+      "key": "res-all_6",
+      "label": "to All Resistances",
+      "min": 5,
+      "max": 15,
+      "unit": ""
+    },
+    {
+      "key": "gold%_7",
+      "label": "gold%",
+      "min": 44,
+      "max": 75,
+      "unit": ""
+    }
+  ],
+  "Unique Warlock Helm": [
+    {
+      "key": "pierce-fire_2",
+      "label": "% to Enemy Fire Resistance",
+      "min": 5,
+      "max": 8,
+      "unit": ""
+    },
+    {
+      "key": "pierce-mag_3",
+      "label": "pierce-mag",
+      "min": 5,
+      "max": 8,
+      "unit": ""
+    },
+    {
+      "key": "ac%_6",
+      "label": "% Enhanced Defense",
+      "min": 150,
+      "max": 215,
+      "unit": ""
+    },
+    {
+      "key": "mana-kill_7",
+      "label": "mana-kill",
+      "min": 4,
+      "max": 6,
+      "unit": ""
+    }
+  ],
+  "PreCrafted Cold Rupture": [
+    {
+      "key": "res-cold_2",
+      "label": "% Cold Resist",
+      "min": -90,
+      "max": -70,
+      "unit": ""
+    }
+  ],
+  "PreCrafted Flame Rift": [
+    {
+      "key": "res-fire_2",
+      "label": "% Fire Resist",
+      "min": -90,
+      "max": -70,
+      "unit": ""
+    }
+  ],
+  "PreCrafted Crack of the Heavens": [
+    {
+      "key": "res-ltng_2",
+      "label": "% Lightning Resist",
+      "min": -90,
+      "max": -70,
+      "unit": ""
+    }
+  ],
+  "PreCrafted Rotting Fissure": [
+    {
+      "key": "res-pois_2",
+      "label": "% Poison Resist",
+      "min": -90,
+      "max": -70,
+      "unit": ""
+    }
+  ],
+  "PreCrafted Bone Break": [
+    {
+      "key": "red-dmg%_2",
+      "label": "red-dmg%",
+      "min": -20,
+      "max": -10,
+      "unit": ""
+    }
+  ],
+  "PreCrafted Black Cleft": [
+    {
+      "key": "res-mag_2",
+      "label": "res-mag",
+      "min": -65,
+      "max": -45,
+      "unit": ""
+    }
+  ],
+  "Aldur's Advance": [
+    {
+      "key": "res-fire_7",
+      "label": "% Fire Resist",
+      "min": 40,
+      "max": 50,
+      "unit": ""
+    }
+  ],
+  "Aldur's Deception": [
+    {
+      "key": "res-ltng_5",
+      "label": "% Lightning Resist",
+      "min": 40,
+      "max": 50,
+      "unit": ""
+    }
+  ],
+  "Aldur's Gauntlet": [
+    {
+      "key": "dmg-norm_1",
+      "label": "dmg-norm",
+      "min": 40,
+      "max": 62,
+      "unit": ""
+    },
+    {
+      "key": "dmg-ltng_2",
+      "label": "Lightning Damage",
+      "min": 50,
+      "max": 75,
+      "unit": ""
+    }
+  ],
+  "Aldur's Stony Gaze": [
+    {
+      "key": "res-cold_5",
+      "label": "% Cold Resist",
+      "min": 40,
+      "max": 50,
+      "unit": ""
+    }
+  ],
+  "Arctic Furs": [
+    {
+      "key": "ac%_1",
+      "label": "% Enhanced Defense",
+      "min": 275,
+      "max": 325,
+      "unit": ""
+    }
+  ],
+  "Civerb's Cudgel": [
+    {
+      "key": "dmg-max_2",
+      "label": "to Maximum Damage",
+      "min": 17,
+      "max": 23,
+      "unit": ""
+    }
+  ],
+  "Cow King's Hoofs": [
+    {
+      "key": "ac_1",
+      "label": "to Defense",
+      "min": 25,
+      "max": 35,
+      "unit": ""
+    },
+    {
+      "key": "dmg-fire_5",
+      "label": "Fire Damage",
+      "min": 25,
+      "max": 35,
+      "unit": ""
+    }
+  ],
+  "Dangoon's Teaching": [
+    {
+      "key": "dmg-fire_4",
+      "label": "Fire Damage",
+      "min": 20,
+      "max": 30,
+      "unit": ""
+    }
+  ],
+  "Griswold's Valor": [
+    {
+      "key": "ac%_1",
+      "label": "% Enhanced Defense",
+      "min": 50,
+      "max": 75,
+      "unit": ""
+    },
+    {
+      "key": "mag%_5",
+      "label": "% Magic Find",
+      "min": 20,
+      "max": 30,
+      "unit": ""
+    }
+  ],
+  "Griswolds's Redemption": [
+    {
+      "key": "dmg%_1",
+      "label": "% Enhanced Damage",
+      "min": 200,
+      "max": 240,
+      "unit": ""
+    }
+  ],
+  "Horazon's Countenance": [
+    {
+      "key": "str_3",
+      "label": "to Strength",
+      "min": 10,
+      "max": 20,
+      "unit": ""
+    },
+    {
+      "key": "red-mag_4",
+      "label": "Magic Damage Reduced By",
+      "min": 7,
+      "max": 10,
+      "unit": ""
+    }
+  ],
+  "Horazon's Dominion": [
+    {
+      "key": "ac%_2",
+      "label": "% Enhanced Defense",
+      "min": 75,
+      "max": 100,
+      "unit": ""
+    },
+    {
+      "key": "mana_3",
+      "label": "to Mana",
+      "min": 75,
+      "max": 100,
+      "unit": ""
+    },
+    {
+      "key": "res-cold_4",
+      "label": "% Cold Resist",
+      "min": 15,
+      "max": 25,
+      "unit": ""
+    },
+    {
+      "key": "res-fire_5",
+      "label": "% Fire Resist",
+      "min": 15,
+      "max": 25,
+      "unit": ""
+    },
+    {
+      "key": "res-ltng_6",
+      "label": "% Lightning Resist",
+      "min": 15,
+      "max": 25,
+      "unit": ""
+    }
+  ],
+  "Horazon's Hold": [
+    {
+      "key": "att_2",
+      "label": "to Attack Rating",
+      "min": 95,
+      "max": 150,
+      "unit": ""
+    },
+    {
+      "key": "dex_3",
+      "label": "to Dexterity",
+      "min": 10,
+      "max": 15,
+      "unit": ""
+    },
+    {
+      "key": "dmg-fire_4",
+      "label": "Fire Damage",
+      "min": 140,
+      "max": 270,
+      "unit": ""
+    },
+    {
+      "key": "hp_5",
+      "label": "to Life",
+      "min": 30,
+      "max": 40,
+      "unit": ""
+    }
+  ],
+  "Horazon's Legacy": [
+    {
+      "key": "str_2",
+      "label": "to Strength",
+      "min": 10,
+      "max": 15,
+      "unit": ""
+    },
+    {
+      "key": "dex_3",
+      "label": "to Dexterity",
+      "min": 10,
+      "max": 15,
+      "unit": ""
+    },
+    {
+      "key": "res-mag_4",
+      "label": "res-mag",
+      "min": 20,
+      "max": 30,
+      "unit": ""
+    }
+  ],
+  "Horazon's Secrets": [
+    {
+      "key": "vit_4",
+      "label": "to Vitality",
+      "min": 20,
+      "max": 30,
+      "unit": ""
+    },
+    {
+      "key": "hp_5",
+      "label": "to Life",
+      "min": 30,
+      "max": 50,
+      "unit": ""
+    }
+  ],
+  "Hwanin's Justice": [
+    {
+      "key": "dmg-ltng_6",
+      "label": "Lightning Damage",
+      "min": 5,
+      "max": 25,
+      "unit": ""
+    }
+  ],
+  "Hwanin's Seal": [
+    {
+      "key": "dmg-ltng_1",
+      "label": "Lightning Damage",
+      "min": 3,
+      "max": 33,
+      "unit": ""
+    }
+  ],
+  "Immortal King's Stone Crusher": [
+    {
+      "key": "crush_5",
+      "label": "% Chance of Crushing Blow",
+      "min": 35,
+      "max": 40,
+      "unit": ""
+    }
+  ],
+  "Immortal King's Will": [
+    {
+      "key": "mag%_5",
+      "label": "% Magic Find",
+      "min": 25,
+      "max": 40,
+      "unit": ""
+    }
+  ],
+  "M'avina's Embrace": [
+    {
+      "key": "red-mag_3",
+      "label": "Magic Damage Reduced By",
+      "min": 5,
+      "max": 12,
+      "unit": ""
+    }
+  ],
+  "M'avina's Icy Clutch": [
+    {
+      "key": "ac_1",
+      "label": "to Defense",
+      "min": 45,
+      "max": 50,
+      "unit": ""
+    },
+    {
+      "key": "dmg-cold_2",
+      "label": "dmg-cold",
+      "min": 6,
+      "max": 18,
+      "unit": ""
+    }
+  ],
+  "McAuley's Superstition": [
+    {
+      "key": "dmg-cold_5",
+      "label": "dmg-cold",
+      "min": 25,
+      "max": 75,
+      "unit": ""
+    }
+  ],
+  "McAuley's Taboo": [
+    {
+      "key": "ac_1",
+      "label": "to Defense",
+      "min": 20,
+      "max": 25,
+      "unit": ""
+    },
+    {
+      "key": "dmg-pois_4",
+      "label": "dmg-pois",
+      "min": 30,
+      "max": 36,
+      "unit": ""
+    }
+  ],
+  "Naj's Circlet": [
+    {
+      "key": "dmg-fire_2",
+      "label": "Fire Damage",
+      "min": 25,
+      "max": 35,
+      "unit": ""
+    }
+  ],
+  "Naj's Puzzler": [
+    {
+      "key": "dmg-ltng_5",
+      "label": "Lightning Damage",
+      "min": 6,
+      "max": 45,
+      "unit": ""
+    }
+  ],
+  "Natalya's Mark": [
+    {
+      "key": "dmg-fire_5",
+      "label": "Fire Damage",
+      "min": 12,
+      "max": 17,
+      "unit": ""
+    }
+  ],
+  "Natalya's Shadow": [
+    {
+      "key": "ac_1",
+      "label": "to Defense",
+      "min": 150,
+      "max": 225,
+      "unit": ""
+    }
+  ],
+  "Natalya's Soul": [
+    {
+      "key": "ac_1",
+      "label": "to Defense",
+      "min": 75,
+      "max": 125,
+      "unit": ""
+    },
+    {
+      "key": "res-cold_5",
+      "label": "% Cold Resist",
+      "min": 15,
+      "max": 25,
+      "unit": ""
+    },
+    {
+      "key": "res-ltng_6",
+      "label": "% Lightning Resist",
+      "min": 15,
+      "max": 25,
+      "unit": ""
+    }
+  ],
+  "Natalya's Totem": [
+    {
+      "key": "ac_1",
+      "label": "to Defense",
+      "min": 135,
+      "max": 175,
+      "unit": ""
+    },
+    {
+      "key": "dex_2",
+      "label": "to Dexterity",
+      "min": 20,
+      "max": 30,
+      "unit": ""
+    },
+    {
+      "key": "str_3",
+      "label": "to Strength",
+      "min": 10,
+      "max": 20,
+      "unit": ""
+    },
+    {
+      "key": "res-all_4",
+      "label": "to All Resistances",
+      "min": 10,
+      "max": 20,
+      "unit": ""
+    }
+  ],
+  "Rite of Passage": [
+    {
+      "key": "stam_4",
+      "label": "to Maximum Stamina",
+      "min": 15,
+      "max": 25,
+      "unit": ""
+    }
+  ],
+  "Sazabi's Cobalt Redeemer": [
+    {
+      "key": "dmg-cold_2",
+      "label": "dmg-cold",
+      "min": 25,
+      "max": 35,
+      "unit": ""
+    }
+  ],
+  "Sazabi's Ghost Liberator": [
+    {
+      "key": "hp_5",
+      "label": "to Life",
+      "min": 50,
+      "max": 75,
+      "unit": ""
+    }
+  ],
+  "Sazabi's Mental Sheath": [
+    {
+      "key": "res-fire_3",
+      "label": "% Fire Resist",
+      "min": 15,
+      "max": 20,
+      "unit": ""
+    },
+    {
+      "key": "res-ltng_4",
+      "label": "% Lightning Resist",
+      "min": 15,
+      "max": 20,
+      "unit": ""
+    }
+  ],
+  "Spiritual Custodian": [
+    {
+      "key": "ac_1",
+      "label": "to Defense",
+      "min": 305,
+      "max": 415,
+      "unit": ""
+    },
+    {
+      "key": "dmg-pois_4",
+      "label": "dmg-pois",
+      "min": 125,
+      "max": 175,
+      "unit": ""
+    }
+  ],
+  "Tal Rasha's Adjudication": [
+    {
+      "key": "dmg-ltng_4",
+      "label": "Lightning Damage",
+      "min": 3,
+      "max": 32,
+      "unit": ""
+    }
+  ],
+  "Tal Rasha's Fire-Spun Cloth": [
+    {
+      "key": "mag%_5",
+      "label": "% Magic Find",
+      "min": 10,
+      "max": 15,
+      "unit": ""
+    }
+  ],
+  "Telling of Beads": [
+    {
+      "key": "res-pois_1",
+      "label": "% Poison Resist",
+      "min": 35,
+      "max": 50,
+      "unit": ""
+    },
+    {
+      "key": "thorns_4",
+      "label": "thorns",
+      "min": 8,
+      "max": 10,
+      "unit": ""
+    }
+  ],
+  "Trang-Oul's Girth": [
+    {
+      "key": "ac_1",
+      "label": "to Defense",
+      "min": 75,
+      "max": 100,
+      "unit": ""
+    },
+    {
+      "key": "mana_7",
+      "label": "to Mana",
+      "min": 25,
+      "max": 50,
+      "unit": ""
+    }
+  ],
+  "Trang-Oul's Guise": [
+    {
+      "key": "ac_1",
+      "label": "to Defense",
+      "min": 80,
+      "max": 100,
+      "unit": ""
+    }
+  ],
+  "Trang-Oul's Wing": [
+    {
+      "key": "res-fire_4",
+      "label": "% Fire Resist",
+      "min": 38,
+      "max": 45,
+      "unit": ""
+    }
   ]
 };
 
@@ -444,13 +7063,14 @@ async function fetchCatalog(){
           <h3>${esc(p.name)}</h3>
           <div class="chars">${esc(p.characteristics||'')}</div>
           <div class="foot"><span class="muted" style="font-size:13px">in-game ${fmt(p.costInGame)}</span></div>
-          <button class="btn btn-ghost btn-sm" style="width:100%;margin-top:4px" onclick='showListForm(${j({id:p.id,name:p.name,costInGame:p.costInGame,maxMarketGold:p.maxMarketGold})})'>List for sale</button>
+          <button class="btn btn-ghost btn-sm" style="width:100%;margin-top:4px" onclick='showListForm(${j({id:p.id,name:p.name,costInGame:p.costInGame,maxMarketGold:p.maxMarketGold,characteristics:p.characteristics})})'>List for sale</button>
         </div></div>`).join('');
   }catch(e){ $('sellResults').innerHTML='<div class="empty">'+esc(e.message)+'</div>'; }
 }
 function showListForm(p){
   $('modalTitle').textContent = 'List "'+p.name+'"';
   $('modalBody').innerHTML = `
+    ${p.characteristics ? `<div style="background:rgba(255,255,255,.04);border-radius:8px;padding:10px 12px;margin-bottom:12px;font-size:12px;color:var(--muted);line-height:1.6">${esc(p.characteristics)}</div>` : ''}
     <div class="field"><label>Price in Market Gold</label>
       <input id="mgPrice" type="number" placeholder="e.g. 800" oninput="checkPrice()">
       <div class="help" id="priceHelp"></div></div>
