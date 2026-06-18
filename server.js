@@ -12,21 +12,38 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 db.seedIfEmpty();
 
 // Auto-import full D2R catalog if no products exist yet
-{
+console.log('[startup] Checking products...');
+const _raw = db.getRawData();
+console.log('[startup] Games:', Object.keys(_raw.games).length, '/ Products:', Object.keys(_raw.products).length);
+
+async function autoImport() {
   const raw = db.getRawData();
-  if (Object.keys(raw.products).length === 0) {
-    console.log('No products found — running full D2R catalog import...');
-    import('./import.js').catch(e => console.error('Import failed:', e.message));
+  const productCount = Object.keys(raw.products).length;
+  console.log('[autoImport] product count =', productCount);
+  if (productCount === 0) {
+    console.log('[autoImport] No products — starting import...');
+    try {
+      const mod = await import('./import.js');
+      console.log('[autoImport] import.js loaded, exports:', Object.keys(mod));
+      await mod.runImport();
+      console.log('[autoImport] Done. Products now:', Object.keys(db.getRawData().products).length);
+    } catch(e) {
+      console.error('[autoImport] FAILED:', e.message);
+      console.error(e.stack);
+    }
+  } else {
+    console.log('[autoImport] Products already exist, skipping import.');
   }
 }
+autoImport();
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
 const h = (fn) => (req, res) => {
-  try { res.json(fn(req, res)); }
-  catch (e) { res.status(e.code || 500).json({ error: e.message || 'Server error' }); }
+  try { Promise.resolve(fn(req, res)).then(r => res.json(r)).catch(e => res.status(e.status || e.code || 500).json({ error: e.message || 'Server error' })); }
+  catch (e) { res.status(e.status || e.code || 500).json({ error: e.message || 'Server error' }); }
 };
 
 // --- auth ---
@@ -49,6 +66,16 @@ app.post('/api/trades/:tradeId/buy',     requireAuth, h((req) => svc.buy(req.use
 app.post('/api/trades/:tradeId/deliver', requireAuth, h((req) => svc.markDelivered(req.user, req.params.tradeId)));
 app.post('/api/trades/:tradeId/confirm', requireAuth, h((req) => svc.confirmArrival(req.user, req.params.tradeId)));
 app.post('/api/trades/:tradeId/cancel',  requireAuth, h((req) => svc.cancelTrade(req.user, req.params.tradeId)));
+
+// --- admin ---
+app.post('/api/admin/import', requireAuth, h(async (req) => {
+  if (req.user.email !== 'erezn1976@gmail.com') throw { status: 403, message: 'Admin only' };
+  console.log('[admin] Manual import triggered by', req.user.email);
+  const { runImport } = await import('./import.js');
+  await runImport();
+  const count = Object.keys(db.getRawData().products).length;
+  return { ok: true, message: `Import complete! ${count} products loaded.` };
+}));
 
 // --- account ---
 app.get('/api/me/trades', requireAuth, h((req) => svc.myTrades(req.user)));
