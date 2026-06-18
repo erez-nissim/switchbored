@@ -153,7 +153,7 @@ const store = (() => { let mem={};
   }catch(e){ return { get:k=>mem[k]??null, set:(k,v)=>mem[k]=v, del:k=>delete mem[k] }; }
 })();
 
-const state = { token: store.get('sb_token'), user:null, view:'landing', game:null, gameTab:'buy', category:'', authMode:'login' };
+const state = { token: store.get('sb_token'), user:null, view:'landing', game:null, gameTab:'sell', category:'', authMode:'login' };
 
 // ---- Variable stats definitions (per item name) ----
 // Each stat: { label, min, max } — seller must fill in their actual rolled value
@@ -7220,7 +7220,7 @@ function requireLogin(){ if(state.user) return true; openAuth(); return false; }
 
 /* nav */
 function go(view){ state.view=view; if(view==='landing') state.game=null; render(); scrollTo(0,0); }
-function openGame(g){ state.game=g; state.gameTab='buy'; state.category=''; state.view='game'; render(); scrollTo(0,0); }
+function openGame(g){ state.game=g; state.gameTab='sell'; state.category=''; state.view='game'; render(); scrollTo(0,0); }
 
 async function render(){ await ensureUser();
   if(state.view==='game' && state.game) return renderGame();
@@ -7264,8 +7264,8 @@ async function renderGame(){
       <div><div class="crumb" onclick="go('landing')">← All games</div><h2>${esc(g.name)}</h2></div>
     </div>
     <div class="tabs">
-      <button class="tab" data-t="buy" onclick="setGameTab('buy')">Buy</button>
       <button class="tab" data-t="sell" onclick="setGameTab('sell')">Sell</button>
+      <button class="tab" data-t="buy" onclick="setGameTab('buy')">Buy</button>
       <button class="tab" data-t="activity" onclick="setGameTab('activity')">Latest activity</button>
     </div>
     <div class="gamebody">
@@ -7279,10 +7279,14 @@ async function renderGame(){
 function renderCatnav(){
   const cats = state.gameTab==='buy' ? (state.listingCategories||state.categories) : state.categories;
   const total = cats.reduce((s,c)=>s+c.count,0);
-  const item = (name,label,count)=>`<button class="cat ${state.category===name?'active':''}" onclick="setCategory('${name.replace(/'/g,"\\'")}')">
-    <span>${esc(label)}</span><span class="ct">${count}</span></button>`;
-  $('catnav').innerHTML = `<h4>Categories</h4>` + item('','All Items',total)
-    + cats.map(c=>item(c.name,c.name,c.count)).join('');
+  const totalOwn = state.gameTab==='buy' ? cats.reduce((s,c)=>s+(c.ownCount||0),0) : 0;
+  const item = (name,label,count,ownCount)=>{
+    const ownTag = ownCount ? ` <span style="font-size:10px;color:var(--gold);opacity:0.8">(${ownCount} yours)</span>` : '';
+    return `<button class="cat ${state.category===name?'active':''}" onclick="setCategory('${name.replace(/'/g,"\'")}')">
+    <span>${esc(label)}${ownTag}</span><span class="ct">${count}</span></button>`;
+  };
+  $('catnav').innerHTML = `<h4>Categories</h4>` + item('','All Items',total,totalOwn)
+    + cats.map(c=>item(c.name,c.name,c.count,c.ownCount||0)).join('');
 }
 function setCategory(cat){ state.category=cat; renderCatnav(); drawTab(); }
 function setGameTab(t){ state.gameTab=t; setActiveTab(); renderCatnav(); drawTab(); }
@@ -7306,20 +7310,39 @@ async function fetchListings(){
       apiGet(`/games/${state.game.id}/listings?q=`+encodeURIComponent(buyQuery)+catQS()),
       apiGet(`/games/${state.game.id}/listing-categories`)
     ]);
-    state.listingCategories = Array.isArray(listingCats) ? listingCats : [];
+    // Split into own listings and others
+    const myId = state.user?.id;
+    const ownListings = rows.filter(t => t.sellerUserId === myId);
+    const buyableListings = rows.filter(t => t.sellerUserId !== myId);
+
+    // Category counts: only buyable (not own) for the numbers
+    state.listingCategories = Array.isArray(listingCats) ? listingCats.map(c => {
+      const ownInCat = ownListings.filter(t => t.category === c.name).length;
+      return { ...c, count: c.count - ownInCat, ownCount: ownInCat };
+    }) : [];
     renderCatnav();
-    $('buyResults').innerHTML = rows.length ? rows.map(t=>`
-      <div class="listing">
+
+    // Render: buyable first, then own (greyed out)
+    const renderCard = (t, isOwn) => `
+      <div class="listing${isOwn ? ' own-listing' : ''}" style="${isOwn ? 'opacity:0.45;filter:grayscale(0.5)' : ''}">
         <div class="img" style="background-image:url('${esc(t.image)}')"></div>
         <div class="info">
-          <h3>${esc(t.productName)}</h3>
+          <h3>${esc(t.productName)}${isOwn ? ' <span style="font-size:11px;color:var(--gold);font-weight:400">(your listing)</span>' : ''}</h3>
           <div class="chars">${esc(t.characteristics||'')}</div>
           ${t.varStats ? `<div class="notes" style="color:var(--gold);font-size:12px">⚡ ${formatVarStats(t.varStats, t.productName)}</div>` : ''}
           ${t.customStats ? `<div class="notes" style="font-size:12px;color:var(--text)">${t.customStats.map(s=>`<span style="margin-right:8px">• ${esc(s.label)}: <b>${esc(s.value)}</b></span>`).join('')}</div>` : ''}
           ${t.itemNotes?`<div class="notes">"${esc(t.itemNotes)}"</div>`:''}
           <div class="foot">${coin(t.marketGold)}<span class="seller">by ${esc(t.sellerName)}</span></div>
-          <button class="btn btn-gold btn-sm" style="width:100%;margin-top:4px" onclick='startBuy(${j({id:t.id,productName:t.productName,marketGold:t.marketGold,sellerUserId:t.sellerUserId})})'>Buy</button>
-        </div></div>`).join('')
+          ${isOwn
+            ? `<button class="btn btn-ghost btn-sm" style="width:100%;margin-top:4px;opacity:0.6" disabled>Listed by you</button>`
+            : `<button class="btn btn-gold btn-sm" style="width:100%;margin-top:4px" onclick='startBuy(${j({id:t.id,productName:t.productName,marketGold:t.marketGold,sellerUserId:t.sellerUserId})})'>Buy</button>`
+          }
+        </div></div>`;
+
+    const allCards = [...buyableListings.map(t => renderCard(t, false)),
+                     ...ownListings.map(t => renderCard(t, true))];
+    $('buyResults').innerHTML = allCards.length
+      ? allCards.join('')
       : '<div class="empty"><div class="big">No listings here yet</div>Nothing in this category — try another, or list one under Sell.</div>';
   }catch(e){ $('buyResults').innerHTML='<div class="empty">'+esc(e.message)+'</div>'; }
 }
@@ -7439,7 +7462,7 @@ async function submitListing(productId, productName){
   try{ const r=await apiPost(`/games/${state.game.id}/listings`,{ productId, marketGold:mg, itemNotes, varStats, customStats });
     if(r && typeof r.marketGold==='number'){ state.user.marketGold=r.marketGold; refreshAuthUI(); }
     closeModal('modalOverlay'); toast('Listed — '+fmt(mg)+' MG added to your wallet','ok');
-    buyQuery=''; state.category=''; renderCatnav(); setGameTab('buy');
+    buyQuery=''; state.category=''; renderCatnav(); setGameTab('sell');
   }catch(e){ toast(e.message,'err'); }
 }
 function showAddProduct(){
