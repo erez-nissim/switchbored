@@ -34,7 +34,40 @@ function persist() {
   fs.writeFileSync(FILE, JSON.stringify({ games: data.games, products: data.products, trades: data.trades }, null, 2));
 }
 function persistUsers() {
-  fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
+  const json = JSON.stringify(users, null, 2);
+  fs.writeFileSync(USERS_FILE, json);
+  // Push to GitHub so users survive Render restarts
+  pushUsersToGitHub(json).catch(e => console.log('[github] push failed:', e.message));
+}
+
+async function pushUsersToGitHub(content) {
+  const token = process.env.GITHUB_TOKEN;
+  const repo  = process.env.GITHUB_REPO || 'erez-nissim/switchbored';
+  const path  = process.env.USERS_FILE  || 'users.json';
+  if (!token) return; // skip if no token configured
+
+  // Get current file SHA (needed for update)
+  const headers = {
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json',
+    'User-Agent': 'switchbored'
+  };
+  const url = `https://api.github.com/repos/${repo}/contents/${path}`;
+  let sha = null;
+  try {
+    const get = await fetch(url, { headers });
+    if (get.ok) { const d = await get.json(); sha = d.sha; }
+  } catch(e) {}
+
+  // Push updated file
+  const body = JSON.stringify({
+    message: 'Update users.json',
+    content: Buffer.from(content).toString('base64'),
+    ...(sha ? { sha } : {})
+  });
+  const res = await fetch(url, { method: 'PUT', headers, body });
+  if (res.ok) console.log('[github] users.json pushed successfully');
+  else { const err = await res.text(); console.log('[github] push error:', err.slice(0,100)); }
 }
 
 export { persist };
