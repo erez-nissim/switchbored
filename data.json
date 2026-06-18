@@ -9546,6 +9546,22 @@
       "custom_stats": null,
       "buyer_ingame_name": null,
       "completed_ts": null
+    },
+    "t_4bb4e40a4d45": {
+      "id": "t_4bb4e40a4d45",
+      "game_id": "g_d2r_resurrected",
+      "product_id": "p_d2r_amn_rune",
+      "seller_user_id": "u_94c08686466d",
+      "market_gold": 111,
+      "buyer_user_id": null,
+      "seller_ts": "2026-06-18T12:07:34.142Z",
+      "buyer_ts": null,
+      "status": "Open",
+      "item_notes": "",
+      "var_stats": null,
+      "custom_stats": null,
+      "buyer_ingame_name": null,
+      "completed_ts": null
     }
   }
 }
