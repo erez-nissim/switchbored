@@ -154,6 +154,68 @@ const store = (() => { let mem={};
 
 const state = { token: store.get('sb_token'), user:null, view:'landing', game:null, gameTab:'buy', category:'', authMode:'login' };
 
+// ---- Variable stats definitions (per item name) ----
+// Each stat: { label, min, max } — seller must fill in their actual rolled value
+const VARIABLE_STATS = {
+  "Bul-Kathos' Wedding Band": [
+    { key: 'life_per_level', label: '+ Life per Character Level', min: 0, max: 49, unit: 'HP' },
+    { key: 'life_leech',     label: '% Life Stolen per Hit',      min: 3, max: 5,  unit: '%' }
+  ]
+};
+
+function getVarStats(productName){ return VARIABLE_STATS[productName] || []; }
+
+function renderVarStatFields(productName){
+  const stats = getVarStats(productName);
+  if(!stats.length) return '';
+  return `<div class="field" style="margin-top:12px">
+    <label style="color:var(--gold);font-weight:600">⚡ Variable Stats — enter your item's actual rolled values</label>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
+      ${stats.map(s=>`
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="flex:1;font-size:13px;color:var(--text)">${esc(s.label)}</span>
+          <input id="varstat_${s.key}" type="number" min="${s.min}" max="${s.max}"
+            placeholder="${s.min}–${s.max} ${s.unit}"
+            style="width:90px;text-align:center"
+            oninput="checkVarStat('${s.key}',${s.min},${s.max})">
+          <span class="muted" style="font-size:12px;min-width:60px" id="varstat_err_${s.key}"></span>
+        </div>`).join('')}
+    </div></div>`;
+}
+
+function checkVarStat(key, min, max){
+  const v = Number($('varstat_'+key).value);
+  const err = $('varstat_err_'+key);
+  if(!$('varstat_'+key).value){ err.textContent=''; return; }
+  if(v < min || v > max){ err.textContent=`Must be ${min}–${max}`; err.style.color='var(--red)'; }
+  else { err.textContent='✓'; err.style.color='var(--green)'; }
+}
+
+function collectVarStats(productName){
+  const stats = getVarStats(productName);
+  if(!stats.length) return null;
+  const result = {};
+  for(const s of stats){
+    const el = $('varstat_'+s.key);
+    if(!el) continue;
+    const v = Number(el.value);
+    if(el.value === '') continue; // optional
+    if(v < s.min || v > s.max) throw new Error(`${s.label}: value must be between ${s.min} and ${s.max}`);
+    result[s.key] = v;
+  }
+  return Object.keys(result).length ? result : null;
+}
+
+function formatVarStats(varStats, productName){
+  if(!varStats) return '';
+  const defs = getVarStats(productName);
+  return Object.entries(varStats).map(([k,v])=>{
+    const def = defs.find(d=>d.key===k);
+    return def ? `${def.label}: <b>${v} ${def.unit}</b>` : `${k}: ${v}`;
+  }).join(' · ');
+}
+
+
 async function req(method, path, body){
   const headers = {};
   if(body) headers['Content-Type'] = 'application/json';
@@ -288,7 +350,7 @@ function renderCatnav(){
     + cats.map(c=>item(c.name,c.name,c.count)).join('');
 }
 function setCategory(cat){ state.category=cat; renderCatnav(); drawTab(); }
-function setGameTab(t){ state.gameTab=t; setActiveTab(); drawTab(); }
+function setGameTab(t){ state.gameTab=t; setActiveTab(); renderCatnav(); drawTab(); }
 function setActiveTab(){ document.querySelectorAll('.tab').forEach(el=>el.classList.toggle('active', el.dataset.t===state.gameTab)); }
 function drawTab(){ if(state.gameTab==='buy') drawBuy(); else if(state.gameTab==='sell') drawSell(); else drawActivity(); }
 
@@ -317,6 +379,8 @@ async function fetchListings(){
         <div class="info">
           <h3>${esc(t.productName)}</h3>
           <div class="chars">${esc(t.characteristics||'')}</div>
+          ${t.varStats ? `<div class="notes" style="color:var(--gold);font-size:12px">⚡ ${formatVarStats(t.varStats, t.productName)}</div>` : ''}
+          ${t.customStats ? `<div class="notes" style="font-size:12px;color:var(--text)">${t.customStats.map(s=>`<span style="margin-right:8px">• ${esc(s.label)}: <b>${esc(s.value)}</b></span>`).join('')}</div>` : ''}
           ${t.itemNotes?`<div class="notes">"${esc(t.itemNotes)}"</div>`:''}
           <div class="foot">${coin(t.marketGold)}<span class="seller">by ${esc(t.sellerName)}</span></div>
           <button class="btn btn-gold btn-sm" style="width:100%;margin-top:4px" onclick='startBuy(${j({id:t.id,productName:t.productName,marketGold:t.marketGold,sellerUserId:t.sellerUserId})})'>Buy</button>
@@ -379,7 +443,7 @@ async function fetchCatalog(){
         <div class="info">
           <h3>${esc(p.name)}</h3>
           <div class="chars">${esc(p.characteristics||'')}</div>
-          <div class="foot"><span class="muted" style="font-size:13px">in-game ${fmt(p.costInGame)}</span><span class="seller">max ${fmt(p.maxMarketGold)} MG</span></div>
+          <div class="foot"><span class="muted" style="font-size:13px">in-game ${fmt(p.costInGame)}</span></div>
           <button class="btn btn-ghost btn-sm" style="width:100%;margin-top:4px" onclick='showListForm(${j({id:p.id,name:p.name,costInGame:p.costInGame,maxMarketGold:p.maxMarketGold})})'>List for sale</button>
         </div></div>`).join('');
   }catch(e){ $('sellResults').innerHTML='<div class="empty">'+esc(e.message)+'</div>'; }
@@ -388,22 +452,58 @@ function showListForm(p){
   $('modalTitle').textContent = 'List "'+p.name+'"';
   $('modalBody').innerHTML = `
     <div class="field"><label>Price in Market Gold</label>
-      <input id="mgPrice" type="number" placeholder="Max ${p.maxMarketGold}" oninput="checkPrice(${p.maxMarketGold})">
-      <div class="help" id="priceHelp">Max allowed: <b>${fmt(p.maxMarketGold)} MG</b> (50% of the ${fmt(p.costInGame)} in-game cost).</div></div>
-    <div class="field"><label>Item notes (optional)</label><textarea id="itemNotes" rows="2" placeholder="Specific stats / rolls on your copy"></textarea></div>
-    <button class="btn btn-gold" style="width:100%" id="listBtn" onclick='submitListing("${p.id}",${p.maxMarketGold})'>List for sale</button>`;
+      <input id="mgPrice" type="number" placeholder="e.g. 800" oninput="checkPrice()">
+      <div class="help" id="priceHelp"></div></div>
+    ${renderVarStatFields(p.name)}
+    <div class="field">
+      <label>Custom stats <span class="muted" style="font-weight:400;font-size:12px">— add specific rolls on your copy (optional)</span></label>
+      <div id="customStats"></div>
+      <button class="btn btn-ghost btn-sm" style="margin-top:6px" onclick="addCustomStat()">+ Add stat</button>
+    </div>
+    <div class="field"><label>Extra notes (optional)</label><textarea id="itemNotes" rows="2" placeholder="Any other info for the buyer"></textarea></div>
+    <button class="btn btn-gold" style="width:100%" id="listBtn" onclick='submitListing("${p.id}",${j(p.name)})'>List for sale</button>`;
   $('modalOverlay').classList.add('show');
 }
-function checkPrice(max){ const v=Number($('mgPrice').value), h=$('priceHelp'), b=$('listBtn');
-  if(v>max){ h.innerHTML='<b style="color:var(--red)">Too high.</b> Max is '+fmt(max)+' MG.'; b.disabled=true; }
-  else { h.innerHTML='Max allowed: <b>'+fmt(max)+' MG</b> (50% of in-game cost).'; b.disabled=false; } }
-async function submitListing(productId,max){
+function checkPrice(){ const v=Number($('mgPrice').value), h=$('priceHelp'), b=$('listBtn');
+  if(v<=0||!$('mgPrice').value){ h.innerHTML=''; b.disabled=true; }
+  else { h.innerHTML=''; b.disabled=false; } }
+
+let customStatCount = 0;
+function addCustomStat(){
+  customStatCount++;
+  const id = 'cs_'+customStatCount;
+  const div = document.createElement('div');
+  div.id = id;
+  div.style.cssText = 'display:flex;gap:6px;align-items:center;margin-top:6px';
+  div.innerHTML = `<input placeholder="Stat name (e.g. +Max Damage)" style="flex:2" id="${id}_label">
+    <input placeholder="Value" style="flex:1" id="${id}_value">
+    <button class="btn btn-ghost btn-sm" onclick="document.getElementById('${id}').remove()">✕</button>`;
+  $('customStats').appendChild(div);
+}
+
+function collectCustomStats(){
+  const stats = [];
+  $('customStats').querySelectorAll('[id^="cs_"]').forEach(row => {
+    const idBase = row.id;
+    const label = document.getElementById(idBase+'_label')?.value.trim();
+    const value = document.getElementById(idBase+'_value')?.value.trim();
+    if(label && value) stats.push({ label, value });
+  });
+  return stats.length ? stats : null;
+}
+async function submitListing(productId, productName){
   const mg=Math.floor(Number($('mgPrice').value));
-  if(!(mg>0)) return toast('Enter a price','err'); if(mg>max) return toast('Price exceeds the 50% cap','err');
-  try{ const r=await apiPost(`/games/${state.game.id}/listings`,{ productId, marketGold:mg, itemNotes:$('itemNotes').value.trim() });
+  if(!(mg>0)) return toast('Enter a price','err');
+  let varStats;
+  try{ varStats = collectVarStats(productName); }
+  catch(e){ return toast(e.message,'err'); }
+  const customStats = collectCustomStats();
+  const manualNotes = $('itemNotes').value.trim();
+  const itemNotes = manualNotes || null;
+  try{ const r=await apiPost(`/games/${state.game.id}/listings`,{ productId, marketGold:mg, itemNotes, varStats, customStats });
     if(r && typeof r.marketGold==='number'){ state.user.marketGold=r.marketGold; refreshAuthUI(); }
     closeModal('modalOverlay'); toast('Listed — '+fmt(mg)+' MG added to your wallet','ok');
-    buyQuery=''; state.category=''; renderCatnav(); setGameTab('buy');   // unfiltered so the new listing is visible right away
+    buyQuery=''; state.category=''; renderCatnav(); setGameTab('buy');
   }catch(e){ toast(e.message,'err'); }
 }
 function showAddProduct(){

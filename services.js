@@ -22,7 +22,7 @@ function enrich(trade, productCache, nameCache) {
     category: categoryOf(p?.name, p?.characteristics),
     marketGold: trade.market_gold, sellerUserId: trade.seller_user_id, sellerName,
     buyerUserId: trade.buyer_user_id, buyerInGameName: trade.buyer_ingame_name,
-    status: trade.status, itemNotes: trade.item_notes,
+    status: trade.status, itemNotes: trade.item_notes, varStats: trade.var_stats || null, customStats: trade.custom_stats || null,
     sellerTimestamp: trade.seller_ts || '', buyerTimestamp: trade.buyer_ts || ''
   };
 }
@@ -134,21 +134,19 @@ export function addProduct(user, gameId, { name, characteristics, costInGame, im
     costInGame: p.cost_in_game, image: p.image, maxMarketGold: maxPrice(p.cost_in_game) };
 }
 
-export function createListing(user, gameId, { productId, marketGold, itemNotes }) {
+export function createListing(user, gameId, { productId, marketGold, itemNotes, varStats, customStats }) {
   requireGame(gameId);
   const product = db.getProduct(productId);
   if (!product || product.game_id !== gameId) throw new AppError('Product not found.');
   const mg = Math.floor(Number(marketGold));
-  const max = maxPrice(product.cost_in_game);
   if (!(mg > 0)) throw new AppError('Market Gold price must be positive.');
-  if (mg > max) throw new AppError(`Price too high. Max is ${max} MG (50% of the in-game cost).`);
   let newBalance;
   db.tx(() => {
     const seller = db.getUserById(user.id);
     db.insertTrade({ id: db.newId('t'), game_id: gameId, product_id: productId,
       seller_user_id: user.id, market_gold: mg, buyer_user_id: null,
       seller_ts: new Date().toISOString(), buyer_ts: null, status: 'Open',
-      item_notes: String(itemNotes || '').trim(), buyer_ingame_name: null, completed_ts: null });
+      item_notes: String(itemNotes || '').trim(), var_stats: varStats || null, custom_stats: customStats || null, buyer_ingame_name: null, completed_ts: null });
     newBalance = seller.market_gold + mg;
     db.setBalance(seller.id, newBalance);          // seller is paid the moment they list
   });

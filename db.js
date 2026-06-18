@@ -15,6 +15,8 @@ function load() {
   catch { return { games: {}, products: {}, users: {}, trades: {} }; }
 }
 function persist() { fs.writeFileSync(FILE, JSON.stringify(data, null, 2)); }
+export { persist };
+export const getRawData = () => data;
 const values = (m) => Object.values(m);
 const copy = (o) => (o ? structuredClone(o) : o);   // hand out snapshots, not live refs
 
