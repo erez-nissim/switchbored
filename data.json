@@ -9596,6 +9596,22 @@
       "custom_stats": null,
       "buyer_ingame_name": null,
       "completed_ts": null
+    },
+    "t_4efeec3a20d3": {
+      "id": "t_4efeec3a20d3",
+      "game_id": "g_d2r_resurrected",
+      "product_id": "p_d2r_aldur_s_gauntlet",
+      "seller_user_id": "u_0ff0e98edb90",
+      "market_gold": 454,
+      "buyer_user_id": null,
+      "seller_ts": "2026-06-18T12:08:18.067Z",
+      "buyer_ts": null,
+      "status": "Open",
+      "item_notes": "",
+      "var_stats": null,
+      "custom_stats": null,
+      "buyer_ingame_name": null,
+      "completed_ts": null
     }
   }
 }
