@@ -11,6 +11,15 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 db.seedIfEmpty();
 
+// Auto-import full D2R catalog if no products exist yet
+{
+  const raw = db.getRawData();
+  if (Object.keys(raw.products).length === 0) {
+    console.log('No products found — running full D2R catalog import...');
+    import('./import.js').catch(e => console.error('Import failed:', e.message));
+  }
+}
+
 const app = express();
 app.use(cors());
 app.use(express.json());

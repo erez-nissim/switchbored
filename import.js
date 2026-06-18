@@ -178,6 +178,7 @@ function categoryOf(name, chars) {
 }
 
 // ── main ──────────────────────────────────────────────────────────────────────
+export async function runImport() {
 console.log('Loading game data...');
 const uniqueItems = load('uniqueitems.json');
 const armorData   = load('armor.json');
@@ -313,4 +314,7 @@ for (const [k, item] of Object.entries(weaponData)) {
 
 db.persist();
 console.log(`\n✓ Import complete! ${count} products added to D2R.`);
-console.log('Start the server now to verify.');
+} // end runImport
+
+// Run directly if called as main script
+runImport().catch(e => { console.error('Import error:', e); process.exit(1); });
