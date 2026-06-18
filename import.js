@@ -631,8 +631,7 @@ const itemsData   = load('items.json');
 // Wipe existing products and trades
 console.log('Wiping existing products and trades...');
 const raw = db.getRawData();
-const gameId = Object.keys(raw.games)[0];
-if (!gameId) { console.error('No game found! Run seedIfEmpty first.'); return; }
+const gameId = 'g_d2r_resurrected'; // fixed ID matching db.js seedIfEmpty
 // Delete all existing products and trades via db
 for (const id of Object.keys(raw.products)) delete raw.products[id];
 for (const id of Object.keys(raw.trades)) delete raw.trades[id];
