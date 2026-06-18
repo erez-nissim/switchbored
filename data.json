@@ -9588,14 +9588,14 @@
       "buyer_user_id": "u_0ff0e98edb90",
       "seller_ts": "2026-06-18T12:08:05.922Z",
       "buyer_ts": "2026-06-18T13:44:06.724Z",
-      "status": "In Progress",
+      "status": "Delivered",
       "item_notes": "",
       "var_stats": {
         "dmg-fire_2": 27
       },
       "custom_stats": null,
       "buyer_ingame_name": "aaa",
-      "completed_ts": null
+      "completed_ts": "2026-06-18T13:48:10.874Z"
     },
     "t_4efeec3a20d3": {
       "id": "t_4efeec3a20d3",
