@@ -7289,7 +7289,14 @@ function renderCatnav(){
     + cats.map(c=>item(c.name,c.name,c.count,c.ownCount||0)).join('');
 }
 function setCategory(cat){ state.category=cat; renderCatnav(); drawTab(); }
-function setGameTab(t){ state.gameTab=t; setActiveTab(); renderCatnav(); drawTab(); }
+function setGameTab(t){
+  state.gameTab=t; setActiveTab();
+  // Reset ownCount so catnav doesn't show stale data while loading
+  if(t==='buy' && state.listingCategories) {
+    state.listingCategories = state.listingCategories.map(c => ({...c, ownCount:0}));
+  }
+  renderCatnav(); drawTab();
+}
 function setActiveTab(){ document.querySelectorAll('.tab').forEach(el=>el.classList.toggle('active', el.dataset.t===state.gameTab)); }
 function drawTab(){ if(state.gameTab==='buy') drawBuy(); else if(state.gameTab==='sell') drawSell(); else drawActivity(); }
 
@@ -7300,9 +7307,12 @@ function drawBuy(){
     <div class="toolbar"><div class="search">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3-3"/></svg>
       <input id="buySearch" placeholder="Search listings…" value="${esc(buyQuery)}"></div></div>
-    <div id="buyResults" class="cards"><div class="empty">Loading…</div></div>`;
+    <div id="buyResults" class="cards"><div class="empty">Loading…</div></div>
+    <div class="section-head" style="margin-top:32px"><h2>Latest Activity</h2></div>
+    <div id="buyActivity" class="feed"><div class="empty" style="padding:12px">Loading…</div></div>`;
   $('buySearch').addEventListener('input', debounce(e=>{ buyQuery=e.target.value; fetchListings(); },220));
   fetchListings();
+  fetchActivityFeed('buyActivity');
 }
 async function fetchListings(){
   try{
@@ -7387,9 +7397,12 @@ function drawSell(){
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3-3"/></svg>
       <input id="sellSearch" placeholder="Search the catalog…" value="${esc(sellQuery)}"></div></div>
     <p class="muted" style="margin:-6px 0 16px;font-size:13px">Pick the item you own to list it for sale.</p>
-    <div id="sellResults" class="cards"><div class="empty">Loading…</div></div>`;
+    <div id="sellResults" class="cards"><div class="empty">Loading…</div></div>
+    <div class="section-head" style="margin-top:32px"><h2>Latest Activity</h2></div>
+    <div id="sellActivity" class="feed"><div class="empty" style="padding:12px">Loading…</div></div>`;
   $('sellSearch').addEventListener('input', debounce(e=>{ sellQuery=e.target.value; fetchCatalog(); },200));
   fetchCatalog();
+  fetchActivityFeed('sellActivity');
 }
 async function fetchCatalog(){
   try{
@@ -7484,6 +7497,23 @@ async function submitNewProduct(){
 }
 
 /* ---- activity ---- */
+async function fetchActivityFeed(targetId){
+  try{
+    const rows = await apiGet(`/games/${state.game.id}/activity?1=1`+catQS());
+    const el = $(targetId);
+    if(!el) return;
+    el.innerHTML = rows.length
+      ? rows.slice(0,10).map(t=>`
+        <div class="feed-row">
+          <div class="ico" style="background-image:url('${esc(t.image)}')"></div>
+          <div class="txt"><b>${esc(t.productName)}</b> <span class="who">— ${esc(t.sellerName)} ${esc(t.verb)}</span>
+            <span class="muted"> · ${timeAgo(t.buyerTimestamp||t.sellerTimestamp)}</span></div>
+          ${coin(t.marketGold)}<span class="badge ${badgeClass(t.status)}">${esc(t.status)}</span>
+        </div>`).join('')
+      : '<div class="empty" style="padding:12px">No activity yet.</div>';
+  }catch(e){}
+}
+
 async function drawActivity(){
   try{
     const rows = await apiGet(`/games/${state.game.id}/activity?1=1`+catQS());
