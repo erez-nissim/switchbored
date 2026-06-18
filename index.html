@@ -24,6 +24,13 @@
   .grow{flex:1}
   .nav-link{color:var(--muted);font-weight:500;font-size:14px;background:none;padding:6px 4px} .nav-link:hover{color:var(--text)}
   .pending-badge{display:inline-flex;align-items:center;justify-content:center;background:var(--red);color:#fff;font-size:10px;font-weight:700;border-radius:99px;min-width:16px;height:16px;padding:0 4px;margin-left:4px;vertical-align:middle}
+  .action-banner{position:fixed;bottom:24px;right:24px;z-index:200;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+  .action-card{background:var(--surface);border:2px solid var(--gold);border-radius:12px;padding:14px 16px;pointer-events:all;box-shadow:0 4px 24px rgba(0,0,0,.5);min-width:260px;max-width:320px;cursor:pointer;transition:transform .15s}
+  .action-card:hover{transform:translateY(-2px)}
+  .action-card .ac-label{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);font-weight:700;margin-bottom:4px}
+  .action-card .ac-item{font-size:14px;color:var(--text);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .action-card .ac-sub{font-size:12px;color:var(--muted);margin-top:2px}
+  .action-card .ac-btn{margin-top:10px;width:100%}
   .mg-chip{display:inline-flex;align-items:center;gap:8px;background:var(--gold-soft);border:1px solid rgba(245,194,75,.3);color:var(--gold);padding:6px 12px;border-radius:999px;font-weight:600;font-size:14px}
   .nav-greet{color:var(--muted);font-size:14px;font-weight:500} .nav-greet b{color:var(--text);font-weight:600}
   .mg-chip .coin{width:16px;height:16px;border-radius:50%;background:radial-gradient(circle at 32% 30%, #ffe9a8, var(--gold) 58%, var(--gold-dim));display:inline-flex;align-items:center;justify-content:center;color:#5c3d00;font-size:9px;font-weight:800}
@@ -124,10 +131,10 @@
   <span id="greet" class="nav-greet hidden"></span>
   <button class="nav-link hide-sm" id="navMyTrades" onclick="go('mytrades')">My Trades<span id="pendingBadge" class="pending-badge hidden"></span></button>
   <span id="mgChip" class="mg-chip hidden"><span class="coin">MG</span><span class="mg-amt" id="mgAmount">0</span></span>
-  <button class="nav-link hidden" id="navImport" onclick="runAdminImport()" style="color:var(--gold);font-size:12px">⟳ Re-import</button>
   <button class="nav-link" id="navAuth" onclick="openAuth()">Sign in</button>
   <button class="nav-link hidden" id="navLogout" onclick="logout()">Sign out</button>
 </div></header>
+<div id="actionBanner" class="action-banner"></div>
 
 <main id="app"></main>
 
@@ -7187,7 +7194,6 @@ const catQS = () => state.category ? '&category='+encodeURIComponent(state.categ
 /* auth */
 function refreshAuthUI(){ const on=!!state.user;
   $('navAuth').classList.toggle('hidden',on); $('navLogout').classList.toggle('hidden',!on);
-  $('navImport').classList.toggle('hidden', !(on && state.user && state.user.email === 'erezn1976@gmail.com'));
   $('navMyTrades').classList.toggle('hidden',!on); $('mgChip').classList.toggle('hidden',!on);
   const g=$('greet'); if(g){ g.classList.toggle('hidden',!on); if(on) g.innerHTML='Hi, <b>'+esc(state.user.name)+'</b>'; }
   if(on) $('mgAmount').textContent=fmt(state.user.marketGold);
@@ -7195,18 +7201,42 @@ function refreshAuthUI(){ const on=!!state.user;
 
 let _pendingBadgeTimer = null;
 async function updatePendingBadge(){
-  if(!state.user){ $('pendingBadge').classList.add('hidden'); return; }
-  // Debounce: don't fire more than once per 2 seconds
+  if(!state.user){ $('pendingBadge').classList.add('hidden'); $('actionBanner').innerHTML=''; return; }
   if(_pendingBadgeTimer) return;
-  _pendingBadgeTimer = setTimeout(() => { _pendingBadgeTimer = null; }, 2000);
+  _pendingBadgeTimer = setTimeout(() => { _pendingBadgeTimer = null; }, 3000);
   try{
     const d = await apiGet('/me/trades');
-    const count = (d.selling||[]).filter(t=>t.status==='In Progress').length
-                + (d.buying||[]).filter(t=>t.status==='Delivered').length;
+    const needsDeliver = (d.selling||[]).filter(t=>t.status==='In Progress');
+    const needsConfirm = (d.buying||[]).filter(t=>t.status==='Delivered');
+    const count = needsDeliver.length + needsConfirm.length;
+
+    // Update topbar badge
     if(count>0){ $('pendingBadge').textContent=count; $('pendingBadge').classList.remove('hidden'); }
     else { $('pendingBadge').classList.add('hidden'); }
+
+    // Update floating action cards
+    const cards = [
+      ...needsDeliver.map(t=>`
+        <div class="action-card" onclick="go('mytrades')">
+          <div class="ac-label">⚡ Action needed — deliver item</div>
+          <div class="ac-item">${esc(t.productName||'Item')}</div>
+          <div class="ac-sub">Buyer: ${esc(t.buyerInGameName||'—')} · ${coin(t.marketGold)}</div>
+          <button class="btn btn-green ac-btn" onclick="event.stopPropagation();markDelivered('${t.id}')">Mark as delivered</button>
+        </div>`),
+      ...needsConfirm.map(t=>`
+        <div class="action-card" onclick="go('mytrades')">
+          <div class="ac-label">⚡ Action needed — confirm arrival</div>
+          <div class="ac-item">${esc(t.productName||'Item')}</div>
+          <div class="ac-sub">Seller delivered · ${coin(t.marketGold)}</div>
+          <button class="btn btn-green ac-btn" onclick="event.stopPropagation();confirmArrival('${t.id}')">Item arrived ✓</button>
+        </div>`)
+    ];
+    $('actionBanner').innerHTML = cards.join('');
   }catch(e){}
 }
+
+// Poll for trade updates every 30 seconds when logged in
+setInterval(() => { if(state.user) updatePendingBadge(); }, 30000);
 function openAuth(){ state.authMode='login'; applyAuthMode(); $('authOverlay').classList.add('show'); }
 function toggleAuthMode(){ state.authMode=state.authMode==='login'?'signup':'login'; applyAuthMode(); }
 function applyAuthMode(){ const s=state.authMode==='signup';
@@ -7602,17 +7632,6 @@ function tradeRow(t,isSeller){
 }
 async function markDelivered(id){ try{ await apiPost(`/trades/${id}/deliver`); [state.user] = await Promise.all([apiGet('/me')]); refreshAuthUI(); toast('Marked as delivered — waiting for buyer to confirm','ok'); renderMyTrades(); updatePendingBadge(); }catch(e){ toast(e.message,'err'); } }
 async function confirmArrival(id){ try{ await apiPost(`/trades/${id}/confirm`); [state.user] = await Promise.all([apiGet('/me')]); refreshAuthUI(); toast('Item arrival confirmed — trade complete!','ok'); renderMyTrades(); updatePendingBadge(); }catch(e){ toast(e.message,'err'); } }
-async function runAdminImport(){
-  if(!confirm('This will delete ALL current listings and re-import 1,184 items from scratch. Continue?')) return;
-  try{
-    toast('Running import — this may take a few seconds...','ok');
-    const r = await apiPost('/api/admin/import', {});
-    toast(r.message || 'Import complete!', 'ok');
-    // Reload the page to show fresh data
-    setTimeout(() => location.reload(), 1500);
-  } catch(e){ toast('Import failed: '+e.message,'err'); }
-}
-
 async function cancelTrade(id){ try{ await apiPost(`/trades/${id}/cancel`); [state.user] = await Promise.all([apiGet('/me')]); refreshAuthUI(); toast('Trade cancelled','ok'); renderMyTrades(); updatePendingBadge(); }catch(e){ toast(e.message,'err'); } }
 
 applyAuthMode(); render();
