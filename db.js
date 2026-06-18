@@ -31,43 +31,49 @@ function loadUsers() {
 }
 
 function persist() {
-  fs.writeFileSync(FILE, JSON.stringify({ games: data.games, products: data.products, trades: data.trades }, null, 2));
+  const json = JSON.stringify({ games: data.games, products: data.products, trades: data.trades }, null, 2);
+  fs.writeFileSync(FILE, json);
 }
+
+// Push data.json to GitHub (called only on significant trade events)
+function persistAndSync() {
+  const json = JSON.stringify({ games: data.games, products: data.products, trades: data.trades }, null, 2);
+  fs.writeFileSync(FILE, json);
+  pushToGitHub('data.json', json, 'Update data.json').catch(e => console.log('[github] data push failed:', e.message));
+}
+
 function persistUsers() {
   const json = JSON.stringify(users, null, 2);
   fs.writeFileSync(USERS_FILE, json);
   // Push to GitHub so users survive Render restarts
-  pushUsersToGitHub(json).catch(e => console.log('[github] push failed:', e.message));
+  pushToGitHub('users.json', json, 'Update users.json').catch(e => console.log('[github] users push failed:', e.message));
 }
 
-async function pushUsersToGitHub(content) {
+async function pushToGitHub(filename, content, message) {
   const token = process.env.GITHUB_TOKEN;
   const repo  = process.env.GITHUB_REPO || 'erez-nissim/switchbored';
-  const path  = process.env.USERS_FILE  || 'users.json';
-  if (!token) return; // skip if no token configured
+  if (!token) return;
 
-  // Get current file SHA (needed for update)
   const headers = {
     'Authorization': `Bearer ${token}`,
     'Content-Type': 'application/json',
     'User-Agent': 'switchbored'
   };
-  const url = `https://api.github.com/repos/${repo}/contents/${path}`;
+  const url = `https://api.github.com/repos/${repo}/contents/${filename}`;
   let sha = null;
   try {
     const get = await fetch(url, { headers });
     if (get.ok) { const d = await get.json(); sha = d.sha; }
   } catch(e) {}
 
-  // Push updated file
   const body = JSON.stringify({
-    message: 'Update users.json',
+    message,
     content: Buffer.from(content).toString('base64'),
     ...(sha ? { sha } : {})
   });
   const res = await fetch(url, { method: 'PUT', headers, body });
-  if (res.ok) console.log('[github] users.json pushed successfully');
-  else { const err = await res.text(); console.log('[github] push error:', err.slice(0,100)); }
+  if (res.ok) console.log(`[github] ${filename} pushed successfully`);
+  else { const err = await res.text(); console.log(`[github] ${filename} push error:`, err.slice(0,100)); }
 }
 
 export { persist };
@@ -105,11 +111,11 @@ export const insertUser = (u) => { users[u.id] = u; persistUsers(); return copy(
 export const setBalance = (userId, amount) => { users[userId].market_gold = amount; persistUsers(); };
 
 // ---- trades ----
-export const insertTrade = (t) => { data.trades[t.id] = t; persist(); return copy(t); };
+export const insertTrade = (t) => { data.trades[t.id] = t; persistAndSync(); return copy(t); };
 export const getTrade = (id) => copy(data.trades[id]) || null;
 export const tradesByGame = (gameId) => values(data.trades).filter(t => t.game_id === gameId).map(copy);
 export const tradesForUser = (userId) => values(data.trades).filter(t => t.seller_user_id === userId || t.buyer_user_id === userId).map(copy);
-export const updateTradeFields = (id, fields) => { Object.assign(data.trades[id], fields); persist(); return copy(data.trades[id]); };
+export const updateTradeFields = (id, fields) => { Object.assign(data.trades[id], fields); persistAndSync(); return copy(data.trades[id]); };
 
 // ---- seed ----
 export function seedIfEmpty() {
