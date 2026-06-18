@@ -6,5 +6,13 @@
     "password_hash": "$2a$10$Dkv9IeBBI4giIXCeCTCF/eNMaRdUdGwt/aPifFe4mRjMHHHa0sWlS",
     "market_gold": 0,
     "created_at": "2026-06-18T11:27:34.994Z"
+  },
+  "u_0ff0e98edb90": {
+    "id": "u_0ff0e98edb90",
+    "name": "erez2",
+    "email": "aaa@gmail.com",
+    "password_hash": "$2a$10$ZA.1lC2iQbHz0Il2riwfE.IYnGliuLvfCLVCkzLbKi/ShdT99e3ei",
+    "market_gold": 0,
+    "created_at": "2026-06-18T11:34:58.708Z"
   }
 }
