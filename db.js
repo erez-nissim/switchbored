@@ -114,7 +114,8 @@ export const updateTradeFields = (id, fields) => { Object.assign(data.trades[id]
 // ---- seed ----
 export function seedIfEmpty() {
   if (values(data.games).length > 0) return;
-  const gid = newId('g');
+  // Fixed ID so products always match after restart
+  const gid = 'g_d2r_resurrected';
   data.games[gid] = { id: gid, name: 'Diablo II Resurrected',
     url: 'https://diablo2.blizzard.com', active: 1,
     image: 'https://placehold.co/600x400/171D2B/F5C24B?text=Diablo+II+Resurrected' };
