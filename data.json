@@ -9606,12 +9606,12 @@
       "buyer_user_id": "u_94c08686466d",
       "seller_ts": "2026-06-18T12:08:18.067Z",
       "buyer_ts": "2026-06-18T13:56:20.698Z",
-      "status": "Delivered",
+      "status": "Closed",
       "item_notes": "",
       "var_stats": null,
       "custom_stats": null,
       "buyer_ingame_name": "aaa",
-      "completed_ts": "2026-06-18T13:56:48.279Z"
+      "completed_ts": "2026-06-18T13:57:33.927Z"
     },
     "t_3c77a31b2e6d": {
       "id": "t_3c77a31b2e6d",
