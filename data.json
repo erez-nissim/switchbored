@@ -9578,6 +9578,24 @@
       "custom_stats": null,
       "buyer_ingame_name": null,
       "completed_ts": null
+    },
+    "t_7fa6f68c8bb8": {
+      "id": "t_7fa6f68c8bb8",
+      "game_id": "g_d2r_resurrected",
+      "product_id": "p_d2r_naj_s_circlet",
+      "seller_user_id": "u_94c08686466d",
+      "market_gold": 234,
+      "buyer_user_id": null,
+      "seller_ts": "2026-06-18T12:08:05.922Z",
+      "buyer_ts": null,
+      "status": "Open",
+      "item_notes": "",
+      "var_stats": {
+        "dmg-fire_2": 27
+      },
+      "custom_stats": null,
+      "buyer_ingame_name": null,
+      "completed_ts": null
     }
   }
 }
