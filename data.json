@@ -9482,5 +9482,22 @@
       "image": "images/weapon/wand/yew_wand.sprite.00.png"
     }
   },
-  "trades": {}
+  "trades": {
+    "t_ef544cdb561d": {
+      "id": "t_ef544cdb561d",
+      "game_id": "g_d2r_resurrected",
+      "product_id": "p_d2r_aegis_armor",
+      "seller_user_id": "u_94c08686466d",
+      "market_gold": 11,
+      "buyer_user_id": null,
+      "seller_ts": "2026-06-18T12:06:18.062Z",
+      "buyer_ts": null,
+      "status": "Open",
+      "item_notes": "",
+      "var_stats": null,
+      "custom_stats": null,
+      "buyer_ingame_name": null,
+      "completed_ts": null
+    }
+  }
 }
