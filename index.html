@@ -7184,10 +7184,14 @@ function refreshAuthUI(){ const on=!!state.user;
   $('navMyTrades').classList.toggle('hidden',!on); $('mgChip').classList.toggle('hidden',!on);
   const g=$('greet'); if(g){ g.classList.toggle('hidden',!on); if(on) g.innerHTML='Hi, <b>'+esc(state.user.name)+'</b>'; }
   if(on) $('mgAmount').textContent=fmt(state.user.marketGold);
-  updatePendingBadge(); }
+}
 
+let _pendingBadgeTimer = null;
 async function updatePendingBadge(){
   if(!state.user){ $('pendingBadge').classList.add('hidden'); return; }
+  // Debounce: don't fire more than once per 2 seconds
+  if(_pendingBadgeTimer) return;
+  _pendingBadgeTimer = setTimeout(() => { _pendingBadgeTimer = null; }, 2000);
   try{
     const d = await apiGet('/me/trades');
     const count = (d.selling||[]).filter(t=>t.status==='In Progress').length
@@ -7246,7 +7250,8 @@ async function renderLanding(){
       <div class="game-grid" id="gameGrid"><div class="empty"><div class="big">Loading games…</div></div></div>
     </section>`;
   try{
-    const games = await apiGet('/games');
+    if(!state.gamesCache) state.gamesCache = await apiGet('/games');
+  const games = state.gamesCache;
     $('gameGrid').innerHTML = games.length ? games.map(g=>`
       <div class="game-card" onclick='openGame(${j(g)})'>
         <div class="thumb" style="background-image:url('${esc(g.image)}')"></div>
@@ -7273,8 +7278,10 @@ async function renderGame(){
       <div class="gamemain" id="tabContent"><div class="empty">Loading…</div></div>
     </div></div>`;
   setActiveTab();
-  try{ state.categories = await apiGet(`/games/${g.id}/categories`); }catch(e){ state.categories=[]; }
-  renderCatnav(); drawTab();
+  // Draw tab immediately without waiting for categories
+  drawTab();
+  // Fetch categories in background
+  apiGet(`/games/${g.id}/categories`).then(cats => { state.categories = cats; renderCatnav(); }).catch(() => {});
 }
 function renderCatnav(){
   const cats = state.gameTab==='buy' ? (state.listingCategories||state.categories) : state.categories;
@@ -7289,14 +7296,7 @@ function renderCatnav(){
     + cats.map(c=>item(c.name,c.name,c.count,c.ownCount||0)).join('');
 }
 function setCategory(cat){ state.category=cat; renderCatnav(); drawTab(); }
-function setGameTab(t){
-  state.gameTab=t; setActiveTab();
-  // Reset ownCount so catnav doesn't show stale data while loading
-  if(t==='buy' && state.listingCategories) {
-    state.listingCategories = state.listingCategories.map(c => ({...c, ownCount:0}));
-  }
-  renderCatnav(); drawTab();
-}
+function setGameTab(t){ state.gameTab=t; setActiveTab(); renderCatnav(); drawTab(); }
 function setActiveTab(){ document.querySelectorAll('.tab').forEach(el=>el.classList.toggle('active', el.dataset.t===state.gameTab)); }
 function drawTab(){ if(state.gameTab==='buy') drawBuy(); else if(state.gameTab==='sell') drawSell(); else drawActivity(); }
 
@@ -7311,8 +7311,8 @@ function drawBuy(){
     <div class="section-head" style="margin-top:32px"><h2>Latest Activity</h2></div>
     <div id="buyActivity" class="feed"><div class="empty" style="padding:12px">Loading…</div></div>`;
   $('buySearch').addEventListener('input', debounce(e=>{ buyQuery=e.target.value; fetchListings(); },220));
-  fetchListings();
-  fetchActivityFeed('buyActivity');
+  // Run listings and activity in parallel
+  Promise.all([fetchListings(), fetchActivityFeed('buyActivity')]);
 }
 async function fetchListings(){
   try{
@@ -7325,11 +7325,14 @@ async function fetchListings(){
     const ownListings = rows.filter(t => t.sellerUserId === myId);
     const buyableListings = rows.filter(t => t.sellerUserId !== myId);
 
-    // Category counts: only buyable (not own) for the numbers
-    state.listingCategories = Array.isArray(listingCats) ? listingCats.map(c => {
-      const ownInCat = ownListings.filter(t => t.category === c.name).length;
-      return { ...c, count: c.count - ownInCat, ownCount: ownInCat };
-    }) : [];
+    // Build category counts — only buyable for the main number, ownCount stored separately
+    // ownCount is persistent — once fetched it stays until next fetch
+    if (Array.isArray(listingCats)) {
+      state.listingCategories = listingCats.map(c => {
+        const ownInCat = ownListings.filter(t => t.category === c.name).length;
+        return { ...c, count: c.count - ownInCat, ownCount: ownInCat };
+      });
+    }
     renderCatnav();
 
     // Render: buyable first, then own (greyed out)
@@ -7401,8 +7404,8 @@ function drawSell(){
     <div class="section-head" style="margin-top:32px"><h2>Latest Activity</h2></div>
     <div id="sellActivity" class="feed"><div class="empty" style="padding:12px">Loading…</div></div>`;
   $('sellSearch').addEventListener('input', debounce(e=>{ sellQuery=e.target.value; fetchCatalog(); },200));
-  fetchCatalog();
-  fetchActivityFeed('sellActivity');
+  // Run catalog and activity in parallel
+  Promise.all([fetchCatalog(), fetchActivityFeed('sellActivity')]);
 }
 async function fetchCatalog(){
   try{
@@ -7554,8 +7557,8 @@ function tradeRow(t,isSeller){
     ${coin(t.marketGold)}<span class="badge ${badgeClass(t.status)}">${esc(t.status)}</span>${action}
   </div>`;
 }
-async function markDelivered(id){ try{ await apiPost(`/trades/${id}/deliver`); state.user=await apiGet('/me'); refreshAuthUI(); toast('Marked as delivered — waiting for buyer to confirm','ok'); renderMyTrades(); updatePendingBadge(); }catch(e){ toast(e.message,'err'); } }
-async function confirmArrival(id){ try{ await apiPost(`/trades/${id}/confirm`); state.user=await apiGet('/me'); refreshAuthUI(); toast('Item arrival confirmed — trade complete!','ok'); renderMyTrades(); updatePendingBadge(); }catch(e){ toast(e.message,'err'); } }
+async function markDelivered(id){ try{ await apiPost(`/trades/${id}/deliver`); [state.user] = await Promise.all([apiGet('/me')]); refreshAuthUI(); toast('Marked as delivered — waiting for buyer to confirm','ok'); renderMyTrades(); updatePendingBadge(); }catch(e){ toast(e.message,'err'); } }
+async function confirmArrival(id){ try{ await apiPost(`/trades/${id}/confirm`); [state.user] = await Promise.all([apiGet('/me')]); refreshAuthUI(); toast('Item arrival confirmed — trade complete!','ok'); renderMyTrades(); updatePendingBadge(); }catch(e){ toast(e.message,'err'); } }
 async function runAdminImport(){
   if(!confirm('This will delete ALL current listings and re-import 1,184 items from scratch. Continue?')) return;
   try{
@@ -7567,7 +7570,7 @@ async function runAdminImport(){
   } catch(e){ toast('Import failed: '+e.message,'err'); }
 }
 
-async function cancelTrade(id){ try{ await apiPost(`/trades/${id}/cancel`); state.user=await apiGet('/me'); refreshAuthUI(); toast('Trade cancelled','ok'); renderMyTrades(); updatePendingBadge(); }catch(e){ toast(e.message,'err'); } }
+async function cancelTrade(id){ try{ await apiPost(`/trades/${id}/cancel`); [state.user] = await Promise.all([apiGet('/me')]); refreshAuthUI(); toast('Trade cancelled','ok'); renderMyTrades(); updatePendingBadge(); }catch(e){ toast(e.message,'err'); } }
 
 applyAuthMode(); render();
 </script>
