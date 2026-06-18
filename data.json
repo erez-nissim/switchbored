@@ -9514,6 +9514,22 @@
       "custom_stats": null,
       "buyer_ingame_name": null,
       "completed_ts": null
+    },
+    "t_5c7b3fe58154": {
+      "id": "t_5c7b3fe58154",
+      "game_id": "g_d2r_resurrected",
+      "product_id": "p_d2r_ancient_shield_armor",
+      "seller_user_id": "u_94c08686466d",
+      "market_gold": 545,
+      "buyer_user_id": null,
+      "seller_ts": "2026-06-18T12:06:33.056Z",
+      "buyer_ts": null,
+      "status": "Open",
+      "item_notes": "",
+      "var_stats": null,
+      "custom_stats": null,
+      "buyer_ingame_name": null,
+      "completed_ts": null
     }
   }
 }
